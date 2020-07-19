@@ -42,12 +42,4 @@ module.exports = {
     ...
 }
 ```
-
-### 使用commitizen
-
-git格式化提交, 详见[官网](https://github.com/commitizen/cz-cli)
-
-参考官网文档将git仓库变为 Commitizen-friendly 后
-使用 ```git cz```代替```git commit```, 比如```git cz -a```。
-
 ## 构建
