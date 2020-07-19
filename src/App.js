@@ -1,11 +1,17 @@
 import React from 'react';
 import './App.css';
+import { ConfigProvider } from "antd";
+import zhCN from "antd/es/locale/zh_CN";
+import TableView from '@/components/Table/index'
 
 function App() {
   return (
-    <div className="App">
-      测试
-    </div>
+      <ConfigProvider locale={zhCN}>
+          <div className="App">
+              测试
+              <TableView />
+          </div>
+      </ConfigProvider>
   );
 }
 
