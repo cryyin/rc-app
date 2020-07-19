@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import {List, Typography} from "antd"
+import {List} from "antd"
 import request from '@/utils/request';
-
+// 使用hook获取数据
+// @see "https://segmentfault.com/a/1190000018652589"
 const TableView = prop =>  {
     const [list, setList] = useState([]);
     useEffect( ()=>{
