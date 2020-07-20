@@ -4,6 +4,7 @@ import { SearchOutlined, FileTextOutlined, LineChartOutlined } from '@ant-design
 
 import request from '@/utils/request'
 import RoleTable from "@/components/Table/RoleTable";
+import VisibleChart from "@/views/charts/index"
 
 const { Option } = Select;
 class RcTable extends Component {
@@ -281,7 +282,7 @@ class RcTable extends Component {
                     onClose={this.hideModal}
                     width='88%'
                 >
-                    <RoleTable url={`/user/${this.state.selectedUser}/role`} />
+                    <VisibleChart />
                 </Modal>
             </div>
         )

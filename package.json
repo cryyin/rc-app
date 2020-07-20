@@ -11,6 +11,7 @@
     "antd": "^4.4.2",
     "axios": "^0.19.2",
     "craco-less": "^1.17.0",
+    "echarts": "^4.8.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-custom-scrollbars": "^4.2.1",
