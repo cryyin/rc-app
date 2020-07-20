@@ -1,6 +1,6 @@
 import React, {Component} from "react"
 import {Table, Pagination, Form, Select, Button, Modal} from "antd"
-import { SearchOutlined, AreaChartOutlined } from '@ant-design/icons';
+import { SearchOutlined, FileTextOutlined, LineChartOutlined } from '@ant-design/icons';
 
 import request from '@/utils/request'
 import RoleTable from "@/components/Table/RoleTable";
@@ -14,6 +14,7 @@ class RcTable extends Component {
         userList:[],
         selectedUser: null,
         loading: false,
+        chartModalVisible: false,
         roleModalVisible: false,
         total: 0,
         listQuery: {
@@ -43,9 +44,16 @@ class RcTable extends Component {
                             <span>
                                 {text}
                                 <Button
+                                    style={{border: 'none'}}
                                     onClick={()=>{this.handleShowRole(record.id)}}
                                     size='small'
-                                    icon={<AreaChartOutlined/>}
+                                    icon={<FileTextOutlined />}
+                                />
+                                <Button
+                                    style={{border: 'none'}}
+                                    onClick={()=>{this.handleChartRole(record.id)}}
+                                    size='small'
+                                    icon={<LineChartOutlined />}
                                 />
                             </span>
                         )
@@ -176,6 +184,12 @@ class RcTable extends Component {
             selectedUser: id,
             roleModalVisible: true
         })
+    };
+    handleChartRole = id => {
+        this.setState({
+            selectedUser: id,
+            chartModalVisible: true
+        })
     }
     // 用户名模糊搜索
     handleSearch = value => {
@@ -188,7 +202,10 @@ class RcTable extends Component {
         }
     };
     hideModal = () => {
-        this.setState({roleModalVisible : false})
+        this.setState({
+            roleModalVisible : false,
+            chartModalVisible : false
+        })
     }
     render() {
         const columns = this.userColumns;
@@ -202,6 +219,7 @@ class RcTable extends Component {
                     <Form layout='inline'>
                         <Form.Item label="公司名称:">
                             <Select
+                                allowClear
                                 style={{ width: 120 }}
                                 onChange={this.filterOrgChange}>
                                 {options}
@@ -245,8 +263,19 @@ class RcTable extends Component {
                     showQuickJumper
                     hideOnSinglePage={true}
                 />
+                {/*详情*/}
                 <Modal
                     visible={this.state.roleModalVisible}
+                    onOk={this.hideModal}
+                    onCancel={this.hideModal}
+                    onClose={this.hideModal}
+                    width='88%'
+                >
+                    <RoleTable url={`/user/${this.state.selectedUser}/role`} />
+                </Modal>
+                {/*可视化*/}
+                <Modal
+                    visible={this.state.chartModalVisible}
                     onOk={this.hideModal}
                     onCancel={this.hideModal}
                     onClose={this.hideModal}
