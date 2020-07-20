@@ -34,13 +34,14 @@ class RcTable extends Component{
     }
 
     render() {
-        const { columns } = this.props
+        const { columns } = this.props;
+        const { list } = this.state;
         return(
             <div>
                 <Table
-                    rowKey={'id'}
+                    rowKey='id'
                     columns={columns}
-                    dataSource={this.state.list}
+                    dataSource={list}
                 />
             </div>
         )

@@ -3,6 +3,7 @@ import './App.css';
 import { ConfigProvider } from "antd";
 import zhCN from "antd/es/locale/zh_CN";
 import RcTable from '@/components/Table/RcTable'
+// import TableView from '@/components/Table/index'
 
 const columns = [
     {
@@ -56,6 +57,7 @@ function App() {
       <ConfigProvider locale={zhCN}>
           <div className="App">
               <RcTable url={'/role'} columns={columns} />
+              {/*<TableView columns={columns} />*/}
           </div>
       </ConfigProvider>
   );

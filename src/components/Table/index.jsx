@@ -1,31 +1,24 @@
 import React, {useState, useEffect} from 'react';
-import {List} from "antd"
+import {Table} from "antd"
 import request from '@/utils/request';
 // 使用hook获取数据
 // @see "https://segmentfault.com/a/1190000018652589"
-const TableView = prop =>  {
-    const [list, setList] = useState([]);
+const TableView = props => {
+    const [list, setList] = useState(   []);
+    const fetchData = () => request.get('/role').then(r => {
+        setList(r.data.dataList);
+    });
     useEffect( ()=>{
-        const fetchData = async () => {
-            const result = await  request.get('/role');
-            setList(result.data.dataList);
-        };
-        // noinspection JSIgnoredPromiseFromCall
-        fetchData();
+        fetchData().then(()=>{})
     },[]);
-
+    const { columns } = props
     return (
         <div>
             <div>
-                {list &&list[0] && list[0]['roleDesc']}
-                <List
-                    size="small"
+                <Table
+                    rowKey='id'
+                    columns={columns}
                     dataSource={list}
-                    renderItem={item => (
-                        <List.Item>
-                            {item.id}
-                        </List.Item>
-                    )}
                 />
             </div>
         </div>
