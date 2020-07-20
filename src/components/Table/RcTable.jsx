@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import {Table} from "antd"
+import {Table, Pagination} from "antd"
 import request from '@/utils/request'
 
 class RcTable extends Component{
@@ -13,10 +13,13 @@ class RcTable extends Component{
             pageSize: 10
         },
     }
+    // 异步获取数据
     fetchData = () => {
         const {url} = this.props
         this.setState({ loading: true });
-        request.get(url).then((response) => {
+        const { pageNumber: current, pageSize: size} = this.state.listQuery;
+        const params = {current, size};
+        request.get(url, {params}).then((response) => {
             this.setState({ loading: false });
             const list = response.data.dataList;
             const total = response.data.total;
@@ -25,6 +28,7 @@ class RcTable extends Component{
             }
         });
     };
+    // 一般在组件挂载后异步获取数据
     componentDidMount() {
         this._isMounted = true;
         this.fetchData();
@@ -33,15 +37,58 @@ class RcTable extends Component{
         this._isMounted = false;
     }
 
+    changePage = (pageNumber, pageSize) => {
+        this.setState(
+            (state) => ({
+                listQuery: {
+                    ...state.listQuery,
+                    pageNumber,
+                },
+            }),
+            () => {
+                this.fetchData();
+            }
+        );
+    };
+    changePageSize = (current, pageSize) => {
+        this.setState(
+            (state) => ({
+                listQuery: {
+                    ...state.listQuery,
+                    pageNumber: 1,
+                    pageSize,
+                },
+            }),
+            () => {
+                this.fetchData();
+            }
+        );
+    };
     render() {
         const { columns } = this.props;
         const { list } = this.state;
         return(
             <div>
+                {/* 查询区域 */}
+                {/* 表格区域 */}
                 <Table
                     rowKey='id'
                     columns={columns}
                     dataSource={list}
+                    pagination={false}
+                />
+                <br />
+                {/* 分页区域 */}
+                <Pagination
+                    total={this.state.total}
+                    pageSizeOptions={["10", "20", "40"]}
+                    showTotal={(total) => `共${total}条数据`}
+                    onChange={this.changePage}
+                    current={this.state.listQuery.pageNumber}
+                    onShowSizeChange={this.changePageSize}
+                    showSizeChanger
+                    showQuickJumper
+                    hideOnSinglePage={true}
                 />
             </div>
         )

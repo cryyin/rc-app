@@ -20,6 +20,8 @@ module.exports = {
             plugin: CracoLessPlugin,
             options: {
                 lessLoaderOptions: {
+                    // 可以在这里更改antd主题
+                    // @see "https://ant.design/docs/react/use-with-create-react-app-cn"
                     lessOptions: {
                         modifyVars: { '@primary-color': '#1DA57A' },
                         javascriptEnabled: true,
