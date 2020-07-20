@@ -8,11 +8,11 @@ import "@/style/index.less";
 // noinspection SpellCheckingInspection
 window.token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiaWF0IjoxNTk1MTQ4NTU0LCJleHAiOjE1OTU3NTMzNTR9.d_g4-SPvZ8emC5TqM32KOjPhAe44bbCA1qhVopEju0FK7epAu347hFvbA3c-TKNAboeq6fCwEA8Lqv9gwktUbQ";
 
+// 去掉严格模式
+// @see "https://zh-hans.reactjs.org/docs/strict-mode.html#gatsby-focus-wrapper"
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+    <App/>,
+    document.getElementById('root')
 );
 
 // If you want your app to work offline and load faster, you can change

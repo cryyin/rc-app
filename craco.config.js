@@ -23,7 +23,7 @@ module.exports = {
                     // 可以在这里更改antd主题
                     // @see "https://ant.design/docs/react/use-with-create-react-app-cn"
                     lessOptions: {
-                        modifyVars: { '@primary-color': '#1DA57A' },
+                        modifyVars: { '@primary-color': '#1890ff' },
                         javascriptEnabled: true,
                     },
                 },

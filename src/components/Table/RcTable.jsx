@@ -1,11 +1,14 @@
 import React, {Component} from "react"
-import {Table, Pagination} from "antd"
-import request from '@/utils/request'
+import {Table, Pagination, Form, Select, Button} from "antd"
+import { SearchOutlined } from '@ant-design/icons';
 
+import request from '@/utils/request'
+const { Option } = Select;
 class RcTable extends Component {
     _isMounted = false; // 这个变量是用来标志当前组件是否挂载
     state = {
         list: [],
+        orgList:[],
         loading: false,
         total: 0,
         listQuery: {
@@ -18,7 +21,7 @@ class RcTable extends Component {
         const {url} = this.props
         this.setState({loading: true});
         const {pageNumber: current, pageSize: size} = this.state.listQuery;
-        const params = {current, size};
+        const params = {current, size, ...this.state.listQuery};
         request.get(url, {params}).then((response) => {
             this.setState({loading: false});
             const list = response.data.dataList;
@@ -28,10 +31,16 @@ class RcTable extends Component {
             }
         });
     };
-
+    // 公司名称
+    fetchOrgList = () => {
+        request.get('/org').then(r => {
+            this.setState({orgList : r.data.dataList});
+        })
+    };
     // 一般在组件挂载后异步获取数据
     componentDidMount() {
         this._isMounted = true;
+        this.fetchOrgList();
         this.fetchData();
     }
 
@@ -39,7 +48,7 @@ class RcTable extends Component {
         this._isMounted = false;
     }
 
-    changePage = (pageNumber, pageSize) => {
+    changePage = (pageNumber) => {
         this.setState(
             (state) => ({
                 listQuery: {
@@ -66,17 +75,42 @@ class RcTable extends Component {
             }
         );
     };
-
+    filterOrgChange = (value) => {
+        this.setState((state) => ({
+            listQuery: {
+                ...state.listQuery,
+                userOrgId:value,
+            }
+        }));
+    };
     render() {
         const {columns} = this.props;
-        const {list} = this.state;
-        return (
-            <div>
-                {/* 查询区域 */}
-                {/* 表格区域 */}
+        const {list, orgList} = this.state;
+        const options = orgList.map(d => <Option value={d.id} key={d.id}>{d.orgName}</Option>);
 
+        return (
+            <div className='app-container'>
+                {/* 查询区域 */}
+                <div className='filter-container'>
+                    <Form layout='inline'>
+                        <Form.Item label="公司名称:">
+                            <Select
+                                style={{ width: 120 }}
+                                onChange={this.filterOrgChange}>
+                                {options}
+                            </Select>
+                        </Form.Item>
+                        <Form.Item>
+                            <Button type="primary" icon={<SearchOutlined/>} onClick={this.fetchData}>
+                                搜索
+                            </Button>
+                        </Form.Item>
+                    </Form>
+                </div>
+                {/* 表格区域 */}
                 <Table
                     rowKey='id'
+                    loading={this.state.loading}
                     columns={columns}
                     dataSource={list}
                     pagination={false}
