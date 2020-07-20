@@ -1,8 +1,9 @@
-import React, { Component } from "react"
+import React, {Component} from "react"
 import {Table, Pagination} from "antd"
 import request from '@/utils/request'
+import {Scrollbars} from "react-custom-scrollbars";
 
-class RcTable extends Component{
+class RcTable extends Component {
     _isMounted = false; // 这个变量是用来标志当前组件是否挂载
     state = {
         list: [],
@@ -16,23 +17,25 @@ class RcTable extends Component{
     // 异步获取数据
     fetchData = () => {
         const {url} = this.props
-        this.setState({ loading: true });
-        const { pageNumber: current, pageSize: size} = this.state.listQuery;
+        this.setState({loading: true});
+        const {pageNumber: current, pageSize: size} = this.state.listQuery;
         const params = {current, size};
         request.get(url, {params}).then((response) => {
-            this.setState({ loading: false });
+            this.setState({loading: false});
             const list = response.data.dataList;
             const total = response.data.total;
             if (this._isMounted) {
-                this.setState({ list, total });
+                this.setState({list, total});
             }
         });
     };
+
     // 一般在组件挂载后异步获取数据
     componentDidMount() {
         this._isMounted = true;
         this.fetchData();
     }
+
     componentWillUnmount() {
         this._isMounted = false;
     }
@@ -64,20 +67,28 @@ class RcTable extends Component{
             }
         );
     };
+
     render() {
-        const { columns } = this.props;
-        const { list } = this.state;
-        return(
+        const {columns} = this.props;
+        const {list} = this.state;
+        return (
             <div>
                 {/* 查询区域 */}
                 {/* 表格区域 */}
-                <Table
-                    rowKey='id'
-                    columns={columns}
-                    dataSource={list}
-                    pagination={false}
-                />
-                <br />
+                <Scrollbars
+                    autoHide
+                    autoHideTimeout={1000}
+                    autoHideDuration={200}
+                    style={{height: '700px'}}
+                >
+                    <Table
+                        rowKey='id'
+                        columns={columns}
+                        dataSource={list}
+                        pagination={false}
+                    />
+                </Scrollbars>
+                <br/>
                 {/* 分页区域 */}
                 <Pagination
                     total={this.state.total}

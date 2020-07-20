@@ -1,66 +1,84 @@
 import React from 'react';
 import './App.css';
-import { ConfigProvider } from "antd";
+import {ConfigProvider} from "antd";
 import zhCN from "antd/es/locale/zh_CN";
 import RcTable from '@/components/Table/RcTable'
 // import TableView from '@/components/Table/index'
 
 const columns = [
     {
-        title: '角色信息',
+        title: '用户信息',
         fixed: 'left',
-        children:[
+        children: [
             {
                 title: '序号',
                 width: 100,
                 dataIndex: 'id',
                 fixed: 'left',
                 key: 'id'
-            },{
-                title: '名称',
+            }, {
+                title: '用户名',
                 width: 100,
-                dataIndex: 'roleName',
+                dataIndex: 'username',
                 fixed: 'left',
-                key: 'roleName'
-            },{
-                title: '描述',
+                key: 'username'
+            }, {
+                title: '别名',
                 width: 100,
-                dataIndex: 'roleDesc',
-                key: 'roleDesc'
-            },{
-                title: '类型',
+                dataIndex: 'nickname',
+                key: 'nickname'
+            }, {
+                title: '机构',
                 width: 100,
-                dataIndex: 'roleType',
-                key: 'roleType'
-            }
+                dataIndex: 'userOrgName',
+                key: 'userOrgName'
+            }, {
+                title: '邮箱',
+                width: 100,
+                dataIndex: 'email',
+                key: 'email'
+            },
         ]
-    } ,
+    },
     {
         title: '审计信息',
         children: [
             {
+                title: '修改时间',
+                width: 100,
+                dataIndex: 'utcModified',
+                key: 'utcModified'
+            },
+            {
+                title: '类型',
+                width: 50,
+                dataIndex: 'userType',
+                key: 'userType'
+            }, {
+                title: '状态',
+                width: 50,
+                dataIndex: 'userStatus',
+                key: 'userStatus'
+            }, {
                 title: '修改人',
                 dataIndex: 'modifier',
                 width: 100,
                 key: 'modifier'
-            } ,{
-                title: '修改时间',
-                width: 160,
-                dataIndex: 'utcModified',
-                key: 'utcModified'
             }
         ]
     }
 ]
+
 function App() {
-  return (
-      <ConfigProvider locale={zhCN}>
-          <div className="App">
-              <RcTable url={'/role'} columns={columns} />
-              {/*<TableView columns={columns} />*/}
-          </div>
-      </ConfigProvider>
-  );
+    return (
+        <ConfigProvider locale={zhCN}>
+            <div className="App">
+
+                <RcTable url={'/user'} columns={columns}/>
+                {/*<TableView columns={columns} />*/}
+            </div>
+        </ConfigProvider>
+    );
 }
 
 export default App;
