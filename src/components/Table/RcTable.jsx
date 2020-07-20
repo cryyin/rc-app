@@ -1,7 +1,6 @@
 import React, {Component} from "react"
 import {Table, Pagination} from "antd"
 import request from '@/utils/request'
-import {Scrollbars} from "react-custom-scrollbars";
 
 class RcTable extends Component {
     _isMounted = false; // 这个变量是用来标志当前组件是否挂载
@@ -75,19 +74,13 @@ class RcTable extends Component {
             <div>
                 {/* 查询区域 */}
                 {/* 表格区域 */}
-                <Scrollbars
-                    autoHide
-                    autoHideTimeout={1000}
-                    autoHideDuration={200}
-                    style={{height: '700px'}}
-                >
-                    <Table
-                        rowKey='id'
-                        columns={columns}
-                        dataSource={list}
-                        pagination={false}
-                    />
-                </Scrollbars>
+
+                <Table
+                    rowKey='id'
+                    columns={columns}
+                    dataSource={list}
+                    pagination={false}
+                />
                 <br/>
                 {/* 分页区域 */}
                 <Pagination

@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import "antd/dist/antd.less";
+// 自定义样式
+import "@/style/index.less";
 // noinspection SpellCheckingInspection
 window.token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiaWF0IjoxNTk1MTQ4NTU0LCJleHAiOjE1OTU3NTMzNTR9.d_g4-SPvZ8emC5TqM32KOjPhAe44bbCA1qhVopEju0FK7epAu347hFvbA3c-TKNAboeq6fCwEA8Lqv9gwktUbQ";
 
