@@ -1,5 +1,7 @@
 import getProcedureConfig from "@/utils/sqlUtils";
+import {getLastYearMonth} from "@/utils/dateUtils";
 
+const lastYearMonth = getLastYearMonth();
 /**
  * 存储过程自定义参数
  * 可以打开plsql查看具体的存储过程，复制到notepad++后直接进行列操作可得到该配置信息
@@ -9,7 +11,7 @@ import getProcedureConfig from "@/utils/sqlUtils";
  * @type {({name: string, type: string}|{name: string, type: string}|{name: string, type: string}|{filter: {order: number}, name: string, type: string}|{filter: {dep: number, order: number}, name: string, type: string})[]}
  */
 export const listParams = [
-    {name: 'IN_MONTH         ', type: 'VARCHAR2'},
+    {name: 'IN_MONTH         ', type: 'VARCHAR2', defaultValue: lastYearMonth},
     {name: 'IN_ID            ', type: 'VARCHAR2',  defaultValue: '2'},
     {name: 'IN_SEARCH_TYPE   ', type: 'VARCHAR2'},
     {name: 'IN_CAL_AREA      ', type: 'VARCHAR2', filterItem: {order: 1, child: 2}},
@@ -22,7 +24,7 @@ export const listParams = [
     ];
 
 const filterParam = [
-    {name:'IN_MONTH         ',type:'NUMBER'  },
+    {name:'IN_MONTH         ',type:'NUMBER', defaultValue: parseInt(lastYearMonth)},
     {name:'IN_DIM_TYPE_CODE ',type:'VARCHAR2'},
     {name:'IN_EXPAND_1      ',type:'VARCHAR2'},
     {name:'IN_EXPAND_2      ',type:'VARCHAR2'},

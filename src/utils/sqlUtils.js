@@ -5,7 +5,7 @@ export const url = '/rc/call'
 // 存储过程通用参数
 export const commonParams = [
     {name:'IN_USER_GROUP', type: 'VARCHAR2', value: ""},
-    {name:'IN_DATA_SOURCE', type: 'VARCHAR2', value: ""}
+    {name:'IN_DATA_SOURCE', type: 'VARCHAR2', value: "TEST"}
 ]
 // 分页参数
 export const pageParams = [

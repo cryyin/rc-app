@@ -48,7 +48,7 @@ const TableView = props => {
                 </Form.Item>
             </Form>
             <Table
-                rowKey='id'
+                rowKey='nOrderId'
                 loading={loading}
                 pagination={false}
                 columns={roleColumns}

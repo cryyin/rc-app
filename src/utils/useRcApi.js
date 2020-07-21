@@ -45,6 +45,7 @@ const useRcApi = (initialUrl, initialSql, initialParams) => {
                 if (dataList.length === 1 && dataList[0].nStateCode === 0){
                     return;
                 }
+                console.log(result)
                 setList(dataList);
                 setTotal(dataList[0].rowNum)
             } catch (error) {
