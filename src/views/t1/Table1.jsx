@@ -5,11 +5,12 @@ import React, {useEffect, useState} from 'react';
 import {Button, Form, Table, message, Select} from "antd"
 import userRcApi from '@/utils/useRcApi'
 import {SearchOutlined} from "@ant-design/icons";
-import {url} from "@/utils/sqlUtils";
+import {url} from "@/utils/queryUtils";
 import {listConfig, filterConfig} from "./Table1Config"
 import request from '@/utils/request';
 
 const { Option } = Select;
+// 筛选框列表
 const { filterItems } = listConfig
 const TableView = props => {
     const [filter1List, setFilter1List] = useState("")
