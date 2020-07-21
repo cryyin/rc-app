@@ -3,8 +3,8 @@ import {Table, Pagination, Form, Select, Button, Modal} from "antd"
 import { SearchOutlined, FileTextOutlined, LineChartOutlined } from '@ant-design/icons';
 
 import request from '@/utils/request'
-import RoleTable from "@/components/Table/RoleTable";
-import VisibleChart from "@/views/charts/index"
+import RoleTable from "@/components/Table/test/RoleTable";
+import VisibleChart from "@/views/charts"
 
 const { Option } = Select;
 class RcTable extends Component {

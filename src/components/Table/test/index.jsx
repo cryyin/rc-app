@@ -1,6 +1,6 @@
 import React from 'react';
 import {Button, Form, Table, Input } from "antd"
-import useDataApi from '../../components/Table/useDataApi'
+import useDataApi from '../useDataApi'
 import {SearchOutlined} from "@ant-design/icons";
 
 const roleColumns = [

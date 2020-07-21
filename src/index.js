@@ -6,7 +6,8 @@ import "antd/dist/antd.less";
 // 自定义样式
 import "@/style/index.less";
 // noinspection SpellCheckingInspection
-window.token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiaWF0IjoxNTk1MTQ4NTU0LCJleHAiOjE1OTU3NTMzNTR9.d_g4-SPvZ8emC5TqM32KOjPhAe44bbCA1qhVopEju0FK7epAu347hFvbA3c-TKNAboeq6fCwEA8Lqv9gwktUbQ";
+window.token = "9b4c12248abca36716d9e6e8ff9a08fa";
+// window.token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiaWF0IjoxNTk1MTQ4NTU0LCJleHAiOjE1OTU3NTMzNTR9.d_g4-SPvZ8emC5TqM32KOjPhAe44bbCA1qhVopEju0FK7epAu347hFvbA3c-TKNAboeq6fCwEA8Lqv9gwktUbQ";
 
 // 去掉严格模式
 // @see "https://zh-hans.reactjs.org/docs/strict-mode.html#gatsby-focus-wrapper"

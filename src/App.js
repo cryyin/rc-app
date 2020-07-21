@@ -3,7 +3,7 @@ import './App.css';
 import {ConfigProvider} from "antd";
 import zhCN from "antd/es/locale/zh_CN";
 // import RcTable from '@/components/Table/RcTable'
-import TableView from '@/views/custom'
+import TableView from '@/components/Table/test'
 
 
 function App() {
