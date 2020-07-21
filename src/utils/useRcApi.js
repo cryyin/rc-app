@@ -8,7 +8,7 @@
 
 import React, {useState, useEffect, Fragment, useCallback} from 'react';
 import request, {addRnd} from '@/utils/request';
-import {Pagination} from "antd";
+import {Pagination, Table} from "antd";
 
 const useRcApi = (initialUrl, initialSql, initialParams) => {
     const [list, setList] = useState([]);
@@ -29,7 +29,9 @@ const useRcApi = (initialUrl, initialSql, initialParams) => {
     // 页大小
     const [size, setSize] = useState(10);
 
-    // 异步发送数据
+    /**
+     * 异步发送数据, 相应字段名根据后端Api要求调整
+     */
     useEffect(() => {
         const fetchData = async () => {
             setIsError(false);
@@ -77,7 +79,27 @@ const useRcApi = (initialUrl, initialSql, initialParams) => {
     const changePage = (current)=>{
         setCurrent(current)
     }
-    // 返回分页组件
+    /**
+     * 返回table
+     * @param {Array} columns 表列
+     * @param {any} idKey
+     * @returns {*}
+     */
+    const getTable = (columns, idKey='nOrderId') => {
+        return (
+            <Table
+                rowKey={idKey}
+                loading={isLoading}
+                pagination={false}
+                columns={columns}
+                dataSource={list}
+            />
+        )
+    }
+    /**
+     * 返回分页组件
+     * @returns {*}
+     */
     const getPagination = () => {
         return(
             <Fragment>
@@ -95,7 +117,7 @@ const useRcApi = (initialUrl, initialSql, initialParams) => {
             </Fragment>
         )
     }
-    return { list, handleFilter, isLoading, isError, doFetch, getPagination };
+    return { list, handleFilter, isLoading, isError, doFetch, getTable, getPagination };
 };
 
 export default useRcApi;

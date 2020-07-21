@@ -13,7 +13,8 @@ const { Option } = Select;
 const { filterItems } = listConfig
 const TableView = props => {
     const [filter1List, setFilter1List] = useState("")
-    const {list, doFetch, handleFilter, loading, getPagination} = userRcApi(url,listConfig.sql, listConfig.params);
+    const {doFetch, handleFilter, getTable, getPagination} = userRcApi(url,listConfig.sql, listConfig.params);
+
     useEffect(()=>{
         const {sql, params} = filterConfig
         // 二级公司
@@ -31,6 +32,7 @@ const TableView = props => {
     }
     return (
         <div>
+            {/*查询区域*/}
             <Form layout='inline'>
                 <Form.Item label='二级公司'>
                     <Select
@@ -47,20 +49,16 @@ const TableView = props => {
                     </Button>
                 </Form.Item>
             </Form>
-            <Table
-                rowKey='nOrderId'
-                loading={loading}
-                pagination={false}
-                columns={roleColumns}
-                dataSource={list}
-            />
+            {/*表格区域*/}
+            {getTable(table1Columns)}
+            {/*分页区域*/}
             {getPagination()}
         </div>
     );
 }
 
 // 表列
-const roleColumns = [
+const table1Columns = [
     {
         title: '客户基本信息',
         fixed: 'left',
