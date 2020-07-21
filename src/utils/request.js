@@ -15,7 +15,7 @@ service.interceptors.request.use(
     // Do something before request is sent
     if (token) {
         // 让每个请求携带token-- ['Authorization']为自定义key 请根据实际情况自行修改
-        config.headers['Authorization'] = `Bearer ${token}`
+        config.headers['token'] = `${token}`
     }
     return config;
   },
@@ -33,8 +33,8 @@ service.interceptors.response.use(
         const res = response.data;
         // if the custom code is not 0, it is judged as an error.
         if (res.code !== 0) {
-            message.error(res.message);
-            return Promise.reject(new Error(res.message || 'Error'));
+            message.error(res.msg);
+            return Promise.reject(new Error(res.msg || 'Error'));
         } else {
             return res
         }
@@ -46,3 +46,16 @@ service.interceptors.response.use(
 );
 
 export default service;
+
+const RND_FLAG = 'RND';
+export const addRnd = (url) => {
+    let sign = '?'
+    let rawUrl = url;
+    if(url.includes(RND_FLAG)){
+        rawUrl = url.split(RND_FLAG)[0];
+    }
+    if (rawUrl.includes('?')){
+        sign = '&';
+    }
+    return `${rawUrl+sign+RND_FLAG}=${new Date().getTime()}`;
+}

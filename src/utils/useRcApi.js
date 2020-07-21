@@ -7,29 +7,21 @@
  */
 
 import React, {useState, useEffect, Fragment, useCallback} from 'react';
-import request from '@/utils/request';
+import request, {addRnd} from '@/utils/request';
 import {Pagination} from "antd";
 
-const RND_FLAG = 'RND';
-const addRnd = (url) => {
-    let sign = '?'
-    let rawUrl = url;
-    if(url.includes(RND_FLAG)){
-        rawUrl = url.split(RND_FLAG)[0];
-    }
-    if (rawUrl.includes('?')){
-        sign = '&';
-    }
-    return `${rawUrl+sign+RND_FLAG}=${new Date().getTime()}`;
-}
-const useDataApi = (initialUrl) => {
+const useRcApi = (initialUrl, initialSql, initialParams) => {
     const [list, setList] = useState([]);
     const [url, setUrl] = useState(initialUrl);
-    const [params, setParams] = useState({});
+    const [sql] = useState(initialSql);
+    const [params, setParams] = useState(initialParams);
     const [isLoading, setIsLoading] = useState(false);
     const [isError, setIsError] = useState(false);
-    // 一般是自定义的过滤条件
-    const [filter, setFilter] = useState({});
+
+    // 一般是自定义的过滤条件, 间接使用filter而不是直接设置params避免频繁fetch数据
+    // 初始内容与params一致
+    const [filter, setFilter] = useState(initialParams);
+
     // 总页数
     const [total, setTotal] = useState(0);
     // 当前页
@@ -37,22 +29,32 @@ const useDataApi = (initialUrl) => {
     // 页大小
     const [size, setSize] = useState(10);
 
+    // 异步发送数据
     useEffect(() => {
         const fetchData = async () => {
             setIsError(false);
             setIsLoading(true);
-            const requestParam = {size, current, ...params}
+            // 后端接收开始行数、结束行数作为参数
+            const IN_ROWNB_BEGIN = (current-1) < 0 ? 0 : (current-1) * size;
+            const IN_ROWNB_END = size * current;
+            const requestParam = {sql, params:{...params, IN_ROWNB_BEGIN, IN_ROWNB_END}}
             try {
-                const result = await request.get(url.toString(), {params: requestParam});
-                setList(result.data.dataList);
-                setTotal(result.data.total)
+                const result = await request.post(url.toString(), requestParam);
+                const dataList = result.data.OUT_DATASET
+                // 无数据
+                if (dataList.length === 1 && dataList[0].nStateCode === 0){
+                    return;
+                }
+                setList(dataList);
+                setTotal(dataList[0].rowNum)
             } catch (error) {
+                console.log(error)
                 setIsError(true);
             }
             setIsLoading(false);
         };
         fetchData().then();
-    }, [url, params, size, current]);
+    }, [url, sql, params, size, current]);
 
     // 手动触发获取数据逻辑
     const doFetch = useCallback(()=>{
@@ -95,4 +97,4 @@ const useDataApi = (initialUrl) => {
     return { list, handleFilter, isLoading, isError, doFetch, getPagination };
 };
 
-export default useDataApi;
+export default useRcApi;

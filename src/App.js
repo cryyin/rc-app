@@ -2,17 +2,13 @@ import React from 'react';
 import './App.css';
 import {ConfigProvider} from "antd";
 import zhCN from "antd/es/locale/zh_CN";
-// import RcTable from '@/components/Table/RcTable'
-import TableView from '@/components/Table/test'
-
+import Table1 from '@/views/t1/Table1'
 
 function App() {
     return (
         <ConfigProvider locale={zhCN}>
             <div className="App">
-
-                {/*<RcTable url={'/user'} />*/}
-                <TableView />
+                <Table1 />
             </div>
         </ConfigProvider>
     );

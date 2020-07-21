@@ -1,5 +1,8 @@
+// 数据库schema名称
+export const schemaName = 'PRD_RC';
+// 远程get地址
+export const url = '/rc/call'
 // 存储过程通用参数
-
 export const commonParams = [
     {name:'IN_USER_GROUP', type: 'VARCHAR2', value: ""},
     {name:'IN_DATA_SOURCE', type: 'VARCHAR2', value: ""}
@@ -34,7 +37,8 @@ export const getProcedureInParams = (rawParams, isFilter=false) =>{
         if (type === 'NUMBER'){
             value = 0;
         }
-        return {name, type, value};
+        value = e.defaultValue || value
+        return {...e, name, type, value};
     });
     if (isFilter){
         // 仅仅添加通用参数
@@ -64,7 +68,7 @@ const getProcedureSql = ( procedureName, inParams) =>{
     });
     // 输出参数
     const outParam = `#{${outParamName},mode=OUT,jdbcType=CURSOR,javaType=ResultSet,resultMap=map}`
-    return `call ${procedureName}(${inParamsStr+outParam})`
+    return `call ${schemaName}.${procedureName}(${inParamsStr+outParam})`
 }
 /**
  * 根据原始参数构造存储过程配置信息对象
@@ -76,15 +80,28 @@ const getProcedureSql = ( procedureName, inParams) =>{
  *
  * @param {Array} rawParams 原始参数
  * @param {String} procedureName 原始参数
+ * @param {Boolean} isFilter 是否是
  * @return {Object} 存储过程配置信息
  */
-export const getProcedureConfig = (procedureName, rawParams) =>{
-    const inParams = getProcedureInParams(rawParams)
-    const params = inParams.map(p=>{
-        return {[p.name]:p.value}
+export const getProcedureConfig = (procedureName, rawParams, isFilter=false) =>{
+    const inParams = getProcedureInParams(rawParams, isFilter)
+    const params = {}
+    const filterItems = []
+    inParams.forEach(p=>{
+        params[p.name]=p.value
+        if (p.filterItem){
+            filterItems.push(p);
+        }
     })
     const sql = getProcedureSql(procedureName, inParams)
+    if (isFilter){
+        return {
+            sql, params
+        }
+    }
     return {
-        sql, params
+        sql, params, filterItems
     }
 }
+
+export default getProcedureConfig;
