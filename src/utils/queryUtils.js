@@ -1,7 +1,7 @@
 // 数据库schema名称
 export const schemaName = 'PRD_RC';
 // 远程get地址
-export const url = '/rc/call'
+export const URL = '/rc/call'
 // 存储过程通用参数
 export const commonParams = [
     {name:'IN_USER_GROUP', type: 'VARCHAR2', value: ""},
@@ -89,7 +89,9 @@ export const getProcedureConfig = (procedureName, rawParams, isFilter=false) =>{
     const filterItems = []
     inParams.forEach(p=>{
         params[p.name]=p.value
-        if (p.filterItem){
+        if (p.filter){
+            // IN_DIM_TYPE_CODE默认为D00+id
+            p.filter.code = p.filter.code || 'D00'+p.filter.id
             filterItems.push(p);
         }
     })
@@ -103,5 +105,36 @@ export const getProcedureConfig = (procedureName, rawParams, isFilter=false) =>{
         sql, params, filterItems
     }
 }
+/**
+ * 将筛选框分类分类
+ * @param {Array} filterItems
+ * @returns {{muteFilters: [], dynamicFilter: [], beDepIds: Set<any>, depIFilters: []}}
+ */
+export const classifyFilterItem = (filterItems) => {
+    // 仅需初始化一次的筛选框
+    const muteFilters = []
+    // 依赖其他筛选框值的筛选框
+    const depIFilters = []
+    // 如动态选项的Select组件
+    const dynamicFilter = []
+    // 被依赖的id
+    const beDepIds = new Set()
+    filterItems.forEach(e=>{
+        if (e.deps){
+            depIFilters.push(e)
+            beDepIds.add(e.deps)
+        }else if(e.dynamic){
+            dynamicFilter.push(e)
+        }else {
+            muteFilters.push(e)
+        }
+    })
+
+    return {muteFilters, depIFilters, dynamicFilter, beDepIds}
+}
+// 筛选框类型判断
+export const isMuteFilter = (filter) => !filter.deps && !filter.dynamic
+export const isDynamicFilter = (filter) => filter.dynamic
+export const isDepFilter = (filter) => filter.deps
 
 export default getProcedureConfig;

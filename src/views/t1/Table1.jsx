@@ -1,11 +1,11 @@
 /**
- * 主表单1
+ * 通用Rc表组件
  */
 import React, {useEffect, useState} from 'react';
-import {Button, Form, Table, message, Select} from "antd"
+import {Button, Form, message, Select} from "antd"
 import userRcApi from '@/utils/useRcApi'
 import {SearchOutlined} from "@ant-design/icons";
-import {url} from "@/utils/queryUtils";
+import {classifyFilterItem, isMuteFilter, URL} from "@/utils/queryUtils";
 import {listConfig, filterConfig} from "./Table1Config"
 import request from '@/utils/request';
 
@@ -14,36 +14,54 @@ const { Option } = Select;
 const { filterItems } = listConfig
 const TableView = props => {
     const [filter1List, setFilter1List] = useState("")
-    const {doFetch, handleFilter, getTable, getPagination} = userRcApi(url,listConfig.sql, listConfig.params);
-
+    const {doFetch, handleFilter, getTable, getPagination} = userRcApi(URL,listConfig.sql, listConfig.params);
+    const {muteFilters, depFilters, dynamicFilters, beDepIds} = classifyFilterItem(filterItems)
+    const [muteItems, setMuteItems] = useState({})
     useEffect(()=>{
         const {sql, params} = filterConfig
-        // 二级公司
-        params['IN_DIM_TYPE_CODE'] = 'D001'
-        request.post(url, {sql, params}).then(r=>{
-            setFilter1List(r.data.OUT_DATASET)
-        }).catch(e=>{
-            message.error(e.msg)
+        const asyncArr = []
+        muteFilters.forEach(e=>{
+            const requestParams = {sql, params:{...params, IN_DIM_TYPE_CODE: e.code}}
+            asyncArr.push(request.post(URL, requestParams))
+        })
+        const items = {}
+        Promise.all(asyncArr).then(result=>{
+            result.forEach(r=>{
+                items[r.data.IN_DIM_TYPE_CODE] = r.data.OUT_DATASET
+            })
+            setMuteItems(items)
         })
     },[])
 
     const changeFilter = (value, filterNum) => {
         const item = filterItems[filterNum];
         handleFilter(item.name, value)
+        if (beDepIds.has(item.id)){
+            // 触发依赖更新
+            console.log(filterItems.filter(e=>e.deps === item.id))
+        }
     }
     return (
         <div>
             {/*查询区域*/}
             <Form layout='inline'>
-                <Form.Item label='二级公司'>
-                    <Select
-                        onChange={(value)=> changeFilter(value, 0)}
-                        style={{width: '120px'}}
-                        placeholder='请选择'
-                    >
-                        {filter1List && filter1List.map(d=><Option value={d.vValue} key={d.vKey}>{d.vValue}</Option>)}
-                    </Select>
-                </Form.Item>
+                {
+                    filterItems.map(item=>{
+                        if(isMuteFilter(item)){
+                            return(
+                                <Form.Item label={item.label}>
+                                    <Select
+                                        onChange={(value)=> changeFilter(value, item.id)}
+                                        style={{width: '120px'}}
+                                        placeholder='请选择'
+                                    >
+                                        {muteItems && muteItems[item.id] && muteItems[item.id].map(d=><Option value={d.vValue} key={d.vKey}>{d.vValue}</Option>)}
+                                    </Select>
+                                </Form.Item>
+                            )
+                        }
+                    })
+                }
                 <Form.Item>
                     <Button type="primary" icon={<SearchOutlined/>} onClick={doFetch}>
                         搜索
