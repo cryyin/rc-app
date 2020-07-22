@@ -2,7 +2,7 @@
  * 通用Rc表组件
  */
 import React, {useEffect, useState} from 'react';
-import {Button, Form, Select} from "antd"
+import {Button, Form, Select, Input} from "antd"
 import userRcApi from '@/utils/useRcApi'
 import {SearchOutlined} from "@ant-design/icons";
 import getProcedureConfig, {classifyFilterItem, URL} from "@/utils/queryUtils";
@@ -99,6 +99,19 @@ const RcTableView = props => {
                 {
                     filterItems.map(item => {
                         const {filter} = item
+                        // 筛选框是input
+                        if(filter.type === 'input'){
+                            return (
+                                <Form.Item key={filter.code}>
+                                    <Input
+                                        onChange={(e) => changeFilter(e.target.value, item)}
+                                        allowClear
+                                        placeholder="请输入要查询的内容"
+                                    />
+                                </Form.Item>
+                            )
+                        }
+                        // 筛选框默认是Select下拉框
                         let optionsSrc = muteItems
                         if (filter.dynamic) {
                             optionsSrc = dynamicItems
@@ -106,7 +119,6 @@ const RcTableView = props => {
                             optionsSrc = depItems
                         }
                         const options = (optionsSrc && optionsSrc[filter.code] && optionsSrc[filter.code]) || []
-                        // 目前都是Select下拉框
                         return (
                             <Form.Item label={filter.label} key={filter.code}>
                                 <Select

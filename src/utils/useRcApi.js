@@ -51,7 +51,11 @@ const useRcApi = (initialUrl, initialSql, initialParams) => {
                 }else {
                     setList(dataList);
                     // 总行数
-                    setTotal(dataList[0].nCnt)
+                    if(dataList.length > 0){
+                        setTotal(dataList[0].nCnt)
+                    }else {
+                        setTotal(0)
+                    }
                 }
             } catch (error) {
                 console.log(error)
