@@ -37,7 +37,7 @@ const useRcApi = (initialUrl, initialSql, initialParams) => {
             setIsError(false);
             setIsLoading(true);
             // 后端接收开始行数、结束行数作为参数
-            const IN_ROWNB_BEGIN = (current-1) < 0 ? 0 : (current-1) * size;
+            const IN_ROWNB_BEGIN = (current-1) * size + 1;
             const IN_ROWNB_END = size * current;
             const requestParam = {sql, params:{...params, IN_ROWNB_BEGIN, IN_ROWNB_END}}
             try {
@@ -47,9 +47,9 @@ const useRcApi = (initialUrl, initialSql, initialParams) => {
                 if (dataList.length === 1 && dataList[0].nStateCode === 0){
                     return;
                 }
-                console.log(result)
                 setList(dataList);
-                setTotal(dataList[0].rowNum)
+                // 总行数
+                setTotal(dataList[0].nCnt)
             } catch (error) {
                 console.log(error)
                 setIsError(true);
@@ -74,6 +74,8 @@ const useRcApi = (initialUrl, initialSql, initialParams) => {
     // 当前每页数改变
     const changePageSize = (current, size)=>{
         setSize(size)
+        console.log(current)
+        setCurrent(1)
     }
     // 当前页改变
     const changePage = (current)=>{
@@ -85,9 +87,10 @@ const useRcApi = (initialUrl, initialSql, initialParams) => {
      * @param {any} idKey
      * @returns {*}
      */
-    const getTable = (columns, idKey='nOrderId') => {
+    const getTable = (columns, idKey='nNumber') => {
         return (
             <Table
+                // scroll={{x:1300}}
                 rowKey={idKey}
                 loading={isLoading}
                 pagination={false}
