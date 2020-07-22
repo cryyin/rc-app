@@ -9,55 +9,87 @@ import {classifyFilterItem, URL} from "@/utils/queryUtils";
 import {listConfig, filterConfig} from "./Table1Config"
 import request from '@/utils/request';
 
-const { Option } = Select;
+const {Option} = Select;
+
 // 筛选框列表
-const { filterItems } = listConfig
+const {filterItems} = listConfig
+const {sql, params} = filterConfig
+
 const TableView = props => {
-    const {doFetch, handleFilter, getTable, getPagination} = userRcApi(URL,listConfig.sql, listConfig.params);
+    const {doFetch, handleFilter, getTable, getPagination} = userRcApi(URL, listConfig.sql, listConfig.params);
     const {muteFilters, depFilters, dynamicFilters, beDepIds} = classifyFilterItem(filterItems)
     const [muteItems, setMuteItems] = useState({})
+    const [dynamicItems, setDynamicItems] = useState({})
+
     // 静态filter
-    useEffect(()=>{
-        const {sql, params} = filterConfig
+    useEffect(() => {
+        setFilterOptions(muteFilters, setMuteItems)
+    }, [])
+
+    /**
+     * 动态filter,一般查询时间比较久，所以分开，目前逻辑和muteFilter一致，搜索时无需调用后台接口
+     * 如果需要远程搜索，改造即可
+     * */
+    useEffect(() => {
+        setFilterOptions(dynamicFilters, setDynamicItems)
+    }, [])
+
+    /**
+     *
+     * */
+    const setFilterOptions = (filters, setter) => {
         const asyncArr = []
-        muteFilters.forEach(e=>{
-            const requestParams = {sql, params:{...params, IN_DIM_TYPE_CODE: e.filter.code}}
+        // 闯入不同的IN_DIM_TYPE_CODE获取options字典
+        filters.forEach(e => {
+            const requestParams = {sql, params: {...params, IN_DIM_TYPE_CODE: e.filter.code}}
             asyncArr.push(request.post(URL, requestParams))
         })
         const items = {}
-        Promise.all(asyncArr).then(result=>{
-            result.forEach(r=>{
+        // 并发获取
+        Promise.all(asyncArr).then(result => {
+            result.forEach(r => {
                 items[r.data.IN_DIM_TYPE_CODE] = r.data.OUT_DATASET
             })
-            setMuteItems(items)
+            setter(prevState => {
+                return {...prevState, ...items}
+            })
         })
-    },[])
+    }
 
     const changeFilter = (value, item) => {
         handleFilter(item.name, value)
-        if (beDepIds.has(item.filter.id)){
+        if (beDepIds.has(item.filter.id)) {
             // 触发依赖更新
-            console.log(filterItems.filter(e=>e.filter.deps === item.filter.id))
+            // console.log(depFilters.filter(e => e.filter.deps === item.filter.id))
         }
     }
+
     return (
         <div>
             {/*查询区域*/}
             <Form layout='inline'>
                 {
-                    filterItems.map(item=>{
-                        const {name,filter} = item
-                        if(filter.dynamic){
-                        }else if(filter.deps){
-                        }else {
-                            return(
-                                <Form.Item label={filter.label} key={filter.code} >
+                    filterItems.map(item => {
+                        const {filter} = item
+                        let optionsSrc = muteItems
+                        if (filter.dynamic) {
+                            optionsSrc = dynamicItems
+                        }
+                        const options = (optionsSrc && optionsSrc[filter.code] && optionsSrc[filter.code]) || []
+
+                        if (filter.deps) {
+                        } else {
+                            // 处理静态筛选框
+                            return (
+                                <Form.Item label={filter.label} key={filter.code}>
                                     <Select
-                                        onChange={(value)=> changeFilter(value, item)}
+                                        showSearch={filter.dynamic}
+                                        allowClear
+                                        onChange={(value) => changeFilter(value, item)}
                                         style={{width: '120px'}}
                                         placeholder='请选择'
                                     >
-                                        {muteItems && muteItems[filter.code] && muteItems[filter.code].map(d=><Option value={d.vKey} key={d.vKey}>{d.vValue}</Option>)}
+                                        {options.map(d => <Option value={d.vKey} key={d.vKey}>{d.vValue}</Option>)}
                                     </Select>
                                 </Form.Item>
                             )

@@ -108,7 +108,7 @@ export const getProcedureConfig = (procedureName, rawParams, isFilter=false) =>{
 /**
  * 将筛选框分类分类
  * @param {Array} filterItems
- * @returns {{muteFilters: [], dynamicFilter: [], beDepIds: Set<any>, depIFilters: []}}
+ * @returns {{muteFilters: [], dynamicFilters: [], beDepIds: Set<any>, depIFilters: []}}
  */
 export const classifyFilterItem = (filterItems) => {
     // 仅需初始化一次的筛选框
@@ -116,7 +116,7 @@ export const classifyFilterItem = (filterItems) => {
     // 依赖其他筛选框值的筛选框
     const depIFilters = []
     // 如动态选项的Select组件
-    const dynamicFilter = []
+    const dynamicFilters = []
     // 被依赖的id
     const beDepIds = new Set()
     filterItems.forEach(item=>{
@@ -125,16 +125,12 @@ export const classifyFilterItem = (filterItems) => {
             depIFilters.push(item)
             beDepIds.add(e.deps)
         }else if(e.dynamic){
-            dynamicFilter.push(item)
+            dynamicFilters.push(item)
         }else {
             muteFilters.push(item)
         }
     })
-    return {muteFilters, depIFilters, dynamicFilter, beDepIds}
+    return {muteFilters, depIFilters, dynamicFilters, beDepIds}
 }
-// 筛选框类型判断
-export const isMuteFilter = (filter) => !filter.deps && !filter.dynamic
-export const isDynamicFilter = (filter) => filter.dynamic
-export const isDepFilter = (filter) => filter.deps
 
 export default getProcedureConfig;
