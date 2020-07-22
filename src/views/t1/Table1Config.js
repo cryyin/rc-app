@@ -1,4 +1,3 @@
-import getProcedureConfig from "@/utils/queryUtils";
 import {getLastYearMonth} from "@/utils/dateUtils";
 
 const lastYearMonth = getLastYearMonth();
@@ -23,7 +22,7 @@ export const listParams = [
     {name: 'IN_FLAG          ', type: 'VARCHAR2'}
     ];
 
-const filterParam = [
+export const filterParams = [
     {name:'IN_MONTH         ',type:'NUMBER', defaultValue: parseInt(lastYearMonth)},
     {name:'IN_DIM_TYPE_CODE ',type:'VARCHAR2'},
     {name:'IN_EXPAND_1      ',type:'VARCHAR2'},
@@ -31,9 +30,9 @@ const filterParam = [
     {name:'IN_EXPAND_3      ',type:'VARCHAR2'}
     ];
 
-const filterProcedure = 'PKG_RC_DIGITAL_WARNING.SP_RC_SELECT'
-export const filterConfig = getProcedureConfig( filterProcedure,filterParam, true)
+const filterProcedureName = 'PKG_RC_DIGITAL_WARNING.SP_RC_SELECT'
+const listProcedureName = 'PKG_RC_DIGITAL_WARNING.SP_RC_MAIN_TABLE1'
 
-const listProcedure = 'PKG_RC_DIGITAL_WARNING.SP_RC_MAIN_TABLE1'
-export const listConfig = getProcedureConfig(listProcedure, listParams, false)
-
+export default {
+    listParams,filterParams,filterProcedureName,listProcedureName
+}
