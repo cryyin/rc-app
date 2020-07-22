@@ -17,11 +17,12 @@ const TableView = props => {
     const {doFetch, handleFilter, getTable, getPagination} = userRcApi(URL,listConfig.sql, listConfig.params);
     const {muteFilters, depFilters, dynamicFilters, beDepIds} = classifyFilterItem(filterItems)
     const [muteItems, setMuteItems] = useState({})
+    // 静态filter
     useEffect(()=>{
         const {sql, params} = filterConfig
         const asyncArr = []
         muteFilters.forEach(e=>{
-            const requestParams = {sql, params:{...params, IN_DIM_TYPE_CODE: e.code}}
+            const requestParams = {sql, params:{...params, IN_DIM_TYPE_CODE: e.filter.code}}
             asyncArr.push(request.post(URL, requestParams))
         })
         const items = {}
@@ -33,12 +34,11 @@ const TableView = props => {
         })
     },[])
 
-    const changeFilter = (value, filterNum) => {
-        const item = filterItems[filterNum];
+    const changeFilter = (value, item) => {
         handleFilter(item.name, value)
-        if (beDepIds.has(item.id)){
+        if (beDepIds.has(item.filter.id)){
             // 触发依赖更新
-            console.log(filterItems.filter(e=>e.deps === item.id))
+            console.log(filterItems.filter(e=>e.filter.deps === item.filter.id))
         }
     }
     return (
@@ -47,19 +47,18 @@ const TableView = props => {
             <Form layout='inline'>
                 {
                     filterItems.map(item=>{
-                        if(item.dynamic){
-                            console.log(item)
-                        }else if(item.deps){
-                            console.log(item)
+                        const {name,filter} = item
+                        if(filter.dynamic){
+                        }else if(filter.deps){
                         }else {
                             return(
-                                <Form.Item label={item.label}>
+                                <Form.Item label={filter.label} key={filter.code} >
                                     <Select
-                                        onChange={(value)=> changeFilter(value, item.id)}
+                                        onChange={(value)=> changeFilter(value, item)}
                                         style={{width: '120px'}}
                                         placeholder='请选择'
                                     >
-                                        {muteItems && muteItems[item.id] && muteItems[item.id].map(d=><Option value={d.vValue} key={d.vKey}>{d.vValue}</Option>)}
+                                        {muteItems && muteItems[filter.code] && muteItems[filter.code].map(d=><Option value={d.vValue} key={d.vKey}>{d.vValue}</Option>)}
                                     </Select>
                                 </Form.Item>
                             )
@@ -89,9 +88,9 @@ const table1Columns = [
             {
                 title: '序号',
                 width: 100,
-                dataIndex: 'nOrderId',
+                dataIndex: 'nNumber',
                 fixed: 'left',
-                key: 'nOrderId'
+                key: 'nNumber'
             }, {
                 title: '二级公司',
                 width: 100,
@@ -175,7 +174,7 @@ const table1Columns = [
                 key: 'vRiskTimeRecent'
             }, {
                 title: '涉诉案件数',
-                width: 160,
+                width: 100,
                 dataIndex: 'nCaseCnt',
                 key: 'nCaseCnt'
             }

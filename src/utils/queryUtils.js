@@ -119,17 +119,17 @@ export const classifyFilterItem = (filterItems) => {
     const dynamicFilter = []
     // 被依赖的id
     const beDepIds = new Set()
-    filterItems.forEach(e=>{
+    filterItems.forEach(item=>{
+        const e = item.filter
         if (e.deps){
-            depIFilters.push(e)
+            depIFilters.push(item)
             beDepIds.add(e.deps)
         }else if(e.dynamic){
-            dynamicFilter.push(e)
+            dynamicFilter.push(item)
         }else {
-            muteFilters.push(e)
+            muteFilters.push(item)
         }
     })
-
     return {muteFilters, depIFilters, dynamicFilter, beDepIds}
 }
 // 筛选框类型判断
