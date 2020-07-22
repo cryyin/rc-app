@@ -18,7 +18,7 @@ const {Option} = Select;
 const RcTableView = props => {
     // 读取存储过程信息
     const {columns, tableConfig} = props
-    const {listParams, listProcedureName, filterParams , filterProcedureName} = tableConfig
+    const {listParams, listProcedureName, filterParams , filterProcedureName, rowKey} = tableConfig
     const filterConfig = getProcedureConfig(filterProcedureName,filterParams, true)
     const listConfig = getProcedureConfig(listProcedureName, listParams, false)
     const {filterItems} = listConfig
@@ -129,7 +129,7 @@ const RcTableView = props => {
                 </Form.Item>
             </Form>
             {/*表格区域*/}
-            {getTable(columns)}
+            {getTable(columns, rowKey)}
             {/*分页区域*/}
             {getPagination()}
         </div>

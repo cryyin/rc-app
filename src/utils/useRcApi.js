@@ -90,10 +90,10 @@ const useRcApi = (initialUrl, initialSql, initialParams) => {
      * @param {any} idKey
      * @returns {*}
      */
-    const getTable = (columns, idKey='nNumber') => {
+    const getTable = (columns, idKey='nOrderId') => {
         return (
             <Table
-                // scroll={{x:1300}}
+                scroll={{x:1300}}
                 rowKey={idKey}
                 loading={isLoading}
                 pagination={false}
