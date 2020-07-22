@@ -6,7 +6,7 @@ import RcTableView from "@/components/Table/RcTableView";
 import tableConfig from "./LawsuitConfig"
 
 
-const Table1 = () => {
+const Lawsuit = () => {
     const columns = [
         {
             title: '诉讼情况',
@@ -182,6 +182,6 @@ const Table1 = () => {
 // 表列
 
 
-export default Table1
+export default Lawsuit
 
 
