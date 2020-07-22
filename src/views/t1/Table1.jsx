@@ -5,7 +5,7 @@ import React, {useEffect, useState} from 'react';
 import {Button, Form, message, Select} from "antd"
 import userRcApi from '@/utils/useRcApi'
 import {SearchOutlined} from "@ant-design/icons";
-import {classifyFilterItem, isMuteFilter, URL} from "@/utils/queryUtils";
+import {classifyFilterItem, URL} from "@/utils/queryUtils";
 import {listConfig, filterConfig} from "./Table1Config"
 import request from '@/utils/request';
 
@@ -13,7 +13,6 @@ const { Option } = Select;
 // 筛选框列表
 const { filterItems } = listConfig
 const TableView = props => {
-    const [filter1List, setFilter1List] = useState("")
     const {doFetch, handleFilter, getTable, getPagination} = userRcApi(URL,listConfig.sql, listConfig.params);
     const {muteFilters, depFilters, dynamicFilters, beDepIds} = classifyFilterItem(filterItems)
     const [muteItems, setMuteItems] = useState({})
@@ -58,7 +57,7 @@ const TableView = props => {
                                         style={{width: '120px'}}
                                         placeholder='请选择'
                                     >
-                                        {muteItems && muteItems[filter.code] && muteItems[filter.code].map(d=><Option value={d.vValue} key={d.vKey}>{d.vValue}</Option>)}
+                                        {muteItems && muteItems[filter.code] && muteItems[filter.code].map(d=><Option value={d.vKey} key={d.vKey}>{d.vValue}</Option>)}
                                     </Select>
                                 </Form.Item>
                             )

@@ -40,16 +40,19 @@ const useRcApi = (initialUrl, initialSql, initialParams) => {
             const IN_ROWNB_BEGIN = (current-1) * size + 1;
             const IN_ROWNB_END = size * current;
             const requestParam = {sql, params:{...params, IN_ROWNB_BEGIN, IN_ROWNB_END}}
+            console.log(requestParam)
             try {
                 const result = await request.post(url.toString(), requestParam);
                 const dataList = result.data.OUT_DATASET
                 // 无数据
                 if (dataList.length === 1 && dataList[0].nStateCode === 0){
-                    return;
+                    setList([])
+                    setTotal(0)
+                }else {
+                    setList(dataList);
+                    // 总行数
+                    setTotal(dataList[0].nCnt)
                 }
-                setList(dataList);
-                // 总行数
-                setTotal(dataList[0].nCnt)
             } catch (error) {
                 console.log(error)
                 setIsError(true);
