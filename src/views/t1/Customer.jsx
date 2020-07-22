@@ -6,7 +6,7 @@ import RcTableView from "@/components/Table/RcTableView";
 import tableConfig from "./CustomerConfig"
 
 
-const Customer = () => {
+const Customer = (props) => {
     const columns = [
         {
             title: '序号',
@@ -81,10 +81,10 @@ const Customer = () => {
             key: 'vRelatedFlag'
         }
     ];
-
+    const {fixedParams} = props
     return (
         <div>
-            <RcTableView columns={columns} tableConfig={tableConfig}/>
+            <RcTableView fixedParams={fixedParams} columns={columns} tableConfig={tableConfig}/>
         </div>
     );
 }

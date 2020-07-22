@@ -1,9 +1,12 @@
 /**
  * 主表单1-样式2
  */
-import React from 'react';
+import React, {useState} from 'react';
 import RcTableView from "@/components/Table/RcTableView";
 import tableConfig from "./Table1Config"
+import {Button, Modal} from "antd";
+import {FileTextOutlined} from "@ant-design/icons";
+import Customer from "@/views/t1/Customer";
 
 
 const Table1 = () => {
@@ -33,7 +36,20 @@ const Table1 = () => {
                     title: '客户名称',
                     width: 100,
                     dataIndex: 'vCustomerName',
-                    key: 'vCustomerName'
+                    key: 'vCustomerName',
+                    render: (text, record)=> {
+                        return (
+                            <span>
+                                {text}
+                                <Button
+                                    style={{border: 'none'}}
+                                    onClick={()=>{ openCustomerDetail(record)}}
+                                    size='small'
+                                    icon={<FileTextOutlined />}
+                                />
+                            </span>
+                        )
+                    }
                 }
             ]
         },
@@ -109,9 +125,28 @@ const Table1 = () => {
         }
     ];
 
+    const [modal1Visible, setModal1Visible] = useState(false)
+    const [curCustomer, setCustomer] = useState({})
+    const openCustomerDetail = (record) => {
+        console.log(record)
+        setModal1Visible(true)
+        setCustomer({IN_ID: record.vId})
+    }
+
+    const hideModal = () => {
+        setModal1Visible(false)
+    }
     return (
         <div>
             <RcTableView columns={columns} tableConfig={tableConfig}/>
+            <Modal
+                width='80%'
+                visible={modal1Visible}
+                onCancel={hideModal}
+                onOk={hideModal}
+            >
+                <Customer fixedParams={curCustomer}/>
+            </Modal>
         </div>
     );
 }

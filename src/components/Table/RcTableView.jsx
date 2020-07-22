@@ -17,11 +17,14 @@ const {Option} = Select;
  */
 const RcTableView = props => {
     // 读取存储过程信息
-    const {columns, tableConfig} = props
+    const {columns, fixedParams, tableConfig} = props
     const {listParams, listProcedureName, filterParams , filterProcedureName, rowKey} = tableConfig
     const filterConfig = getProcedureConfig(filterProcedureName,filterParams, true)
     const listConfig = getProcedureConfig(listProcedureName, listParams, false)
     const {filterItems} = listConfig
+    // 固定参数
+    listConfig.params = {...listConfig.params, ...fixedParams}
+
     const {sql, params} = filterConfig
 
     // 读取筛选框信息
