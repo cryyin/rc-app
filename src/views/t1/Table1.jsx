@@ -47,7 +47,11 @@ const TableView = props => {
             <Form layout='inline'>
                 {
                     filterItems.map(item=>{
-                        if(isMuteFilter(item)){
+                        if(item.dynamic){
+                            console.log(item)
+                        }else if(item.deps){
+                            console.log(item)
+                        }else {
                             return(
                                 <Form.Item label={item.label}>
                                     <Select

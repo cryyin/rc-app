@@ -1,4 +1,5 @@
 import axios from "axios";
+import {getToken} from "@/utils/auth";
 import { message } from "antd";
 
 //创建一个axios示例
@@ -11,7 +12,7 @@ const service = axios.create({
 service.interceptors.request.use(
   (config) => {
     // noinspection JSUnresolvedVariable
-    const token = window.parent.token || window.toekn;
+    const token = getToken();
     // Do something before request is sent
     if (token) {
         // 让每个请求携带token-- ['Authorization']为自定义key 请根据实际情况自行修改
@@ -34,6 +35,9 @@ service.interceptors.response.use(
         // if the custom code is not 0, it is judged as an error.
         if (res.code !== 0) {
             message.error(res.msg);
+            if(res.code === 405){
+                // token无效需重新登录
+            }
             return Promise.reject(new Error(res.msg || 'Error'));
         } else {
             return res
