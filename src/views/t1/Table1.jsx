@@ -16,32 +16,49 @@ const {filterItems} = listConfig
 const {sql, params} = filterConfig
 
 const TableView = props => {
-    const {doFetch, handleFilter, getTable, getPagination} = userRcApi(URL, listConfig.sql, listConfig.params);
+    // 筛选框
     const {muteFilters, depFilters, dynamicFilters, beDepIds} = classifyFilterItem(filterItems)
+    const initDepIds = depFilters.map(f=>f.filter.id)
+    // useState hook
+    const {doFetch, handleFilter, getTable, getPagination} = userRcApi(URL, listConfig.sql, listConfig.params);
+    // 各类型筛选框
     const [muteItems, setMuteItems] = useState({})
     const [dynamicItems, setDynamicItems] = useState({})
+    const [depItems, setDepItems] = useState({})
+    // 需要更新的依赖
+    const [depInfo, setDepInfo] = useState({ids: initDepIds, value: ''})
 
     // 静态filter
     useEffect(() => {
         setFilterOptions(muteFilters, setMuteItems)
     }, [])
 
+    // 具有依赖关系的筛选框
+    useEffect(() => {
+        if (depInfo && depInfo.ids){
+            const updatedFilters = depFilters.filter(f=>depInfo.ids.includes(f.filter.id))
+            setFilterOptions(updatedFilters, setDepItems, {IN_EXPAND_1: depInfo.value})
+        }
+    }, [depInfo])
+
     /**
      * 动态filter,一般查询时间比较久，所以分开，目前逻辑和muteFilter一致，搜索时无需调用后台接口
      * 如果需要远程搜索，改造即可
-     * */
+     */
     useEffect(() => {
         setFilterOptions(dynamicFilters, setDynamicItems)
     }, [])
-
     /**
      *
-     * */
-    const setFilterOptions = (filters, setter) => {
+     * @param {Array} filters 筛选框列表
+     * @param {Function} setter 筛选框setState钩子
+     * @param {Object} extraParams 额外的查询查数
+     */
+    const setFilterOptions = (filters, setter, extraParams={}) => {
         const asyncArr = []
-        // 闯入不同的IN_DIM_TYPE_CODE获取options字典
+        // 传入不同的IN_DIM_TYPE_CODE获取options字典
         filters.forEach(e => {
-            const requestParams = {sql, params: {...params, IN_DIM_TYPE_CODE: e.filter.code}}
+            const requestParams = {sql, params: {...params,...extraParams, IN_DIM_TYPE_CODE: e.filter.code}}
             asyncArr.push(request.post(URL, requestParams))
         })
         const items = {}
@@ -60,7 +77,8 @@ const TableView = props => {
         handleFilter(item.name, value)
         if (beDepIds.has(item.filter.id)) {
             // 触发依赖更新
-            // console.log(depFilters.filter(e => e.filter.deps === item.filter.id))
+            const ids = depFilters.filter(e => e.filter.deps === item.filter.id).map(f => f.filter.id);
+            setDepInfo({ids, value})
         }
     }
 
@@ -74,26 +92,24 @@ const TableView = props => {
                         let optionsSrc = muteItems
                         if (filter.dynamic) {
                             optionsSrc = dynamicItems
+                        } else if (filter.deps) {
+                            optionsSrc = depItems
                         }
                         const options = (optionsSrc && optionsSrc[filter.code] && optionsSrc[filter.code]) || []
-
-                        if (filter.deps) {
-                        } else {
-                            // 处理静态筛选框
-                            return (
-                                <Form.Item label={filter.label} key={filter.code}>
-                                    <Select
-                                        showSearch={filter.dynamic}
-                                        allowClear
-                                        onChange={(value) => changeFilter(value, item)}
-                                        style={{width: '120px'}}
-                                        placeholder='请选择'
-                                    >
-                                        {options.map(d => <Option value={d.vKey} key={d.vKey}>{d.vValue}</Option>)}
-                                    </Select>
-                                </Form.Item>
-                            )
-                        }
+                        // 目前都是Select下拉框
+                        return (
+                            <Form.Item label={filter.label} key={filter.code}>
+                                <Select
+                                    showSearch={filter.dynamic}
+                                    allowClear
+                                    onChange={(value) => changeFilter(value, item)}
+                                    style={{width: '120px'}}
+                                    placeholder='请选择'
+                                >
+                                    {options.map(d => <Option value={d.vKey} key={d.vKey}>{d.vValue}</Option>)}
+                                </Select>
+                            </Form.Item>
+                        )
                     })
                 }
                 <Form.Item>
