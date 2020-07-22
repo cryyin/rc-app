@@ -5,7 +5,7 @@ import { message } from "antd";
 //创建一个axios示例
 const service = axios.create({
   baseURL: process.env.REACT_APP_BASE_API, // api 的 base_url
-  timeout: 5000, // request timeout
+  timeout: 60*1000, // request timeout, 单位ms(毫秒)=60秒
 });
 
 // 请求拦截器
