@@ -10,6 +10,25 @@ module.exports = {
             "@": resolve("src"),
         },
         configure:{
+            module:{
+                rules:[
+                    {
+                        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+                        use: [
+                            {
+                                loader: 'babel-loader',
+                            },
+                            {
+                                loader: '@svgr/webpack',
+                                options: {
+                                    babel: false,
+                                    icon: true,
+                                },
+                            },
+                        ],
+                    }
+                ]
+            },
             output:{
                 publicPath:process.env.NODE_ENV === "production" ? "" : "/"
             }

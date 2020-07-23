@@ -7,8 +7,9 @@ import tableConfig from "./Table1Config"
 import {Button, Modal} from "antd";
 import {FileTextOutlined} from "@ant-design/icons";
 import Customer from "@/views/t1/Customer";
-import {openNewTab} from "@/utils";
-
+import useRcPageNav from "@/utils/useRcPageNav";
+import LawSuitIcon from "@/assert/icon/lawsuit.svg"
+import Icon from '@ant-design/icons';
 
 const Table1 = () => {
     const columns = [
@@ -40,17 +41,8 @@ const Table1 = () => {
                     dataIndex: 'vCustomerName',
                     key: 'vCustomerName',
                     render: (text, record)=> {
-                        return (
-                            <span>
-                                {text}
-                                <Button
-                                    style={{border: 'none'}}
-                                    onClick={()=>{ openNewTab(`/customer?IN_ID=${record.vId}`)}}
-                                    size='small'
-                                    icon={<FileTextOutlined />}
-                                />
-                            </span>
-                        )
+                        return getPageIcon( text,<FileTextOutlined />,
+                            `/customer?IN_ID=${record.vId}`);
                     }
                 }
             ]
@@ -105,7 +97,11 @@ const Table1 = () => {
                     title: '涉诉情况',
                     dataIndex: 'vLiitglag',
                     width: 100,
-                    key: 'vLiitglag'
+                    key: 'vLiitglag',
+                    render: (text, record)=> {
+                        return getPageIcon( text,<Icon component={LawSuitIcon}/>,
+                            `/lawsuit?IN_ID=${record.vId}`);
+                    }
                 }, {
                     title: '总涉诉金额',
                     width: 160,
@@ -126,6 +122,7 @@ const Table1 = () => {
             ]
         }
     ];
+    const { getPageIcon } = useRcPageNav();
 
     const [modal1Visible, setModal1Visible] = useState(false)
     const [curCustomer, setCustomer] = useState({})

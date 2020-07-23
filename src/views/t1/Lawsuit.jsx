@@ -7,9 +7,10 @@ import tableConfig from "./LawsuitConfig"
 import {Button} from "antd";
 import {openNewTab} from "@/utils";
 import {FileTextOutlined} from "@ant-design/icons";
+import useRcPageNav from "@/utils/useRcPageNav";
 
 
-const Lawsuit = () => {
+const Lawsuit = (props) => {
     const columns = [
         {
             title: '诉讼情况',
@@ -187,10 +188,11 @@ const Lawsuit = () => {
             ]
         }
     ];
-
+    // 页面跳转、模块框相关hook
+    const {getFixedParams} = useRcPageNav();
     return (
         <div>
-            <RcTableView columns={columns} tableConfig={tableConfig}/>
+            <RcTableView fixedParams={getFixedParams(props)} columns={columns} tableConfig={tableConfig}/>
         </div>
     );
 }
