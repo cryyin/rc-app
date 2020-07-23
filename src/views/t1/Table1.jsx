@@ -8,7 +8,7 @@ import {Button, Modal} from "antd";
 import {FileTextOutlined} from "@ant-design/icons";
 import Customer from "@/views/t1/Customer";
 import useRcPageNav from "@/utils/useRcPageNav";
-import LawSuitIcon from "@/assert/icon/lawsuit.svg"
+import { Lawsuit as LawsuitIcon } from "@/assert/icon";
 import Icon from '@ant-design/icons';
 
 const Table1 = () => {
@@ -99,7 +99,7 @@ const Table1 = () => {
                     width: 100,
                     key: 'vLiitglag',
                     render: (text, record)=> {
-                        return getPageIcon( text,<Icon component={LawSuitIcon}/>,
+                        return getPageIcon( text,<Icon component={LawsuitIcon}/>,
                             `/lawsuit?IN_ID=${record.vId}`);
                     }
                 }, {
