@@ -1,7 +1,5 @@
-/**
- * 通用Rc表组件
- */
 import React, {useEffect, useState} from 'react';
+import PropTypes from 'prop-types';
 import {Button, Form, Select, Input} from "antd"
 import userRcApi from '@/utils/useRcApi'
 import {SearchOutlined} from "@ant-design/icons";
@@ -10,9 +8,14 @@ import request from '@/utils/request';
 const {Option} = Select;
 
 /**
- * 通用查询表，切勿动态更改表配置
+ * 通用Rc查询表组组件
+ * props:
+ *    fixedParams用于组件间传值
+ *    columns 列配置
+ *    tableConfig 存储过程、筛选框配置，配置存储过程名称和查询参数
+ *
  * @param props
- * @return {*}
+ * @return {*} 组件
  * @constructor
  */
 const RcTableView = props => {
@@ -46,13 +49,14 @@ const RcTableView = props => {
         if (fixedParams){
             doFetch(fixedParams);
         }
-    },[fixedParams])
+    },[fixedParams, doFetch])
     // 静态filter
     useEffect(() => {
         setFilterOptions(muteFilters, setMuteItems)
     }, [])
 
     // 具有依赖关系的筛选框
+    // eslint-disable-next-line
     useEffect(() => {
         if (depInfo && depInfo.ids){
             const updatedFilters = depFilters.filter(f=>depInfo.ids.includes(f.filter.id))
@@ -156,6 +160,14 @@ const RcTableView = props => {
         </div>
     );
 }
+
+// props类型检查
+RcTableView.protoTypes = {
+    columns: PropTypes.array.isRequired,
+    tableConfig: PropTypes.object.isRequired,
+    fixedParams: PropTypes.object
+}
+
 export default RcTableView
 
 
