@@ -13,7 +13,7 @@ const {Option} = Select;
  *    fixedParams用于组件间传值
  *    columns 列配置
  *    tableConfig 存储过程、筛选框配置，配置存储过程名称和查询参数
- *
+ * TODO 筛选框实时搜索: filter配置realtime字段，支持从后台查询selection。目前都是一次性拿过来的
  * @param props
  * @return {*} 组件
  * @constructor
@@ -32,7 +32,8 @@ const RcTableView = props => {
 
     // 读取筛选框信息
     const {muteFilters, depFilters, dynamicFilters, beDepIds} = classifyFilterItem(filterItems)
-    const initDepIds = depFilters.map(f=>f.filter.id)
+    // 初始化依赖
+    const initDepIds = depFilters.filter(f => !f.filter.skipInit ).map(f=>f.filter.id)
 
 
     // useState hook
@@ -135,7 +136,7 @@ const RcTableView = props => {
                         return (
                             <Form.Item label={filter.label} key={filter.code}>
                                 <Select
-                                    showSearch={filter.dynamic}
+                                    showSearch={filter.searchable}
                                     allowClear
                                     onChange={(value) => changeFilter(value, item)}
                                     style={{width: '120px'}}

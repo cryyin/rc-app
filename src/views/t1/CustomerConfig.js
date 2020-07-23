@@ -10,12 +10,12 @@ const lastYearMonth = getLastYearMonth();
  * @type {({name: string, type: string}|{name: string, type: string}|{name: string, type: string}|{filter: {order: number}, name: string, type: string}|{filter: {dep: number, order: number}, name: string, type: string})[]}
  */
 export const listParams = [
-    {name: 'IN_MONTH         ', type: 'VARCHAR2', defaultValue: lastYearMonth},
-    {name: 'IN_ID            ', type: 'VARCHAR2',  defaultValue: '1'},
-    {name: 'IN_SELECT_TYPE   ', type: 'VARCHAR2', filter: {id: 7, label: '筛选类别'}},
-    {name: 'IN_SELECT             ', type: 'VARCHAR2', filter: {id: 8, label: '', type:'input'}},
-    {name: 'IN_MANAGEMENT_FORMS   ', type: 'VARCHAR2', filter: {id: 9, label: '经营状态', deps: 1}},
-    {name: 'IN_INDUSTRY_CATEGORY ', type: 'VARCHAR2', filter: {id: 10, label: '所属行业',dynamic: true, code:'D010'}}
+    {name: 'IN_MONTH        ', type: 'VARCHAR2', defaultValue: lastYearMonth},
+    {name: 'IN_ID           ', type: 'VARCHAR2'},
+    {name: 'IN_SELECT_TYPE  ', type: 'VARCHAR2', filter: {id: 7, label: '筛选类别'}},
+    {name: 'IN_SELECT       ', type: 'VARCHAR2', filter: {id: 8, label: '', deps: 7, skipInit: true, searchable: true}},
+    {name: 'IN_MANAGEMENT_FORMS   ', type: 'VARCHAR2', filter: {id: 9, label: '经营状态'}},
+    {name: 'IN_INDUSTRY_CATEGORY  ', type: 'VARCHAR2', filter: {id: 10, label: '所属行业',dynamic: true, code:'D010'}}
     ];
 
 export const filterParams = [

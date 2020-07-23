@@ -10,13 +10,14 @@ const Customer = (props) => {
     const columns = [
         {
             title: '序号',
-            width: 100,
-            dataIndex: 'nNumber',
+            width: 80,
+            dataIndex: 'nOrderId',
             fixed: 'left',
-            key: 'nNumber'
+            key: 'nOrderId'
         }, {
             title: '客户名称',
-            width: 100,
+            width: 160,
+            fixed: 'left',
             dataIndex: 'vCustomerName',
             key: 'vCustomerName'
         },
@@ -60,11 +61,11 @@ const Customer = (props) => {
             key: 'vRiskTimeRecent'
         }, {
             title: '地址',
-            width: 100,
+            width: 180,
             dataIndex: 'vAddress',
             key: 'vAddress'
         }, {
-            title: '涉诉情况图标',
+            title: '涉诉情况',
             width: 160,
             dataIndex: 'vLiitgFlag',
             key: 'vLiitgFlag'
