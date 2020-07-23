@@ -7,6 +7,7 @@ import tableConfig from "./Table1Config"
 import {Button, Modal} from "antd";
 import {FileTextOutlined} from "@ant-design/icons";
 import Customer from "@/views/t1/Customer";
+import {openNewTab} from "@/utils";
 
 
 const Table1 = () => {
@@ -44,7 +45,7 @@ const Table1 = () => {
                                 {text}
                                 <Button
                                     style={{border: 'none'}}
-                                    onClick={()=>{ openCustomerDetail(record)}}
+                                    onClick={()=>{ openNewTab(`/customer/IN_ID=${record.vId}`)}}
                                     size='small'
                                     icon={<FileTextOutlined />}
                                 />

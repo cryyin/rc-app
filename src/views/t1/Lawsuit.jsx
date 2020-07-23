@@ -4,6 +4,9 @@
 import React from 'react';
 import RcTableView from "@/components/Table/RcTableView";
 import tableConfig from "./LawsuitConfig"
+import {Button} from "antd";
+import {openNewTab} from "@/utils";
+import {FileTextOutlined} from "@ant-design/icons";
 
 
 const Lawsuit = () => {
@@ -20,10 +23,23 @@ const Lawsuit = () => {
                     key: 'nOrderId'
                 }, {
                     title: '客户名称',
-                    width: 120,
+                    width: 160,
                     fixed: 'left',
                     dataIndex: 'vCustomerName',
-                    key: 'vCustomerName'
+                    key: 'vCustomerName',
+                    render: (text, record)=> {
+                        return (
+                            <span>
+                                {text}
+                                <Button
+                                    style={{border: 'none'}}
+                                    onClick={()=>{ openNewTab(`/customer?IN_ID=${record.vId}`)}}
+                                    size='small'
+                                    icon={<FileTextOutlined />}
+                                />
+                            </span>
+                        )
+                    }
                 },{
                     title: '二级公司',
                     width: 100,

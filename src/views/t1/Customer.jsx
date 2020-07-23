@@ -4,7 +4,7 @@
 import React from 'react';
 import RcTableView from "@/components/Table/RcTableView";
 import tableConfig from "./CustomerConfig"
-
+import queryString from "query-string"
 
 const Customer = (props) => {
     const columns = [
@@ -82,10 +82,13 @@ const Customer = (props) => {
             key: 'vRelatedFlag'
         }
     ];
-    const {fixedParams} = props
+    const {fixedParams, location} = props
+    // 路由参数
+    const locationParams = queryString.parse(location.search)
+    const allFixedParams = {...fixedParams, ...locationParams}
     return (
         <div>
-            <RcTableView fixedParams={fixedParams} columns={columns} tableConfig={tableConfig}/>
+            <RcTableView fixedParams={allFixedParams} columns={columns} tableConfig={tableConfig}/>
         </div>
     );
 }
