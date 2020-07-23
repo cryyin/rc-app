@@ -5,7 +5,6 @@ export const openNewTab = (url) => {
         if (url.startsWith('http')){
             window.open(url, "_blank")
         }else {
-            console.log(baseURL)
             window.open(baseURL + url, "_blank")
         }
     }

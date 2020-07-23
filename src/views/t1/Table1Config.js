@@ -34,5 +34,5 @@ const filterProcedureName = 'PKG_RC_DIGITAL_WARNING.SP_RC_SELECT'
 const listProcedureName = 'PKG_RC_DIGITAL_WARNING.SP_RC_MAIN_TABLE1'
 
 export default {
-    listParams,filterParams,filterProcedureName,listProcedureName, rowKey: 'nNumber'
+    listParams,filterParams,filterProcedureName,listProcedureName
 }

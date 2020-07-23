@@ -1,4 +1,6 @@
 // 数据库schema名称
+import {getLastYearMonth} from "@/utils/dateUtils";
+
 export const schemaName = 'PRD_RC';
 // 远程get地址
 export const URL = '/rc/call'
@@ -40,6 +42,11 @@ export const getProcedureInParams = (rawParams, isFilter=false) =>{
         value = e.defaultValue || value
         return {...e, name, type, value};
     });
+    // 插入通用的IN_MONTH, 默认是VARCHAR2
+    if (customParams[0].name !== 'IN_MONTH'){
+        const lastYearMonth = getLastYearMonth();
+        customParams.unshift({name:'IN_MONTH',type:'VARCHAR2', value: lastYearMonth})
+    }
     if (isFilter){
         // 仅仅添加通用参数
         return customParams.concat(commonParams);

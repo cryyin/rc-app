@@ -80,20 +80,14 @@ const RcTableView = props => {
      * @param {Object} extraParams 额外的查询查数
      */
     const setFilterOptions = (filters, setter, extraParams={}) => {
-        const asyncArr = []
         // 传入不同的IN_DIM_TYPE_CODE获取options字典
         filters.forEach(e => {
             const requestParams = {sql, params: {...params,...extraParams, IN_DIM_TYPE_CODE: e.filter.code}}
-            asyncArr.push(request.post(URL, requestParams))
-        })
-        const items = {}
-        // 并发获取
-        Promise.all(asyncArr).then(result => {
-            result.forEach(r => {
-                items[r.data.IN_DIM_TYPE_CODE] = r.data.OUT_DATASET
-            })
-            setter(prevState => {
-                return {...prevState, ...items}
+            request.post(URL, requestParams).then(r=>{
+                const result = r.data
+                setter(prevState => {
+                    return {...prevState, [result.IN_DIM_TYPE_CODE] : r.data.OUT_DATASET}
+                })
             })
         })
     }

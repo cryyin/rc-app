@@ -19,9 +19,9 @@ const Table1 = () => {
                 {
                     title: '序号',
                     width: 100,
-                    dataIndex: 'nNumber',
+                    dataIndex: 'nOrderId',
                     fixed: 'left',
-                    key: 'nNumber'
+                    key: 'nOrderId'
                 }, {
                     title: '二级公司',
                     width: 100,
@@ -45,7 +45,7 @@ const Table1 = () => {
                                 {text}
                                 <Button
                                     style={{border: 'none'}}
-                                    onClick={()=>{ openNewTab(`/customer/IN_ID=${record.vId}`)}}
+                                    onClick={()=>{ openNewTab(`/customer?IN_ID=${record.vId}`)}}
                                     size='small'
                                     icon={<FileTextOutlined />}
                                 />
@@ -129,6 +129,7 @@ const Table1 = () => {
 
     const [modal1Visible, setModal1Visible] = useState(false)
     const [curCustomer, setCustomer] = useState({})
+    // noinspection JSUnusedLocalSymbols
     const openCustomerDetail = (record) => {
         console.log(record)
         setModal1Visible(true)
