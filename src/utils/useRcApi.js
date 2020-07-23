@@ -71,21 +71,22 @@ const useRcApi = (initialUrl, initialSql, initialParams) => {
         setParams({...filter, ...extraParams});
         setCurrent(1)
         // 为确保一定能查询, url后面增加随机数
-        setUrl(addRnd(url))
+        setUrl(preUrl => addRnd(preUrl))
 
-    },[url, filter]);
+    },[filter]);
 
     const doSearch = useCallback(()=>{
         doFetch();
     },[doFetch]);
     // 更改过滤条件
     const handleFilter = (key, val) => {
-        setFilter({...filter, [key]:val})
+        setFilter(preFilter=>{
+            return {...preFilter, [key]:val}
+        })
     }
     // 当前每页数改变
     const changePageSize = (current, size)=>{
         setSize(size)
-        console.log(current)
         setCurrent(1)
     }
     // 当前页改变

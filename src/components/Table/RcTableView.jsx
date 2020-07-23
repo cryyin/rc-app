@@ -48,9 +48,10 @@ const RcTableView = props => {
     // 固定参数绑定
     useEffect(()=>{
         if (fixedParams){
+            console.log(fixedParams)
             doFetch(fixedParams);
         }
-    },[fixedParams, doFetch])
+    },[fixedParams])
     // 静态filter
     useEffect(() => {
         setFilterOptions(muteFilters, setMuteItems)
