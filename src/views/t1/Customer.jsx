@@ -4,7 +4,7 @@
 import React from 'react';
 import RcTableView from "@/components/Table/RcTableView";
 import tableConfig from "./CustomerConfig"
-import queryString from "query-string"
+import useRcPageNav from "@/utils/useRcPageNav";
 
 const Customer = (props) => {
     const columns = [
@@ -82,13 +82,12 @@ const Customer = (props) => {
             key: 'vRelatedFlag'
         }
     ];
-    const {fixedParams, location} = props
-    // 路由参数
-    const locationParams = queryString.parse(location.search)
-    const allFixedParams = {...fixedParams, ...locationParams}
+    // 页面跳转、模块框相关hook
+    const {getFixedParams} = useRcPageNav();
+
     return (
         <div>
-            <RcTableView fixedParams={allFixedParams} columns={columns} tableConfig={tableConfig}/>
+            <RcTableView fixedParams={getFixedParams(props)} columns={columns} tableConfig={tableConfig}/>
         </div>
     );
 }
