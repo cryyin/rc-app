@@ -33,7 +33,7 @@ const RcTableView = props => {
 
 
     // useState hook
-    const {doFetch, handleFilter, getTable, getPagination} = userRcApi(URL, listConfig.sql, listConfig.params);
+    const {doFetch,doSearch, handleFilter, getTable, getPagination} = userRcApi(URL, listConfig.sql, listConfig.params);
     // 各类型筛选框
     const [muteItems, setMuteItems] = useState({})
     const [dynamicItems, setDynamicItems] = useState({})
@@ -41,6 +41,12 @@ const RcTableView = props => {
     // 需要更新的依赖
     const [depInfo, setDepInfo] = useState({ids: initDepIds, value: ''})
 
+    // 固定参数绑定
+    useEffect(()=>{
+        if (fixedParams){
+            doFetch(fixedParams);
+        }
+    },[fixedParams])
     // 静态filter
     useEffect(() => {
         setFilterOptions(muteFilters, setMuteItems)
@@ -138,7 +144,7 @@ const RcTableView = props => {
                     })
                 }
                 <Form.Item>
-                    <Button type="primary" icon={<SearchOutlined/>} onClick={doFetch}>
+                    <Button type="primary" icon={<SearchOutlined/>} onClick={doSearch}>
                         搜索
                     </Button>
                 </Form.Item>

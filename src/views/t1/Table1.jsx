@@ -29,12 +29,13 @@ const Table1 = () => {
                     key: 'vCalArea'
                 }, {
                     title: '外运公司',
-                    width: 100,
+                    width: 140,
+                    fixed: 'left',
                     dataIndex: 'vOperateUnit',
                     key: 'vOperateUnit'
                 }, {
                     title: '客户名称',
-                    width: 100,
+                    width: 140,
                     dataIndex: 'vCustomerName',
                     key: 'vCustomerName',
                     render: (text, record)=> {

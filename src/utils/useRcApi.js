@@ -67,13 +67,17 @@ const useRcApi = (initialUrl, initialSql, initialParams) => {
     }, [url, sql, params, size, current]);
 
     // 手动触发获取数据逻辑
-    const doFetch = useCallback(()=>{
-        setParams({...filter});
+    const doFetch = useCallback((extraParams={})=>{
+        setParams({...filter, ...extraParams});
         setCurrent(1)
         // 为确保一定能查询, url后面增加随机数
         setUrl(addRnd(url))
 
     },[url, filter]);
+
+    const doSearch = useCallback(()=>{
+        doFetch();
+    },[doFetch]);
     // 更改过滤条件
     const handleFilter = (key, val) => {
         setFilter({...filter, [key]:val})
@@ -127,7 +131,7 @@ const useRcApi = (initialUrl, initialSql, initialParams) => {
             </Fragment>
         )
     }
-    return { list, handleFilter, isLoading, isError, doFetch, getTable, getPagination };
+    return { list, handleFilter, isLoading, isError, doFetch, doSearch, getTable, getPagination };
 };
 
 export default useRcApi;
