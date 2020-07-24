@@ -1,22 +1,33 @@
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, {useMemo, useState} from "react";
 import queryString from "query-string";
 import {Button, Modal} from "antd";
 import {openNewTab} from "@/utils/index";
+import {snakeCase} from 'lodash'
 
 const useRcPageNav = (props={}) => {
     // 对象，modal对应状态隐藏或者显示
     const [curRecord, setCurRecord] = useState({})
+    const [curInParams, setCurInParams] = useState({})
     // {modalA: false}
-    const [modals, setModals] = useState({})
+    const [visible, setVisible] = useState({})
 
-
+    // 显示特定modal
     const showModal = (record, modalId) => {
         setCurRecord(record)
-        setModals(prevState => {
+
+        setVisible(prevState => {
             return {
                 ...prevState, [modalId]: true
             }
-        })
+        });
+
+        const params = {}
+        for (const [key, value] of Object.entries(record)) {
+            const k = 'IN_'+snakeCase(key.substring(1)).toUpperCase()
+            params[k] = value;
+        }
+
+        setCurInParams(params)
     }
 
     /**
@@ -24,23 +35,28 @@ const useRcPageNav = (props={}) => {
      */
     const hideModal = () => {
         // 需要全部隐藏
-        setModals({})
+        setVisible({})
     }
 
-    const getModal = (child, id) =>{
+    /**
+     * 返回一个被Modal包装的组件, 这就是所谓的HOC(高阶组件)
+     */
+    const RcModal = (props) =>{
         return (
             <Modal
                 width='80%'
                 onCancel={hideModal}
                 onOk={hideModal}
-                visible={modals[id]}
+                visible={visible[props.id]}
             >
-                {child}
+                {props.children}
             </Modal>
         )
     }
 
-    // useMemo相当于vue的计算属性,依赖props
+    /**
+     * useMemo相当于vue的计算属性,依赖props
+     */
     const fixedParams = useMemo(()=> {
         const {fixedParams, location} = props
         // 路由参数
@@ -48,6 +64,13 @@ const useRcPageNav = (props={}) => {
         return {...fixedParams, ...locationParams}
     },[props])
 
+    /**
+     * 返回一个图标，点击会打开一个新的tab。注意modalId应该唯一
+     * @param {string} text 文本
+     * @param {component} icon Icon
+     * @param {string} url 跳转url
+     * @return {component} 视图组件
+     */
     const getPageIcon = (text, icon, url) => {
         return (
             <span>
@@ -65,10 +88,10 @@ const useRcPageNav = (props={}) => {
     /**
      * 返回一个图标，点击会显示模态框。注意modalId应该唯一
      * @param {string} text 文本
-     * @param {object} record 文本
+     * @param {object} record 当前记录
      * @param {component} icon Icon
      * @param {string} modalId 模态框id
-     * @return {*}
+     * @return {component} 视图组件
      */
     const getModalIcon = (text, record,icon, modalId) => {
         return (
@@ -84,7 +107,7 @@ const useRcPageNav = (props={}) => {
         )
     }
 
-    return {getPageIcon, fixedParams, getModal, getModalIcon, curRecord}
+    return {getPageIcon, fixedParams, RcModal, getModalIcon, curRecord, curInParams}
 }
 
 export default useRcPageNav;

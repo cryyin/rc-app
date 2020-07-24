@@ -183,12 +183,13 @@ const Lawsuit = (props) => {
         }
     ];
     // 页面跳转、模块框相关hook
-    const {fixedParams, getPageIcon, getModal, getModalIcon, curRecord} = useRcPageNav(props);
-    // 报告
+    const {fixedParams, getPageIcon, RcModal, getModalIcon, curInParams} = useRcPageNav(props);
      return (
         <div>
             <RcTableView fixedParams={fixedParams} columns={columns} tableConfig={tableConfig}/>
-            {getModal(<ReportChart />, 'report')}
+            <RcModal id='report'>
+                <ReportChart fixedParams={curInParams} />
+            </RcModal>
         </div>
     );
 }

@@ -14,6 +14,7 @@
     "echarts": "^4.8.0",
     "echarts-for-react": "^2.0.16",
     "js-cookie": "^2.2.1",
+    "lodash": "^4.17.19",
     "prop-types": "^15.7.2",
     "query-string": "^6.13.1",
     "react": "^16.13.1",

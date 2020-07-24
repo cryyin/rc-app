@@ -14,14 +14,17 @@ import 'echarts/lib/chart/line';
 import 'echarts/lib/component/tooltip';
 import getProcedureConfig, {URL} from "@/utils/queryUtils";
 import request from "@/utils/request";
+import {range} from 'lodash'
+
+const {sql, params} = getProcedureConfig(filterProcedureName,filterParams, true)
 
 /**
- * ReactEcharts使用
+ * 可视化报告页面
+ * 使用了 Echarts和 ReactEcharts
  * @see "https://github.com/hustcc/echarts-for-react"
  * @returns {*}
  * @constructor
  */
-const {sql, params} = getProcedureConfig(filterProcedureName,filterParams, true)
 const Visualization = (props) => {
     const { fixedParams } = props
     const [chartData, setChartData] = useState(
@@ -33,7 +36,7 @@ const Visualization = (props) => {
         const {IN_ID,IN_SEG_ORG_KEY, IN_CAL_AREA} = fixedParams
         if (IN_ID && IN_SEG_ORG_KEY && IN_CAL_AREA){
             // 1,2,3,4迭代,后端返回数据格式不一样，只能手工处理
-            [...Array(4).keys()].map(i=>i+1).forEach(i=>{
+            range(1,5).forEach(i=>{
                 const requestParams = {sql, params: {...params, ...fixedParams,IN_PARM:i}}
                 request.post(URL, requestParams).then(r=>{
                     let result = r.data.OUT_DATASET
@@ -103,13 +106,15 @@ const Visualization = (props) => {
                     <Col span={6}>
                         <div className="d_block db03">
                             <span className="txt">授信期</span>
-                            <span className="num">${c1.nCreditPeriod}</span>
+                            <span className="num">
+                                {c1.nCreditPeriod?('$'+c1.nCreditPeriod) : '--'}
+                            </span>
                         </div>
                     </Col>
                     <Col span={6}>
                         <div className="d_block db04">
                             <span className="txt">授信额(万元)</span>
-                            <span className="num">{c1.nCreditAmount}</span>
+                            <span className="num">{c1.nCreditAmount || '--'}</span>
                         </div>
                     </Col>
                 </Row>
