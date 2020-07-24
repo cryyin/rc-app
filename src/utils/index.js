@@ -1,6 +1,10 @@
-const baseURL = process.env["REACT_APP_BASE_PUBLIC_URL"]
-// 部署到portal需修改
-export const openInNewTab = (url) => {
+export const baseURL = process.env["REACT_APP_BASE_PUBLIC_URL"]
+
+/**
+ * 浏览器新标签页
+ * @param {string} url
+ */
+export const innerOpenNewTab = (url) => {
     if (url){
         if (url.startsWith('http')){
             window.open(url, "_blank")
@@ -10,6 +14,14 @@ export const openInNewTab = (url) => {
     }
 }
 
-// 考虑到项目会引入Portal，因此默认调用外部的打开新窗口函数
-const openNewTabPolyfill = window.openNewTab || window.parent.window.openNewTab
-export const openNewTab =  openNewTabPolyfill ?  openNewTabPolyfill : openInNewTab
+/**
+ * 打开一个新的标签页
+ * @param {string} url
+ */
+export const openNewTab = (url)=>{
+    // 如果需要适应Portal
+    if (window.openNewTab){
+        return window.openNewTab(url);
+    }
+    return innerOpenNewTab(url);
+}

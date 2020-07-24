@@ -1,5 +1,5 @@
 import axios from "axios";
-import {getToken} from "@/utils/auth";
+import {getToken, TokenKey} from "@/utils/auth";
 import { message } from "antd";
 
 //创建一个axios示例
@@ -16,7 +16,7 @@ service.interceptors.request.use(
     // Do something before request is sent
     if (token) {
         // 让每个请求携带token-- ['Authorization']为自定义key 请根据实际情况自行修改
-        config.headers['token'] = `${token}`
+        config.headers[TokenKey] = `${token}`
     }
     return config;
   },
