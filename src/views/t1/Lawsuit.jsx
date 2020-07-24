@@ -1,14 +1,13 @@
 /**
- * 主表单1-样式2
+ * 主表单1-涉诉情况
  */
 import React from 'react';
 import RcTableView from "@/components/Table/RcTableView";
 import tableConfig from "./LawsuitConfig"
-import {Button} from "antd";
-import {openNewTab} from "@/utils";
-import {FileTextOutlined} from "@ant-design/icons";
+import Icon from '@ant-design/icons';
+import {FileTextOutlined, FundOutlined} from "@ant-design/icons";
 import useRcPageNav from "@/utils/useRcPageNav";
-
+import ReportChart from '@/views/charts/index';
 
 const Lawsuit = (props) => {
     const columns = [
@@ -29,17 +28,8 @@ const Lawsuit = (props) => {
                     dataIndex: 'vCustomerName',
                     key: 'vCustomerName',
                     render: (text, record)=> {
-                        return (
-                            <span>
-                                {text}
-                                <Button
-                                    style={{border: 'none'}}
-                                    onClick={()=>{ openNewTab(`/customer?IN_ID=${record.vId}`)}}
-                                    size='small'
-                                    icon={<FileTextOutlined />}
-                                />
-                            </span>
-                        )
+                        return getPageIcon(text, <FileTextOutlined/>,
+                            `/customer?IN_ID=${record.vId}`);
                     }
                 },{
                     title: '二级公司',
@@ -120,7 +110,11 @@ const Lawsuit = (props) => {
                     title: '可视化报告',
                     width: 160,
                     dataIndex: 'vVisualReport',
-                    key: 'vVisualReport'
+                    key: 'vVisualReport',
+                    render: (text, record)=> {
+                        return text === 'Y' ?
+                            getModalIcon('', record, <Icon component={FundOutlined}/>,'report') : ''
+                    }
                 }, {
                     title: '90天以上应收比例',
                     width: 160,
@@ -189,10 +183,12 @@ const Lawsuit = (props) => {
         }
     ];
     // 页面跳转、模块框相关hook
-    const {getFixedParams} = useRcPageNav();
-    return (
+    const {fixedParams, getPageIcon, getModal, getModalIcon, curRecord} = useRcPageNav(props);
+    // 报告
+     return (
         <div>
-            <RcTableView fixedParams={getFixedParams(props)} columns={columns} tableConfig={tableConfig}/>
+            <RcTableView fixedParams={fixedParams} columns={columns} tableConfig={tableConfig}/>
+            {getModal(<ReportChart />, 'report')}
         </div>
     );
 }

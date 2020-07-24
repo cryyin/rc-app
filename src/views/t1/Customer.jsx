@@ -83,11 +83,11 @@ const Customer = (props) => {
         }
     ];
     // 页面跳转、模块框相关hook
-    const {getFixedParams} = useRcPageNav();
+    const {fixedParams} = useRcPageNav(props);
 
     return (
         <div>
-            <RcTableView fixedParams={getFixedParams(props)} columns={columns} tableConfig={tableConfig}/>
+            <RcTableView fixedParams={fixedParams} columns={columns} tableConfig={tableConfig}/>
         </div>
     );
 }

@@ -1,33 +1,52 @@
-import React, {useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import queryString from "query-string";
-import {Button} from "antd";
+import {Button, Modal} from "antd";
 import {openNewTab} from "@/utils/index";
-import {FileTextOutlined} from "@ant-design/icons";
 
-const useRcPageNav = () => {
+const useRcPageNav = (props={}) => {
     // 对象，modal对应状态隐藏或者显示
-    const [modalVisible, setModalVisible] = useState({})
     const [curRecord, setCurRecord] = useState({})
-    const [modalArr, setModalArr] = useState([])
+    // {modalA: false}
+    const [modals, setModals] = useState({})
 
-    const showModal = (record, modalName) => {
+
+    const showModal = (record, modalId) => {
         setCurRecord(record)
-        modalArr.filter(modal=>modal.name === modalName).forEach(m=>{
+        setModals(prevState => {
+            return {
+                ...prevState, [modalId]: true
+            }
         })
     }
 
+    /**
+     * 隐藏所有对话框
+     */
     const hideModal = () => {
-        setModalVisible({})
+        // 需要全部隐藏
+        setModals({})
     }
 
-    const getModal = () =>{}
+    const getModal = (child, id) =>{
+        return (
+            <Modal
+                width='80%'
+                onCancel={hideModal}
+                onOk={hideModal}
+                visible={modals[id]}
+            >
+                {child}
+            </Modal>
+        )
+    }
 
-    const getFixedParams = (props) => {
+    // useMemo相当于vue的计算属性,依赖props
+    const fixedParams = useMemo(()=> {
         const {fixedParams, location} = props
         // 路由参数
         const locationParams = queryString.parse(location.search)
         return {...fixedParams, ...locationParams}
-    }
+    },[props])
 
     const getPageIcon = (text, icon, url) => {
         return (
@@ -43,7 +62,29 @@ const useRcPageNav = () => {
         )
     }
 
-    return {getPageIcon, getFixedParams}
+    /**
+     * 返回一个图标，点击会显示模态框。注意modalId应该唯一
+     * @param {string} text 文本
+     * @param {object} record 文本
+     * @param {component} icon Icon
+     * @param {string} modalId 模态框id
+     * @return {*}
+     */
+    const getModalIcon = (text, record,icon, modalId) => {
+        return (
+            <span>
+                {text}
+                <Button
+                    style={{border: 'none'}}
+                    onClick={()=>{showModal(record,modalId)}}
+                    size='small'
+                    icon={icon}
+                />
+            </span>
+        )
+    }
+
+    return {getPageIcon, fixedParams, getModal, getModalIcon, curRecord}
 }
 
 export default useRcPageNav;

@@ -13,7 +13,6 @@ import 'echarts/lib/component/title';
 import 'echarts/lib/chart/line';
 import 'echarts/lib/component/tooltip';
 import getProcedureConfig, {URL} from "@/utils/queryUtils";
-import queryString from "query-string";
 import request from "@/utils/request";
 
 /**
@@ -22,18 +21,18 @@ import request from "@/utils/request";
  * @returns {*}
  * @constructor
  */
+const {sql, params} = getProcedureConfig(filterProcedureName,filterParams, true)
 const Visualization = (props) => {
-    // IN_ID
-    const fixedParams = queryString.parse(props.location.search)
+    const { fixedParams } = props
     const [chartData, setChartData] = useState(
         {...DefaultChartData}
     );
-    const {sql, params} = getProcedureConfig(filterProcedureName,filterParams, true)
     useEffect(()=>{
         // 需要确保参数正确
+        if (!fixedParams) return;
         const {IN_ID,IN_SEG_ORG_KEY, IN_CAL_AREA} = fixedParams
         if (IN_ID && IN_SEG_ORG_KEY && IN_CAL_AREA){
-            // 1,2,3,4迭代
+            // 1,2,3,4迭代,后端返回数据格式不一样，只能手工处理
             [...Array(4).keys()].map(i=>i+1).forEach(i=>{
                 const requestParams = {sql, params: {...params, ...fixedParams,IN_PARM:i}}
                 request.post(URL, requestParams).then(r=>{
@@ -41,6 +40,7 @@ const Visualization = (props) => {
                     const axis = []
                     const data1 = [], data2 = [];
                     if (i===1){
+                        // 图一
                         result = result[0]
                     }
                     else if (i === 2){
