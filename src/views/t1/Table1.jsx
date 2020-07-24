@@ -1,15 +1,13 @@
 /**
  * 主表单1-样式2
  */
-import React, {useState} from 'react';
+import React from 'react';
 import RcTableView from "@/components/Table/RcTableView";
 import tableConfig from "./Table1Config"
-import {Button, Modal} from "antd";
 import {FileTextOutlined} from "@ant-design/icons";
-import Customer from "@/views/t1/Customer";
 import useRcPageNav from "@/utils/useRcPageNav";
-import { Lawsuit as LawsuitIcon } from "@/assert/icon";
 import Icon from '@ant-design/icons';
+import {ReactComponent as LawsuitIcon} from '@/assert/icon/lawsuit.svg'
 
 const Table1 = () => {
     const columns = [
@@ -40,8 +38,8 @@ const Table1 = () => {
                     width: 140,
                     dataIndex: 'vCustomerName',
                     key: 'vCustomerName',
-                    render: (text, record)=> {
-                        return getPageIcon( text,<FileTextOutlined />,
+                    render: (text, record) => {
+                        return getPageIcon(text, <FileTextOutlined/>,
                             `/customer?IN_ID=${record.vId}`);
                     }
                 }
@@ -98,8 +96,8 @@ const Table1 = () => {
                     dataIndex: 'vLiitglag',
                     width: 100,
                     key: 'vLiitglag',
-                    render: (text, record)=> {
-                        return getPageIcon( text,<Icon component={LawsuitIcon}/>,
+                    render: (text, record) => {
+                        return getPageIcon(text, <Icon component={LawsuitIcon}/>,
                             `/lawsuit?IN_ID=${record.vId}`);
                     }
                 }, {
@@ -122,31 +120,10 @@ const Table1 = () => {
             ]
         }
     ];
-    const { getPageIcon } = useRcPageNav();
-
-    const [modal1Visible, setModal1Visible] = useState(false)
-    const [curCustomer, setCustomer] = useState({})
-    // noinspection JSUnusedLocalSymbols
-    const openCustomerDetail = (record) => {
-        console.log(record)
-        setModal1Visible(true)
-        setCustomer({IN_ID: record.vId})
-    }
-
-    const hideModal = () => {
-        setModal1Visible(false)
-    }
+    const {getPageIcon} = useRcPageNav();
     return (
         <div>
             <RcTableView columns={columns} tableConfig={tableConfig}/>
-            <Modal
-                width='80%'
-                visible={modal1Visible}
-                onCancel={hideModal}
-                onOk={hideModal}
-            >
-                <Customer fixedParams={curCustomer}/>
-            </Modal>
         </div>
     );
 }
