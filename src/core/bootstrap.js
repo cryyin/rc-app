@@ -1,5 +1,5 @@
 import {login, setToken, TokenKey} from '@/utils/auth'
-import applyPolyfill from '@/utils/polyfill'
+import applyPolyfill from '@/env/polyfill'
 
 const bootstrap = () => {
     // 首先从父容器获取token
@@ -17,7 +17,10 @@ const bootstrap = () => {
         }
     }
 
-    // 开始适应Portal代码
-    applyPolyfill();
+    // In a iframe
+    if(window !== window.parent){
+        // 开始适应Portal代码
+        applyPolyfill();
+    }
 }
 export default bootstrap;
