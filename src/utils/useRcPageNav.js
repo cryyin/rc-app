@@ -60,7 +60,8 @@ const useRcPageNav = (props={}) => {
     const fixedParams = useMemo(()=> {
         const {fixedParams, location} = props
         // 路由参数
-        const locationParams = queryString.parse(location.search)
+        const locationParams = location && location.search ?
+            queryString.parse(location.search) : {}
         return {...fixedParams, ...locationParams}
     },[props])
 
