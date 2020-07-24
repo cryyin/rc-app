@@ -7,6 +7,7 @@ import tableConfig from "./Table1Config"
 import {FileTextOutlined} from "@ant-design/icons";
 import useRcPageNav from "@/utils/useRcPageNav";
 import Icon from '@ant-design/icons';
+// 目前引入自定义图标需要这样写，可能是craco的问题
 import {ReactComponent as LawsuitIcon} from '@/assert/icon/lawsuit.svg'
 
 const Table1 = () => {
