@@ -23,5 +23,6 @@ export const openNewTab = (url)=>{
     if (window.openNewTab){
         return window.openNewTab(url);
     }
+    console.log('没找到window.openNewTab')
     return innerOpenNewTab(url);
 }
