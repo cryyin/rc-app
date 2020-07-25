@@ -21,7 +21,6 @@ const {Option} = Select;
  * @constructor
  */
 const RcTableView = props => {
-    console.log('RcTableView props start')
     const {columns, fixedParams, tableConfig} = props
 
     // 读取表单存储过程信息
@@ -35,7 +34,6 @@ const RcTableView = props => {
     // 表单查询初始参数=存储过程默认参数 + 父组件传递的固定参数
     const initListParams = useMemo(() => {
         if (!isEmpty(fixedParams)) {
-            console.log(fixedParams)
             return {...listConfig.params, ...fixedParams}
         }
         return listConfig.params

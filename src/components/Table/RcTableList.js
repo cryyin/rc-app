@@ -10,7 +10,6 @@ import {call} from '@/api'
 import {Pagination, Table} from "antd";
 
 const RcTableList = (props) => {
-    console.log('RcTableList')
     const {sql, params} = props
 
     const [list, setList] = useState([]);
