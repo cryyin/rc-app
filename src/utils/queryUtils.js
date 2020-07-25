@@ -131,14 +131,27 @@ export const classifyFilterItem = (filterItems) => {
         const e = item.filter
         if (e.deps){
             depFilters.push(item)
-            beDepIds.add(e.deps)
+            beDepIds.add(e.deps);
+            // 存在既有依赖又是动态的筛选框，如果想节省空间的话，可以考虑优化一下数据结构
+            if (e.dynamic){
+                dynamicFilters.push(item)
+            }
         }else if(e.dynamic){
             dynamicFilters.push(item)
         }else {
             muteFilters.push(item)
         }
     })
-    return {muteFilters, depFilters, dynamicFilters, beDepIds}
+    // 初始化动态筛选框的默认依赖值
+    const initDynamicDepInfo = {}
+    const beDepItemFilter = {}
+    filterItems.filter(i=>beDepIds.has(i.filter.id)).map(i=>i.filter).forEach(f=>{
+        beDepItemFilter[f.id] = f
+    })
+    depFilters.map(i=>i.filter).filter(f=>f.dynamic && beDepItemFilter[f.deps]).forEach(f=>{
+        initDynamicDepInfo[f.id] = beDepItemFilter[f.deps].defaultValue
+    })
+    return {muteFilters, depFilters, dynamicFilters, beDepIds, initDynamicDepInfo}
 }
 
 export default getProcedureConfig;

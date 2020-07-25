@@ -10,14 +10,15 @@ import {call} from "@/api";
 const {Option} = Select;
 
 /**
- * 通用Rc查询表组组件
+ * 通用Rc查询表组组件，唯一比较复杂的部分就是筛选框的处理
+ *
  * props:
  *    fixedParams用于组件间传值
  *    columns 列配置
  *    tableConfig 存储过程、筛选框配置，配置存储过程名称和查询参数
- * TODO 筛选框实时搜索: filter配置realtime字段，支持从后台查询selection。目前都是一次性拿过来的
+ *
  * @param props
- * @return {*} 组件
+ * @return {*} 针对RC项目实现的通用组件，使用要求应满足设计文档
  * @constructor
  */
 const RcTableView = props => {
@@ -50,14 +51,13 @@ const RcTableView = props => {
     const {filterItems} = listConfig
 
     // 筛选框分类处理：默认、依赖、动态
-    const classifiedFilterItems = useMemo(() => {
+    const {muteFilters, depFilters, dynamicFilters, beDepIds, initDynamicDepInfo} = useMemo(() => {
         return classifyFilterItem(filterItems);
     }, [filterItems])
-    const {muteFilters, depFilters, dynamicFilters, beDepIds} = classifiedFilterItems
 
     // 各类型筛选框状态
 
-    // 静态filter
+    // 静态filter，处理起来最简单
     const [muteItems, setMuteItems] = useState({})
     useEffect(() => {
         setFilterOptions(muteFilters, setMuteItems)
@@ -69,10 +69,28 @@ const RcTableView = props => {
         return depFilters.filter(f => !f.filter.skipInit).map(f => f.filter.id)
     }, [depItems])
 
-    const [depInfo, setDepInfo] = useState({ids: initDepIds, value: ''})
+    const [depInfo, setDepInfo] = useState({ids: initDepIds, value: undefined})
     useEffect(() => {
         if (depInfo && depInfo.ids) {
-            const updatedFilters = depFilters.filter(f => depInfo.ids.includes(f.filter.id))
+            // 这里不用更新动态筛选框的options
+            const updatedFilters = []
+            // 动态筛选框依赖的值也需要更新
+            const updatedDynamicDepInfo = {}
+            depFilters.forEach(f=>{
+                const filter = f.filter;
+                //只需处理与当前触发者关联的筛选框
+                if(depInfo.ids.includes(filter.id)){
+                    // 动态筛选框无需更新options
+                    if(filter.dynamic){
+                        updatedDynamicDepInfo[filter.id]=depInfo.value
+                    }else {
+                        updatedFilters.push(f)
+                    }
+                }
+            })
+            setDynamicDepInfo(prevState => {
+                return {...prevState, ...updatedDynamicDepInfo, curId: undefined}
+            })
             setFilterOptions(updatedFilters, setDepItems, {IN_EXPAND_1: depInfo.value})
         }
     }, [depInfo])
@@ -81,10 +99,19 @@ const RcTableView = props => {
      * 动态filter,一般查询时间比较久，所以分开，目前逻辑和muteFilter一致，搜索时无需调用后台接口
      * 如果需要远程搜索，改造即可
      */
+    const [dynamicDepInfo, setDynamicDepInfo] = useState(initDynamicDepInfo)
     const [dynamicItems, setDynamicItems] = useState({})
     useEffect(() => {
-        setFilterOptions(dynamicFilters, setDynamicItems)
-    }, [])
+        const curId = dynamicDepInfo.curId;
+        if (curId){
+            // 只更新当前输入的动态筛选框, 理论上应该只有一个
+            const curFilter = dynamicFilters.filter(e=>e.filter.id === curId)[0];
+            if (curFilter){
+                const extraParams = {IN_EXPAND_1: dynamicDepInfo[curId],[curFilter.filter.dynamic]:dynamicDepInfo.curValue}
+                setFilterOptions([curFilter], setDynamicItems, extraParams)
+            }
+        }
+    }, [dynamicDepInfo])
 
     /**
      * 异步获取下拉框选项
@@ -96,6 +123,9 @@ const RcTableView = props => {
         // 传入不同的IN_DIM_TYPE_CODE获取options字典
         filters.forEach(e => {
             const requestParams =  {...initFilterParams, ...extraParams, IN_DIM_TYPE_CODE: e.filter.code}
+            console.log('筛选框请求参数')
+            console.log(filterSql)
+            console.log(requestParams)
             call(filterSql, requestParams).then(r => {
                 const result = r.data
                 setter(prevState => {
@@ -107,23 +137,41 @@ const RcTableView = props => {
 
     /** ======生成筛选框配置 结束====== */
 
-
-        // 实际选择的过滤条件参数
+    // 实际选择的过滤条件参数
     const [actFilterParams, setActFilterParams] = useState({});
 
     // 实际列表查询参数=初始参数+过滤条件参数
     const [actListParams, setActListParams] = useState(initListParams)
 
+    // 控件值改变的回调函数
     const changeFilter = useCallback((value, item) => {
+        // 1. 保存当前筛选框的值
         setActFilterParams(prevState => {
             return {...prevState, [item.name]: value}
         })
+        // 2. 如果被其他筛选框依赖，则需要更新当前的依赖信息
         if (beDepIds.has(item.filter.id)) {
-            // 触发依赖更新
             const ids = depFilters.filter(e => e.filter.deps === item.filter.id).map(f => f.filter.id);
+            // 触发依赖更新
             setDepInfo({ids, value})
         }
     }, [beDepIds])
+
+    const handleFilterInput = useCallback((value, item) => {
+        if(value && value.length !== 0){
+            setDynamicDepInfo(prevState => {
+                return {
+                    ...prevState, curId: item.filter.id, curValue: value
+                }
+            })
+        }else {
+            setDynamicItems(prevState => {
+               return{
+                   ...prevState, [item.filter.id]:[]
+               }
+            })
+        }
+    }, [])
 
     // 执行搜索
     const doSearch = useCallback(() => {
@@ -132,7 +180,7 @@ const RcTableView = props => {
             const _RANDOM_VERSION_NO = new Date().getTime();
             return {...prevState, ...actFilterParams, _RANDOM_VERSION_NO}
         })
-    }, [actListParams])
+    }, [actFilterParams])
 
     return (
         <div>
@@ -155,8 +203,11 @@ const RcTableView = props => {
                         }
                         // 筛选框默认是Select下拉框
                         let optionsSrc = muteItems
+                        const dynamicProps = {}
+                        // dynamic比deps更具有优先级
                         if (filter.dynamic) {
                             optionsSrc = dynamicItems
+                            dynamicProps.onSearch = (value) => handleFilterInput(value, item)
                         } else if (filter.deps) {
                             optionsSrc = depItems
                         }
@@ -164,7 +215,9 @@ const RcTableView = props => {
                         return (
                             <Form.Item label={filter.label} key={filter.code}>
                                 <Select
-                                    showSearch={filter.searchable}
+                                    showSearch={filter.searchable || filter.dynamic}
+                                    {...dynamicProps}
+                                    defaultValue={filter.defaultValue}
                                     allowClear
                                     onChange={(value) => changeFilter(value, item)}
                                     style={{width: '120px'}}
