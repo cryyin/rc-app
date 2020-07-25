@@ -1,17 +1,17 @@
 import request from '@/utils/request'
 
-export function call(data) {
+export function call(sql, params={}) {
     return request({
         url: '/rc/call',
         method: 'post',
-        data
+        data:{sql, params}
     })
 }
 
-export function select(data) {
+export function select(sql, params={}) {
     return request({
         url: '/rc/select',
         method: 'post',
-        data
+        data:{sql, params}
     })
 }

@@ -8,7 +8,7 @@ export const setWindowOpenNewTabFun = () => {
     // 获取菜单配置
     const sql = "select menu_id, parent_id, url, name from sys_menu m " +
         "start with name = '风险管理' connect by prior menu_id = parent_id";
-    select('/rc/select', {sql, params: {}}).then(r => {
+    select(sql, {}).then(r => {
         if (r.data) {
             window.menus = r.data
             !window.openNewTab && doSetOpenTabFun();

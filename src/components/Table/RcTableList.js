@@ -14,6 +14,7 @@ const RcTableList = (props) => {
 
     const [list, setList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    // noinspection JSUnusedLocalSymbols
     const [isError, setIsError] = useState(false);
 
 
@@ -33,10 +34,10 @@ const RcTableList = (props) => {
             const {size, current} = pageInfo;
             const IN_ROWNB_BEGIN = (current - 1) * size + 1;
             const IN_ROWNB_END = size * current;
-            const requestParam = {sql, params: {...params, IN_ROWNB_BEGIN, IN_ROWNB_END}}
+            const requestParam =  {...params, IN_ROWNB_BEGIN, IN_ROWNB_END}
             console.log(requestParam)
             try {
-                const result = await call(requestParam);
+                const result = await call(sql, requestParam);
                 const dataList = result.data.OUT_DATASET
                 // 无数据
                 if (dataList.length === 1 && dataList[0].nStateCode === 0) {

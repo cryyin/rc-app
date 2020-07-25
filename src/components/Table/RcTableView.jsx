@@ -92,21 +92,18 @@ const RcTableView = props => {
      * @param {Function} setter 筛选框setState钩子
      * @param {Object} extraParams 额外的查询查数
      */
-    const setFilterOptions = (filters, setter, extraParams = {}) => {
+    const setFilterOptions = useCallback((filters, setter, extraParams = {}) => {
         // 传入不同的IN_DIM_TYPE_CODE获取options字典
         filters.forEach(e => {
-            const requestParams = {
-                sql: filterSql,
-                params: {...initFilterParams, ...extraParams, IN_DIM_TYPE_CODE: e.filter.code}
-            }
-            call(requestParams).then(r => {
+            const requestParams =  {...initFilterParams, ...extraParams, IN_DIM_TYPE_CODE: e.filter.code}
+            call(filterSql, requestParams).then(r => {
                 const result = r.data
                 setter(prevState => {
                     return {...prevState, [result.IN_DIM_TYPE_CODE]: r.data.OUT_DATASET}
                 })
             })
         })
-    }
+    },[filterSql, initFilterParams])
 
     /** ======生成筛选框配置 结束====== */
 
