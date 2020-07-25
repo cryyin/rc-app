@@ -12,9 +12,9 @@ import 'echarts/lib/chart/bar';
 import 'echarts/lib/component/title';
 import 'echarts/lib/chart/line';
 import 'echarts/lib/component/tooltip';
-import getProcedureConfig, {URL} from "@/utils/queryUtils";
-import request from "@/utils/request";
+import getProcedureConfig from "@/utils/queryUtils";
 import {range} from 'lodash'
+import {call} from "@/api";
 
 const {sql, params} = getProcedureConfig(filterProcedureName,filterParams, true)
 
@@ -38,7 +38,7 @@ const Visualization = (props) => {
             // 1,2,3,4迭代,后端返回数据格式不一样，只能手工处理
             range(1,5).forEach(i=>{
                 const requestParams = {sql, params: {...params, ...fixedParams,IN_PARM:i}}
-                request.post(URL, requestParams).then(r=>{
+                call(requestParams).then(r=>{
                     let result = r.data.OUT_DATASET
                     const axis = []
                     const data1 = [], data2 = [];

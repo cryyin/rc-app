@@ -4,7 +4,7 @@ import {Button, Form, Select, Input} from "antd"
 import userRcApi from '@/utils/useRcApi'
 import {SearchOutlined} from "@ant-design/icons";
 import getProcedureConfig, {classifyFilterItem, URL} from "@/utils/queryUtils";
-import request from '@/utils/request';
+import {call} from "@/api";
 const {Option} = Select;
 
 /**
@@ -37,7 +37,7 @@ const RcTableView = props => {
 
 
     // useState hook
-    const {doFetch,doSearch, handleFilter, getTable, getPagination} = userRcApi(URL, listConfig.sql, listConfig.params);
+    const {doFetch,doSearch, handleFilter, RcTable} = userRcApi(URL, listConfig.sql, listConfig.params);
     // 各类型筛选框
     const [muteItems, setMuteItems] = useState({})
     const [dynamicItems, setDynamicItems] = useState({})
@@ -83,7 +83,7 @@ const RcTableView = props => {
         // 传入不同的IN_DIM_TYPE_CODE获取options字典
         filters.forEach(e => {
             const requestParams = {sql, params: {...params,...extraParams, IN_DIM_TYPE_CODE: e.filter.code}}
-            request.post(URL, requestParams).then(r=>{
+            call(requestParams).then(r=>{
                 const result = r.data
                 setter(prevState => {
                     return {...prevState, [result.IN_DIM_TYPE_CODE] : r.data.OUT_DATASET}
@@ -149,10 +149,11 @@ const RcTableView = props => {
                     </Button>
                 </Form.Item>
             </Form>
-            {/*表格区域*/}
-            {getTable(columns, rowKey)}
-            {/*分页区域*/}
-            {getPagination()}
+            {/*表格及分页区域*/}
+            <RcTable
+                columns={columns}
+                rowKey={rowKey}
+            />
         </div>
     );
 }

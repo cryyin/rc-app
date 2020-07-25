@@ -93,46 +93,45 @@ const useRcApi = (initialUrl, initialSql, initialParams) => {
     const changePage = (current)=>{
         setCurrent(current)
     }
+
     /**
      * 返回table
-     * @param {Array} columns 表列
-     * @param {any} idKey
-     * @returns {*}
+     * @param {Object} props idKey columns
+     * @returns {Comment}
+     * @constructor
      */
-    const getTable = (columns, idKey='nOrderId') => {
+    const RcTable = (props) => {
         return (
-            <Table
-                scroll={{x:1300}}
-                rowKey={idKey}
-                loading={isLoading}
-                pagination={false}
-                columns={columns}
-                dataSource={list}
-            />
-        )
-    }
-    /**
-     * 返回分页组件
-     * @returns {*}
-     */
-    const getPagination = () => {
-        return(
-            <Fragment>
-                <Pagination
-                    total={total}
-                    pageSizeOptions={["10", "20", "40"]}
-                    showTotal={(total) => `共${total}条数据`}
-                    onChange={changePage}
-                    current={current}
-                    onShowSizeChange={changePageSize}
-                    showSizeChanger
-                    showQuickJumper
-                    hideOnSinglePage={true}
-                />
+            <Fragment >
+                {/*表格区域*/}
+                <div className='rc-table'>
+                    <Table
+                        scroll={{x:1300}}
+                        rowKey={props.rowKey || 'nOrderId'}
+                        loading={isLoading}
+                        pagination={false}
+                        columns={props.columns}
+                        dataSource={list}
+                    />
+                </div>
+                {/*分页区域*/}
+                <div className='rc-table-pagination'>
+                    <Pagination
+                        total={total}
+                        pageSizeOptions={["10", "20", "40"]}
+                        showTotal={(total) => `共${total}条数据`}
+                        onChange={changePage}
+                        current={current}
+                        onShowSizeChange={changePageSize}
+                        showSizeChanger
+                        showQuickJumper
+                        hideOnSinglePage={true}
+                    />
+                </div>
             </Fragment>
         )
     }
-    return { list, handleFilter, isLoading, isError, doFetch, doSearch, getTable, getPagination };
+    return { list, handleFilter, isLoading, isError, doFetch, doSearch,  RcTable };
 };
 
 export default useRcApi;

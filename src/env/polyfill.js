@@ -1,14 +1,14 @@
-import request from '@/utils/request'
-
 /**
  * 适应Portal 打开新标签的函数, 每次打开页面都会从后台获取menu
  * 考虑优化可将函数放在Portal index.html中，通过sessionStorage获取
  */
+import {select} from "@/api";
+
 export const setWindowOpenNewTabFun = () => {
     // 获取菜单配置
     const sql = "select menu_id, parent_id, url, name from sys_menu m " +
         "start with name = '风险管理' connect by prior menu_id = parent_id";
-    request.post('/rc/select', {sql, params: {}}).then(r => {
+    select('/rc/select', {sql, params: {}}).then(r => {
         if (r.data) {
             window.menus = r.data
             !window.openNewTab && doSetOpenTabFun();
