@@ -4,7 +4,7 @@ import {Button, Form, Select, Input} from "antd"
 import RcTableList from "@/components/Table/RcTableList";
 import {SearchOutlined} from "@ant-design/icons";
 import getProcedureConfig, {classifyFilterItem} from "@/utils/queryUtils";
-import {isEmpty} from 'lodash'
+import {isEmpty, debounce} from 'lodash'
 import {call} from "@/api";
 
 const {Option} = Select;
@@ -22,6 +22,7 @@ const {Option} = Select;
  * @constructor
  */
 const RcTableView = props => {
+    console.log('RcTableView')
     const {columns, fixedParams, tableConfig} = props
 
     // 读取表单存储过程信息
@@ -157,7 +158,8 @@ const RcTableView = props => {
         }
     }, [beDepIds])
 
-    const handleFilterInput = useCallback((value, item) => {
+    // 这里debounce一下，避免频繁的请求后端数据
+    const handleFilterInput = useCallback(debounce((value, item) => {
         if(value && value.length !== 0){
             setDynamicDepInfo(prevState => {
                 return {
@@ -171,7 +173,7 @@ const RcTableView = props => {
                }
             })
         }
-    }, [])
+    }, 333), [])
 
     // 执行搜索
     const doSearch = useCallback(() => {
