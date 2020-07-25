@@ -1,11 +1,12 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import PropTypes from 'prop-types';
 import {Button, Form, Select, Input} from "antd"
-import userRcApi from '@/utils/useRcApi'
+import RcTableList from "@/components/Table/RcTableList";
 import {SearchOutlined} from "@ant-design/icons";
-import getProcedureConfig, {classifyFilterItem, URL} from "@/utils/queryUtils";
+import getProcedureConfig, {classifyFilterItem} from "@/utils/queryUtils";
 import {isEmpty} from 'lodash'
 import {call} from "@/api";
+
 const {Option} = Select;
 
 /**
@@ -22,58 +23,58 @@ const {Option} = Select;
 const RcTableView = props => {
     console.log('RcTableView props start')
     const {columns, fixedParams, tableConfig} = props
+
     // 读取表单存储过程信息
-    const {listParams, listProcedureName, filterParams , filterProcedureName, rowKey} =  tableConfig
-    // 生成筛选框配置
-    const filterConfig = useMemo(()=>{
-        return getProcedureConfig(filterProcedureName,filterParams, true)
-    },[filterProcedureName, filterParams])
-    // 生成表单配置
-    const listConfig = useMemo(()=>{
+    const {listParams, listProcedureName, filterParams, filterProcedureName, rowKey} = tableConfig
+
+    /** =======生成表单配置 开始======= */
+    const listConfig = useMemo(() => {
         return getProcedureConfig(listProcedureName, listParams, false)
-    },[listProcedureName, listParams])
+    }, [listProcedureName, listParams])
 
+    // 表单查询初始参数=存储过程默认参数 + 父组件传递的固定参数
+    const initListParams = useMemo(() => {
+        if (!isEmpty(fixedParams)) {
+            console.log(fixedParams)
+            return {...listConfig.params, ...fixedParams}
+        }
+        return listConfig.params
+    }, [listConfig.params])
+    /** ======生成表单配置  结束====== */
+
+
+    /** ======生成筛选框配置 开始====== */
+    const filterConfig = useMemo(() => {
+        return getProcedureConfig(filterProcedureName, filterParams, true)
+    }, [filterProcedureName, filterParams])
+
+    const {sql: filterSql, params: initFilterParams} = filterConfig
     const {filterItems} = listConfig
-    const {sql, params} = filterConfig
 
-    // 筛选框分类：默认、依赖、动态
-    const classifiedFilterItems = useMemo(()=>{
+    // 筛选框分类处理：默认、依赖、动态
+    const classifiedFilterItems = useMemo(() => {
         return classifyFilterItem(filterItems);
     }, [filterItems])
     const {muteFilters, depFilters, dynamicFilters, beDepIds} = classifiedFilterItems
 
-    // 固定参数
-    const initialParams = useMemo(()=>{
-        if (!isEmpty(fixedParams)){
-            console.log(fixedParams)
-            return  {...listConfig.params, ...fixedParams}
-        }
-        return listConfig.params
-    }, [listConfig])
-
-    // 应用hook得到通用组件
-    const {doSearch, handleFilter, RcTable} = userRcApi(URL, listConfig.sql, initialParams);
-
     // 各类型筛选框状态
-    const [muteItems, setMuteItems] = useState({})
-    const [dynamicItems, setDynamicItems] = useState({})
-    const [depItems, setDepItems] = useState({})
-
-    // 需要更新的依赖
-    // 初始化依赖
-    const initDepIds = depFilters.filter(f => !f.filter.skipInit ).map(f=>f.filter.id)
-    const [depInfo, setDepInfo] = useState({ids: initDepIds, value: ''})
 
     // 静态filter
+    const [muteItems, setMuteItems] = useState({})
     useEffect(() => {
         setFilterOptions(muteFilters, setMuteItems)
     }, [])
 
     // 具有依赖关系的筛选框
-    // eslint-disable-next-line
+    const [depItems, setDepItems] = useState({})
+    const initDepIds = useMemo(() => {
+        return depFilters.filter(f => !f.filter.skipInit).map(f => f.filter.id)
+    }, [depItems])
+
+    const [depInfo, setDepInfo] = useState({ids: initDepIds, value: ''})
     useEffect(() => {
-        if (depInfo && depInfo.ids){
-            const updatedFilters = depFilters.filter(f=>depInfo.ids.includes(f.filter.id))
+        if (depInfo && depInfo.ids) {
+            const updatedFilters = depFilters.filter(f => depInfo.ids.includes(f.filter.id))
             setFilterOptions(updatedFilters, setDepItems, {IN_EXPAND_1: depInfo.value})
         }
     }, [depInfo])
@@ -82,36 +83,61 @@ const RcTableView = props => {
      * 动态filter,一般查询时间比较久，所以分开，目前逻辑和muteFilter一致，搜索时无需调用后台接口
      * 如果需要远程搜索，改造即可
      */
+    const [dynamicItems, setDynamicItems] = useState({})
     useEffect(() => {
         setFilterOptions(dynamicFilters, setDynamicItems)
     }, [])
+
     /**
-     *
+     * 异步获取下拉框选项
      * @param {Array} filters 筛选框列表
      * @param {Function} setter 筛选框setState钩子
      * @param {Object} extraParams 额外的查询查数
      */
-    const setFilterOptions = (filters, setter, extraParams={}) => {
+    const setFilterOptions = (filters, setter, extraParams = {}) => {
         // 传入不同的IN_DIM_TYPE_CODE获取options字典
         filters.forEach(e => {
-            const requestParams = {sql, params: {...params,...extraParams, IN_DIM_TYPE_CODE: e.filter.code}}
-            call(requestParams).then(r=>{
+            const requestParams = {
+                sql: filterSql,
+                params: {...initFilterParams, ...extraParams, IN_DIM_TYPE_CODE: e.filter.code}
+            }
+            call(requestParams).then(r => {
                 const result = r.data
                 setter(prevState => {
-                    return {...prevState, [result.IN_DIM_TYPE_CODE] : r.data.OUT_DATASET}
+                    return {...prevState, [result.IN_DIM_TYPE_CODE]: r.data.OUT_DATASET}
                 })
             })
         })
     }
 
-    const changeFilter = (value, item) => {
-        handleFilter(item.name, value)
+    /** ======生成筛选框配置 结束====== */
+
+
+        // 实际选择的过滤条件参数
+    const [actFilterParams, setActFilterParams] = useState({});
+
+    // 实际列表查询参数=初始参数+过滤条件参数
+    const [actListParams, setActListParams] = useState(initListParams)
+
+    const changeFilter = useCallback((value, item) => {
+        setActFilterParams(prevState => {
+            return {...prevState, [item.name]: value}
+        })
         if (beDepIds.has(item.filter.id)) {
             // 触发依赖更新
             const ids = depFilters.filter(e => e.filter.deps === item.filter.id).map(f => f.filter.id);
             setDepInfo({ids, value})
         }
-    }
+    }, [beDepIds])
+
+    // 执行搜索
+    const doSearch = useCallback(() => {
+        setActListParams(prevState => {
+            // 为保证一定触发异步获取数据，使用一个随机数来更新参数
+            const _RANDOM_VERSION_NO = new Date().getTime();
+            return {...prevState, ...actFilterParams, _RANDOM_VERSION_NO}
+        })
+    }, [actListParams])
 
     return (
         <div>
@@ -121,7 +147,7 @@ const RcTableView = props => {
                     filterItems.map(item => {
                         const {filter} = item
                         // 筛选框是input
-                        if(filter.type === 'input'){
+                        if (filter.type === 'input') {
                             return (
                                 <Form.Item key={filter.code}>
                                     <Input
@@ -161,8 +187,11 @@ const RcTableView = props => {
                     </Button>
                 </Form.Item>
             </Form>
+
             {/*表格及分页区域*/}
-            <RcTable
+            <RcTableList
+                sql={listConfig.sql}
+                params={actListParams}
                 columns={columns}
                 rowKey={rowKey}
             />
