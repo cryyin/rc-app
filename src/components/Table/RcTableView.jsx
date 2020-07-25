@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import PropTypes from 'prop-types';
 import {Button, Form, Select, Input} from "antd"
 import userRcApi from '@/utils/useRcApi'
 import {SearchOutlined} from "@ant-design/icons";
 import getProcedureConfig, {classifyFilterItem, URL} from "@/utils/queryUtils";
+import {isEmpty} from 'lodash'
 import {call} from "@/api";
 const {Option} = Select;
 
@@ -19,39 +20,50 @@ const {Option} = Select;
  * @constructor
  */
 const RcTableView = props => {
-    // 读取存储过程信息
+    console.log('RcTableView props start')
     const {columns, fixedParams, tableConfig} = props
-    const {listParams, listProcedureName, filterParams , filterProcedureName, rowKey} = tableConfig
-    const filterConfig = getProcedureConfig(filterProcedureName,filterParams, true)
-    const listConfig = getProcedureConfig(listProcedureName, listParams, false)
-    const {filterItems} = listConfig
-    // 固定参数
-    listConfig.params = {...listConfig.params, ...fixedParams}
+    // 读取表单存储过程信息
+    const {listParams, listProcedureName, filterParams , filterProcedureName, rowKey} =  tableConfig
+    // 生成筛选框配置
+    const filterConfig = useMemo(()=>{
+        return getProcedureConfig(filterProcedureName,filterParams, true)
+    },[filterProcedureName, filterParams])
+    // 生成表单配置
+    const listConfig = useMemo(()=>{
+        return getProcedureConfig(listProcedureName, listParams, false)
+    },[listProcedureName, listParams])
 
+    const {filterItems} = listConfig
     const {sql, params} = filterConfig
 
-    // 读取筛选框信息
-    const {muteFilters, depFilters, dynamicFilters, beDepIds} = classifyFilterItem(filterItems)
-    // 初始化依赖
-    const initDepIds = depFilters.filter(f => !f.filter.skipInit ).map(f=>f.filter.id)
+    // 筛选框分类：默认、依赖、动态
+    const classifiedFilterItems = useMemo(()=>{
+        return classifyFilterItem(filterItems);
+    }, [filterItems])
+    const {muteFilters, depFilters, dynamicFilters, beDepIds} = classifiedFilterItems
 
+    // 固定参数
+    const initialParams = useMemo(()=>{
+        if (!isEmpty(fixedParams)){
+            console.log(fixedParams)
+            return  {...listConfig.params, ...fixedParams}
+        }
+        return listConfig.params
+    }, [listConfig])
 
-    // useState hook
-    const {doFetch,doSearch, handleFilter, RcTable} = userRcApi(URL, listConfig.sql, listConfig.params);
-    // 各类型筛选框
+    // 应用hook得到通用组件
+    const {doSearch, handleFilter, RcTable} = userRcApi(URL, listConfig.sql, initialParams);
+
+    // 各类型筛选框状态
     const [muteItems, setMuteItems] = useState({})
     const [dynamicItems, setDynamicItems] = useState({})
     const [depItems, setDepItems] = useState({})
+
     // 需要更新的依赖
+    // 初始化依赖
+    const initDepIds = depFilters.filter(f => !f.filter.skipInit ).map(f=>f.filter.id)
     const [depInfo, setDepInfo] = useState({ids: initDepIds, value: ''})
 
-    // 固定参数绑定
-    useEffect(()=>{
-        if (fixedParams){
-            console.log(fixedParams)
-            doFetch(fixedParams);
-        }
-    },[fixedParams])
     // 静态filter
     useEffect(() => {
         setFilterOptions(muteFilters, setMuteItems)

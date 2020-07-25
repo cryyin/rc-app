@@ -11,6 +11,7 @@ import request, {addRnd} from '@/utils/request';
 import {Pagination, Table} from "antd";
 
 const useRcApi = (initialUrl, initialSql, initialParams) => {
+    console.log('useRcApi')
     const [list, setList] = useState([]);
     const [url, setUrl] = useState(initialUrl);
     const [sql] = useState(initialSql);
@@ -52,7 +53,7 @@ const useRcApi = (initialUrl, initialSql, initialParams) => {
                     setList(dataList);
                     // 总行数
                     if(dataList.length > 0){
-                        setTotal(dataList[0].nCnt)
+                        setTotal(111)
                     }else {
                         setTotal(0)
                     }
@@ -79,20 +80,20 @@ const useRcApi = (initialUrl, initialSql, initialParams) => {
         doFetch();
     },[doFetch]);
     // 更改过滤条件
-    const handleFilter = (key, val) => {
+    const handleFilter = useCallback((key, val) => {
         setFilter(preFilter=>{
             return {...preFilter, [key]:val}
         })
-    }
+    },[])
     // 当前每页数改变
-    const changePageSize = (current, size)=>{
+    const changePageSize = useCallback((current, size)=>{
         setSize(size)
         setCurrent(1)
-    }
+    },[])
     // 当前页改变
-    const changePage = (current)=>{
+    const changePage = useCallback((current)=>{
         setCurrent(current)
-    }
+    },[])
 
     /**
      * 返回table
