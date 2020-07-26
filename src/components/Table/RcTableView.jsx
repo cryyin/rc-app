@@ -5,7 +5,6 @@ import RcTableList from "@/components/Table/RcTableList";
 import {SearchOutlined} from "@ant-design/icons";
 import parseTableConfig from "@/utils/queryUtils";
 import {debounce} from 'lodash'
-import {call} from "@/api";
 
 const {Option} = Select;
 
@@ -23,43 +22,21 @@ const {Option} = Select;
  */
 const RcTableView = props => {
     console.log('RcTableView')
+    const {columns, fixedParams, tableConfig} = props
 
     // 表格配置解析
     const {
-        columns, rowKey, filterItems, listSql, initListParams, filterSql, initFilterParams, muteFilters, depFilters,
-        dynamicFilters, beDepIds, initDynamicDepInfo, initDepIds
+        rowKey, filterItems, listSql, initListParams, muteFilters, depFilters, dynamicFilters, beDepIds, initDynamicDepInfo, initDepIds, setFilterOptions
     } = useMemo(() => {
-        if (props) {
-            return parseTableConfig(props);
+        if (fixedParams && tableConfig) {
+            return parseTableConfig(fixedParams, tableConfig);
         }
         return {}
-    }, [props])
+    }, [fixedParams, tableConfig])
 
     /** 各类型筛选框状态 开始  */
 
-    /**
-     * 异步获取下拉框选项字典的便利方法
-     * @param {Array} filters 筛选框列表
-     * @param {Function} setter 筛选框setState钩子
-     * @param {Object} extraParams 额外的查询查数
-     */
-    const setFilterOptions = useCallback((filters, setter, extraParams = {}) => {
-        // 传入不同的IN_DIM_TYPE_CODE获取options字典
-        filters.forEach(f => {
-            const requestParams = {...initFilterParams, ...extraParams, IN_DIM_TYPE_CODE: f.code}
-            console.log('筛选框请求参数')
-            console.log(filterSql)
-            console.log(requestParams)
-            call(filterSql, requestParams).then(r => {
-                const result = r.data
-                setter(prevState => {
-                    return {...prevState, [result.IN_DIM_TYPE_CODE]: r.data.OUT_DATASET}
-                })
-            })
-        })
-    }, [filterSql, initFilterParams])
-
-    // 静态filter，处理起来最简单
+        // 静态filter，处理起来最简单
     const [muteItems, setMuteItems] = useState({})
     useEffect(() => {
         setFilterOptions(muteFilters, setMuteItems)
@@ -90,7 +67,7 @@ const RcTableView = props => {
             })
             setFilterOptions(updatedFilters, setDepItems, {IN_EXPAND_1: depInfo.value})
         }
-    }, [depInfo,depFilters,setFilterOptions])
+    }, [depInfo, depFilters, setFilterOptions])
 
     // 动态筛选框
     const [dynamicDepInfo, setDynamicDepInfo] = useState(initDynamicDepInfo)
@@ -108,14 +85,14 @@ const RcTableView = props => {
                 setFilterOptions([curFilter], setDynamicItems, extraParams)
             }
         }
-    }, [dynamicDepInfo])
+    }, [dynamicDepInfo, dynamicFilters, setFilterOptions]);
 
 
     /** 各类型筛选框状态 结束  */
 
     /** 筛选框控件处理 开始 */
 
-    // 实际选择的过滤条件参数
+        // 实际选择的过滤条件参数
     const [actFilterParams, setActFilterParams] = useState({});
 
     // 实际列表查询参数=初始参数+过滤条件参数
@@ -133,7 +110,7 @@ const RcTableView = props => {
             // 触发依赖更新
             setDepInfo({ids, value})
         }
-    }, [beDepIds])
+    }, [beDepIds, depFilters])
 
     // 这里debounce一下，避免频繁的请求后端数据
     const handleFilterInput = useCallback(debounce((value, filter) => {
@@ -186,7 +163,7 @@ const RcTableView = props => {
                         }
 
                         /** 筛选框默认是Select下拉框 **/
-                        // 根据筛选框类型确定option字典来源
+                            // 根据筛选框类型确定option字典来源
                         let optionsSrc = muteItems
                         const dynamicProps = {}
                         // dynamic优先从dynamicItems中取数，比deps更具有优先级

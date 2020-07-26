@@ -1,6 +1,7 @@
 // 数据库schema名称
 import {getLastYearMonth} from "@/utils/dateUtils";
 import {DATA_SOURCE} from "@/store";
+import {call} from "@/api";
 
 export const schemaName = 'PRD_RC';
 // 远程get地址
@@ -157,15 +158,15 @@ export const classifyFilterItem = (filterItems) => {
     return {muteFilters, depFilters, dynamicFilters, beDepIds, initDynamicDepInfo}
 }
 
+
 /**
  * 一次性返回RcTable用到的配置项
- *
- * @param {Object} props
- * @returns {{depFilters: *[], filterSql: String, muteFilters: *[], initFilterParams: {}, columns: *, filterItems: [], listSql: String, beDepIds: Set<*>, dynamicFilters: *[], rowKey: *, initListParams: *, initDynamicDepInfo}}
+ * @param fixedParams
+ * @param tableConfig
+ * @returns {{filterSql: String, listSql: String, setFilterOptions: setFilterOptions, initDynamicDepInfo, depFilters: *[], muteFilters: *[], initFilterParams: {}, filterItems: [], beDepIds: Set<*>, initDepIds: *[], dynamicFilters: *[], rowKey: *, initListParams}}
  */
-const parseTableConfig = (props) => {
+const parseTableConfig = (fixedParams, tableConfig) => {
     console.log('开始解析')
-    const {columns, fixedParams, tableConfig} = props
     // 读取表单存储过程信息
     const {listParams, listProcedureName, filterParams, filterProcedureName, rowKey} = tableConfig
 
@@ -188,9 +189,31 @@ const parseTableConfig = (props) => {
     const initDepIds = depFilters.filter(f => !f.skipInit).map(f => f.id);
     /** ======生成筛选框配置 结束====== */
 
+    /**
+     * 异步获取下拉框选项字典的便利方法
+     * @param {Array} filters 筛选框列表
+     * @param {Function} setter 筛选框setState钩子
+     * @param {Object} extraParams 额外的查询查数
+     */
+    const setFilterOptions = (filters, setter, extraParams = {}) => {
+        // 传入不同的IN_DIM_TYPE_CODE获取options字典
+        filters.forEach(f => {
+            const requestParams = {...initFilterParams, ...extraParams, IN_DIM_TYPE_CODE: f.code}
+            console.log('筛选框请求参数')
+            console.log(filterSql)
+            console.log(requestParams)
+            call(filterSql, requestParams).then(r => {
+                const result = r.data
+                setter(prevState => {
+                    return {...prevState, [result.IN_DIM_TYPE_CODE]: r.data.OUT_DATASET}
+                })
+            })
+        })
+    }
+
     return {
-        columns, rowKey, filterItems, listSql, initListParams,
-        filterSql, initFilterParams, muteFilters, depFilters, dynamicFilters, beDepIds, initDynamicDepInfo, initDepIds
+        rowKey, filterItems, listSql, initListParams, filterSql, initFilterParams,
+        muteFilters, depFilters, dynamicFilters, beDepIds, initDynamicDepInfo, initDepIds, setFilterOptions
     }
 }
 
