@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import {Button, Form, Select, Input} from "antd"
 import RcTableList from "@/components/Table/RcTableList";
 import {SearchOutlined} from "@ant-design/icons";
-import getProcedureConfig, {classifyFilterItem} from "@/utils/queryUtils";
-import {isEmpty, debounce} from 'lodash'
+import parseTableConfig from "@/utils/queryUtils";
+import {debounce} from 'lodash'
 import {call} from "@/api";
 
 const {Option} = Select;
@@ -23,40 +23,19 @@ const {Option} = Select;
  */
 const RcTableView = props => {
     console.log('RcTableView')
-    const {columns, fixedParams, tableConfig} = props
 
-    // 读取表单存储过程信息
-    const {listParams, listProcedureName, filterParams, filterProcedureName, rowKey} = tableConfig
-
-    /** =======生成表单配置 开始======= */
-    const listConfig = useMemo(() => {
-        return getProcedureConfig(listProcedureName, listParams, false)
-    }, [listProcedureName, listParams])
-
-    // 表单查询初始参数=存储过程默认参数 + 父组件传递的固定参数
-    const initListParams = useMemo(() => {
-        if (!isEmpty(fixedParams)) {
-            return {...listConfig.params, ...fixedParams}
+    // 表格配置解析
+    const {
+        columns, rowKey, filterItems, listSql, initListParams, filterSql, initFilterParams, muteFilters, depFilters,
+        dynamicFilters, beDepIds, initDynamicDepInfo
+    } = useMemo(() => {
+        if (props){
+            return parseTableConfig(props);
         }
-        return listConfig.params
-    }, [listConfig.params])
-    /** ======生成表单配置  结束====== */
+        return {}
+    }, [props])
 
-
-    /** ======生成筛选框配置 开始====== */
-    const filterConfig = useMemo(() => {
-        return getProcedureConfig(filterProcedureName, filterParams, true)
-    }, [filterProcedureName, filterParams])
-
-    const {sql: filterSql, params: initFilterParams} = filterConfig
-    const {filterItems} = listConfig
-
-    // 筛选框分类处理：默认、依赖、动态
-    const {muteFilters, depFilters, dynamicFilters, beDepIds, initDynamicDepInfo} = useMemo(() => {
-        return classifyFilterItem(filterItems);
-    }, [filterItems])
-
-    // 各类型筛选框状态
+    /** 各类型筛选框状态 开始  */
 
     // 静态filter，处理起来最简单
     const [muteItems, setMuteItems] = useState({})
@@ -77,14 +56,14 @@ const RcTableView = props => {
             const updatedFilters = []
             // 动态筛选框依赖的值也需要更新
             const updatedDynamicDepInfo = {}
-            depFilters.forEach(f=>{
+            depFilters.forEach(f => {
                 const filter = f.filter;
                 //只需处理与当前触发者关联的筛选框
-                if(depInfo.ids.includes(filter.id)){
+                if (depInfo.ids.includes(filter.id)) {
                     // 动态筛选框无需更新options
-                    if(filter.dynamic){
-                        updatedDynamicDepInfo[filter.id]=depInfo.value
-                    }else {
+                    if (filter.dynamic) {
+                        updatedDynamicDepInfo[filter.id] = depInfo.value
+                    } else {
                         updatedFilters.push(f)
                     }
                 }
@@ -96,26 +75,26 @@ const RcTableView = props => {
         }
     }, [depInfo])
 
-    /**
-     * 动态filter,一般查询时间比较久，所以分开，目前逻辑和muteFilter一致，搜索时无需调用后台接口
-     * 如果需要远程搜索，改造即可
-     */
+    // 动态筛选框
     const [dynamicDepInfo, setDynamicDepInfo] = useState(initDynamicDepInfo)
     const [dynamicItems, setDynamicItems] = useState({})
     useEffect(() => {
         const curId = dynamicDepInfo.curId;
-        if (curId){
+        if (curId) {
             // 只更新当前输入的动态筛选框, 理论上应该只有一个
-            const curFilter = dynamicFilters.filter(e=>e.filter.id === curId)[0];
-            if (curFilter){
-                const extraParams = {IN_EXPAND_1: dynamicDepInfo[curId],[curFilter.filter.dynamic]:dynamicDepInfo.curValue}
+            const curFilter = dynamicFilters.filter(e => e.filter.id === curId)[0];
+            if (curFilter) {
+                const extraParams = {
+                    IN_EXPAND_1: dynamicDepInfo[curId],
+                    [curFilter.filter.dynamic]: dynamicDepInfo.curValue
+                }
                 setFilterOptions([curFilter], setDynamicItems, extraParams)
             }
         }
     }, [dynamicDepInfo])
 
     /**
-     * 异步获取下拉框选项
+     * 异步获取下拉框选项字典的便利方法
      * @param {Array} filters 筛选框列表
      * @param {Function} setter 筛选框setState钩子
      * @param {Object} extraParams 额外的查询查数
@@ -123,7 +102,7 @@ const RcTableView = props => {
     const setFilterOptions = useCallback((filters, setter, extraParams = {}) => {
         // 传入不同的IN_DIM_TYPE_CODE获取options字典
         filters.forEach(e => {
-            const requestParams =  {...initFilterParams, ...extraParams, IN_DIM_TYPE_CODE: e.filter.code}
+            const requestParams = {...initFilterParams, ...extraParams, IN_DIM_TYPE_CODE: e.filter.code}
             console.log('筛选框请求参数')
             console.log(filterSql)
             console.log(requestParams)
@@ -134,9 +113,11 @@ const RcTableView = props => {
                 })
             })
         })
-    },[filterSql, initFilterParams])
+    }, [filterSql, initFilterParams])
 
-    /** ======生成筛选框配置 结束====== */
+    /** 各类型筛选框状态 结束  */
+
+    /** 筛选框控件处理 开始 */
 
     // 实际选择的过滤条件参数
     const [actFilterParams, setActFilterParams] = useState({});
@@ -160,17 +141,17 @@ const RcTableView = props => {
 
     // 这里debounce一下，避免频繁的请求后端数据
     const handleFilterInput = useCallback(debounce((value, item) => {
-        if(value && value.length !== 0){
+        if (value && value.length !== 0) {
             setDynamicDepInfo(prevState => {
                 return {
                     ...prevState, curId: item.filter.id, curValue: value
                 }
             })
-        }else {
+        } else {
             setDynamicItems(prevState => {
-               return{
-                   ...prevState, [item.filter.id]:[]
-               }
+                return {
+                    ...prevState, [item.filter.id]: []
+                }
             })
         }
     }, 333), [])
@@ -184,11 +165,14 @@ const RcTableView = props => {
         })
     }, [actFilterParams])
 
+    /** 筛选框控件处理 结束 */
+
     return (
         <div>
             {/*查询区域*/}
             <Form layout='inline'>
                 {
+                    // 循环生成筛选框
                     filterItems.map(item => {
                         const {filter} = item
                         // 筛选框是input
@@ -204,6 +188,7 @@ const RcTableView = props => {
                             )
                         }
                         // 筛选框默认是Select下拉框
+                        // 根据筛选框类型确定option字典来源
                         let optionsSrc = muteItems
                         const dynamicProps = {}
                         // dynamic比deps更具有优先级
@@ -240,7 +225,7 @@ const RcTableView = props => {
 
             {/*表格及分页区域*/}
             <RcTableList
-                sql={listConfig.sql}
+                sql={listSql}
                 params={actListParams}
                 columns={columns}
                 rowKey={rowKey}

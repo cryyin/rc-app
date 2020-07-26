@@ -12,7 +12,7 @@ import 'echarts/lib/chart/bar';
 import 'echarts/lib/component/title';
 import 'echarts/lib/chart/line';
 import 'echarts/lib/component/tooltip';
-import getProcedureConfig from "@/utils/queryUtils";
+import {getProcedureConfig} from "@/utils/queryUtils";
 import {range} from 'lodash'
 import {call} from "@/api";
 
