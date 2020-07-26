@@ -1,10 +1,10 @@
-import React, {memo, useCallback, useMemo, useState} from "react";
+import React, {useCallback, useMemo, useState} from "react";
 import queryString from "query-string";
 import {Button, Modal} from "antd";
 import {openNewTab} from "@/utils/index";
 import {snakeCase} from 'lodash'
 
-const useRcPageNav = (props={}) => {
+const useRcPageNav = (props = {}) => {
     // 对象，modal对应状态隐藏或者显示
     const [curRecord, setCurRecord] = useState({})
     const [curInParams, setCurInParams] = useState({})
@@ -23,12 +23,12 @@ const useRcPageNav = (props={}) => {
 
         const params = {}
         for (const [key, value] of Object.entries(record)) {
-            const k = 'IN_'+snakeCase(key.substring(1)).toUpperCase()
+            const k = 'IN_' + snakeCase(key.substring(1)).toUpperCase()
             params[k] = value;
         }
 
         setCurInParams(params)
-    },[])
+    }, [])
 
     /**
      * 隐藏所有对话框
@@ -36,14 +36,13 @@ const useRcPageNav = (props={}) => {
     const hideModal = useCallback(() => {
         // 需要全部隐藏
         setVisible({})
-    },[])
+    }, [])
 
     /**
      * 返回一个被Modal包装的组件, 这就是所谓的HOC(高阶组件)
      * 注意，如果使用该组件，则每次都会返回一个新的组件，不会应用diff方法
-     * TODO：React.memo
      */
-    const RcModal = memo((props) =>{
+    const RcModal = (props) => {
         return (
             <Modal
                 width='80%'
@@ -54,18 +53,18 @@ const useRcPageNav = (props={}) => {
                 {props.children}
             </Modal>
         )
-    })
+    }
 
     /**
      * useMemo相当于vue的计算属性,依赖props
      */
-    const fixedParams = useMemo(()=> {
+    const fixedParams = useMemo(() => {
         const {fixedParams, location} = props
         // 路由参数
         const locationParams = location && location.search ?
             queryString.parse(location.search) : {}
         return {...fixedParams, ...locationParams}
-    },[props])
+    }, [props])
 
     /**
      * 返回一个图标，点击会打开一个新的tab。注意modalId应该唯一
@@ -80,13 +79,15 @@ const useRcPageNav = (props={}) => {
                 {text}
                 <Button
                     style={{border: 'none'}}
-                    onClick={()=>{openNewTab(url)}}
+                    onClick={() => {
+                        openNewTab(url)
+                    }}
                     size='small'
                     icon={icon}
                 />
             </span>
         )
-    },[])
+    }, [])
 
     /**
      * 返回一个图标，点击会显示模态框。注意modalId应该唯一
@@ -96,21 +97,23 @@ const useRcPageNav = (props={}) => {
      * @param {string} modalId 模态框id
      * @return {component} 视图组件
      */
-    const getModalIcon = useCallback((text, record,icon, modalId) => {
+    const getModalIcon = useCallback((text, record, icon, modalId) => {
         return (
             <span>
                 {text}
                 <Button
                     style={{border: 'none'}}
-                    onClick={()=>{showModal(record,modalId)}}
+                    onClick={() => {
+                        showModal(record, modalId)
+                    }}
                     size='small'
                     icon={icon}
                 />
             </span>
         )
-    },[showModal])
+    }, [showModal])
 
-    return {getPageIcon, fixedParams, getModalIcon, RcModal,  visible, hideModal, curInParams,curRecord}
+    return {getPageIcon, fixedParams, getModalIcon, RcModal, visible, hideModal, curInParams, curRecord}
 }
 
 export default useRcPageNav;
