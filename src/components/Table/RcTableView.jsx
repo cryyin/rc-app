@@ -10,7 +10,7 @@ import {call} from "@/api";
 const {Option} = Select;
 
 /**
- * 通用Rc查询表组组件，唯一比较复杂的部分就是筛选框的处理
+ * 通用Rc查询表组组件，唯一比较复杂的部分就是筛选框的处理。
  *
  * props:
  *    fixedParams用于组件间传值
@@ -115,7 +115,7 @@ const RcTableView = props => {
 
     /** 筛选框控件处理 开始 */
 
-        // 实际选择的过滤条件参数
+    // 实际选择的过滤条件参数
     const [actFilterParams, setActFilterParams] = useState({});
 
     // 实际列表查询参数=初始参数+过滤条件参数
@@ -150,7 +150,7 @@ const RcTableView = props => {
                 }
             })
         }
-    }, 333), [])
+    }, 233), [])
 
     // 执行搜索
     const doSearch = useCallback(() => {
@@ -171,7 +171,8 @@ const RcTableView = props => {
                     // 循环生成筛选框
                     filterItems.map(item => {
                         const {filter} = item
-                        // 筛选框是input
+
+                        /** 筛选框是input **/
                         if (filter.type === 'input') {
                             return (
                                 <Form.Item key={filter.code}>
@@ -183,11 +184,12 @@ const RcTableView = props => {
                                 </Form.Item>
                             )
                         }
-                        // 筛选框默认是Select下拉框
+
+                        /** 筛选框默认是Select下拉框 **/
                         // 根据筛选框类型确定option字典来源
                         let optionsSrc = muteItems
                         const dynamicProps = {}
-                        // dynamic比deps更具有优先级
+                        // dynamic优先从dynamicItems中取数，比deps更具有优先级
                         if (filter.dynamic) {
                             optionsSrc = dynamicItems
                             dynamicProps.onSearch = (value) => handleFilterInput(value, filter)
