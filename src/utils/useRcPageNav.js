@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, useState} from "react";
+import React, {memo, useCallback, useMemo, useState} from "react";
 import queryString from "query-string";
 import {Button, Modal} from "antd";
 import {openNewTab} from "@/utils/index";
@@ -41,8 +41,9 @@ const useRcPageNav = (props={}) => {
     /**
      * 返回一个被Modal包装的组件, 这就是所谓的HOC(高阶组件)
      * 注意，如果使用该组件，则每次都会返回一个新的组件，不会应用diff方法
+     * TODO：React.memo
      */
-    const RcModal = (props) =>{
+    const RcModal = memo((props) =>{
         return (
             <Modal
                 width='80%'
@@ -53,7 +54,7 @@ const useRcPageNav = (props={}) => {
                 {props.children}
             </Modal>
         )
-    }
+    })
 
     /**
      * useMemo相当于vue的计算属性,依赖props
@@ -107,7 +108,7 @@ const useRcPageNav = (props={}) => {
                 />
             </span>
         )
-    },[])
+    },[showModal])
 
     return {getPageIcon, fixedParams, getModalIcon, RcModal,  visible, hideModal, curInParams,curRecord}
 }
