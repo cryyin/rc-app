@@ -1,45 +1,130 @@
-风控项目
+# 简介
 
-## 命令
+风控项目。
 
-### 项目启动：
+技术栈如下：
++ [React](https://react.docschina.org/)
++ [Antd](https://ant.design/docs/react/introduce-cn)
 
-### `yarn start`
+原本打算使用vue+element ui，原因是portal使用了vue。但是element ui表格固定列功能无法满足要求，且该项目貌似已停止维护。
+因此转向react+antd。
 
-然后在浏览器打开 [http://localhost:3000](http://localhost:3000) 即可.
+# 目录结构
+```bash
+├─ public                      # 静态资源
+│   ├─ favicon.ico             # favicon图标
+│   └─ index.html              # html模板
+└── src                        # 项目源码
+│   ├── api                    # 所有请求
+│   ├── assert
+│   ├── components             # 全局公用组件
+│   ├── config                 # 全局配置
+│       └── routeMap.js        # 路由配置
+│   ├── core                   # 项目启动代码
+│   ├── env                    # 运行环境相关
+│       └── polyfill.js        # 适应Portal-Web项目的的代码
+│   ├── store                  # 全局 store管理
+│   ├── style                  # 全局样式
+│   ├── utils                  # 全局公用方法
+│   ├── views                  # views 所有页面
+│   ├──App.js                  # 入口页面
+│   └──index.js                # 源码入口
+├── .env.development           # 开发环境变量配置
+├── .env.production            # 生产环境变量配置
+├── craco.config.js            # 对cra的webpack自定义配置
+└── package.json               # package.json
 
-单元测试运行以下命令：
+```
+# 安装
 
-### `yarn test`
+```shell script
+# 克隆项目
+git clone https://github.com/mylinlan/rc-app.git
 
-生产构建：
+# 进入项目目录
+cd rc-app
 
-### `yarn build`
+# 安装依赖
+npm install 或者 yarn install
 
+# 切换淘宝源，解决 npm 下载速度慢的问题
+npm install --registry=https://registry.npm.taobao.org
 
+# 启动服务
+npm start
+```
 
-打包及部署信息：
+项目暂时没添加mock数据功能，因此需要先启动后端相关服务,即Portal应用和ng代理。
 
-### `yarn eject`
+启动完成后会自动打开浏览器访问 [http://localhost:3000](http://localhost:3000)， 将会看到以下页面：
+![](./guide.gif)
 
-## 开发
+# 部署
+```shell script
+# 打包构建
+npm build
+```
+然后将build目录下的文件覆盖Portal-Web目录下的modules/rc即可
 
-### 使用craco
+# 开发
 
-使用craco更改create-react-app(简称cra)的webpack预配置
+## Rc通用表格配置
+
+仅仅提供自定义的参数即可，部分固定参数如IN_MONTH、DATA_SOURCE会自动合并
+
+参数说明：
+- name: 存储过程对应的参数名
+- type: 存储过程对应的参数类型
+
+- filter: filter对应存在，即表明该项作为筛选框条件，用户可在前端页面配置。以下参数一般与对应的Antd组件参数关联：
+  + id： 筛选框标识, 应该唯一。值大小代表顺序
+  + code: code可根据id生成，如id为1的下拉框code为D001,作为IN_DIM_TYPE_CODE参数值传入存储过程
+  + label: 筛选框控件label
+  + defaultValue： 筛选框控件默认值
+  + deps： 表示当前筛选框依赖其他筛选框的值,暂时只考虑支持一个依赖
+  + 以下是针对select下拉框的配置
+    * skipInit: 是否跳过初始化，针对具有依赖关系，且数据量较大的下拉框。如果传入父值数据量仍旧很大，应该设置dynamic
+    * dynamic: 如果值存在，即代表下拉框需动态生产，dynamic的值代表搜索值对应的存储过程参数
+    * searchable：是否可输入
+ 
+为获取存储过程自定义参数，一般可以打开plsql查看具体的存储过程，复制到notepad++后直接进行列操作可得到该配置信息
+ 
+## 使用svg图标
+项目使用[@svgr/webpack](https://github.com/gregberge/svgr/tree/master/packages/webpack) 处理svg图标
+
+图标来源可以从[阿里巴巴矢量图标库](https://www.iconfont.cn/) 搜索并下载，找不到满意不妨自己画一个。
+将图标放入项目目录，即可像使用React组件一样使用图标。
+
+有一点需要注意的是:
+```
+   // 目前引入自定义图标需要这样写，可能是craco的问题,LawsuitIcon是我们的图标组件
+   import {ReactComponent as LawsuitIcon} from '@/assert/icon/lawsuit.svg'
+```
+
+## webpack配置
+
+项目使用使用craco更改create-react-app(简称cra)的webpack预配置
 
 配置项参考[这里](https://github.com/gsoft-inc/craco/blob/master/packages/craco/README.md#configuration-overview)
 例如，更改output的publicPath, 如下：
 ```
 module.exports = {
     webpack:{
-        configure:{
-            output:{
-                publicPath:process.env.NODE_ENV === "production" ? "" : "/"
-            }
+        configure: (config, {env, paths}) => {
+            // 输出目录
+            config.output.publicPath = process.env.NODE_ENV === "production" ? "" : "/"
+            return config;
         }
     },
     ...
 }
 ```
-## 构建
+
+# 参考
+如果能够了解以下内容，会对该项目有更好的理解
+
++ [es6系列](https://github.com/mqyqingfeng/Blog#es6-系列目录)
++ [Tasks, microtasks, queues and schedules](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/)
++ [渲染器](http://hcysun.me/vue-design/zh/essence-of-comp.html)
++ [React Fiber架构](https://zhuanlan.zhihu.com/p/37095662)
++ [react-antd-admin-template](https://github.com/NLRX-WJC/react-antd-admin-template)
