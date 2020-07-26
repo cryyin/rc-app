@@ -27,71 +27,15 @@ const RcTableView = props => {
     // 表格配置解析
     const {
         columns, rowKey, filterItems, listSql, initListParams, filterSql, initFilterParams, muteFilters, depFilters,
-        dynamicFilters, beDepIds, initDynamicDepInfo
+        dynamicFilters, beDepIds, initDynamicDepInfo, initDepIds
     } = useMemo(() => {
-        if (props){
+        if (props) {
             return parseTableConfig(props);
         }
         return {}
     }, [props])
 
     /** 各类型筛选框状态 开始  */
-
-    // 静态filter，处理起来最简单
-    const [muteItems, setMuteItems] = useState({})
-    useEffect(() => {
-        setFilterOptions(muteFilters, setMuteItems)
-    }, [])
-
-    // 具有依赖关系的筛选框
-    const [depItems, setDepItems] = useState({})
-    const initDepIds = useMemo(() => {
-        return depFilters.filter(f => !f.filter.skipInit).map(f => f.filter.id)
-    }, [depItems])
-
-    const [depInfo, setDepInfo] = useState({ids: initDepIds, value: undefined})
-    useEffect(() => {
-        if (depInfo && depInfo.ids) {
-            // 这里不用更新动态筛选框的options
-            const updatedFilters = []
-            // 动态筛选框依赖的值也需要更新
-            const updatedDynamicDepInfo = {}
-            depFilters.forEach(f => {
-                const filter = f.filter;
-                //只需处理与当前触发者关联的筛选框
-                if (depInfo.ids.includes(filter.id)) {
-                    // 动态筛选框无需更新options
-                    if (filter.dynamic) {
-                        updatedDynamicDepInfo[filter.id] = depInfo.value
-                    } else {
-                        updatedFilters.push(f)
-                    }
-                }
-            })
-            setDynamicDepInfo(prevState => {
-                return {...prevState, ...updatedDynamicDepInfo, curId: undefined}
-            })
-            setFilterOptions(updatedFilters, setDepItems, {IN_EXPAND_1: depInfo.value})
-        }
-    }, [depInfo])
-
-    // 动态筛选框
-    const [dynamicDepInfo, setDynamicDepInfo] = useState(initDynamicDepInfo)
-    const [dynamicItems, setDynamicItems] = useState({})
-    useEffect(() => {
-        const curId = dynamicDepInfo.curId;
-        if (curId) {
-            // 只更新当前输入的动态筛选框, 理论上应该只有一个
-            const curFilter = dynamicFilters.filter(e => e.filter.id === curId)[0];
-            if (curFilter) {
-                const extraParams = {
-                    IN_EXPAND_1: dynamicDepInfo[curId],
-                    [curFilter.filter.dynamic]: dynamicDepInfo.curValue
-                }
-                setFilterOptions([curFilter], setDynamicItems, extraParams)
-            }
-        }
-    }, [dynamicDepInfo])
 
     /**
      * 异步获取下拉框选项字典的便利方法
@@ -101,8 +45,8 @@ const RcTableView = props => {
      */
     const setFilterOptions = useCallback((filters, setter, extraParams = {}) => {
         // 传入不同的IN_DIM_TYPE_CODE获取options字典
-        filters.forEach(e => {
-            const requestParams = {...initFilterParams, ...extraParams, IN_DIM_TYPE_CODE: e.filter.code}
+        filters.forEach(f => {
+            const requestParams = {...initFilterParams, ...extraParams, IN_DIM_TYPE_CODE: f.code}
             console.log('筛选框请求参数')
             console.log(filterSql)
             console.log(requestParams)
@@ -115,11 +59,63 @@ const RcTableView = props => {
         })
     }, [filterSql, initFilterParams])
 
+    // 静态filter，处理起来最简单
+    const [muteItems, setMuteItems] = useState({})
+    useEffect(() => {
+        setFilterOptions(muteFilters, setMuteItems)
+    }, [muteFilters, setFilterOptions])
+
+    // 具有依赖关系的筛选框
+    const [depItems, setDepItems] = useState({})
+    const [depInfo, setDepInfo] = useState({ids: initDepIds, value: undefined})
+    useEffect(() => {
+        if (depInfo && depInfo.ids) {
+            // 这里不用更新动态筛选框的options
+            const updatedFilters = []
+            // 动态筛选框依赖的值也需要更新
+            const updatedDynamicDepInfo = {}
+            depFilters.forEach(f => {
+                //只需处理与当前触发者关联的筛选框
+                if (depInfo.ids.includes(f.id)) {
+                    // 动态筛选框无需更新options
+                    if (f.dynamic) {
+                        updatedDynamicDepInfo[f.id] = depInfo.value
+                    } else {
+                        updatedFilters.push(f)
+                    }
+                }
+            })
+            setDynamicDepInfo(prevState => {
+                return {...prevState, ...updatedDynamicDepInfo, curId: undefined}
+            })
+            setFilterOptions(updatedFilters, setDepItems, {IN_EXPAND_1: depInfo.value})
+        }
+    }, [depInfo,depFilters,setFilterOptions])
+
+    // 动态筛选框
+    const [dynamicDepInfo, setDynamicDepInfo] = useState(initDynamicDepInfo)
+    const [dynamicItems, setDynamicItems] = useState({})
+    useEffect(() => {
+        const curId = dynamicDepInfo.curId;
+        if (curId) {
+            // 只更新当前输入的动态筛选框, 理论上应该只有一个
+            const curFilter = dynamicFilters.filter(f => f.id === curId)[0];
+            if (curFilter) {
+                const extraParams = {
+                    IN_EXPAND_1: dynamicDepInfo[curId],
+                    [curFilter.dynamic]: dynamicDepInfo.curValue
+                }
+                setFilterOptions([curFilter], setDynamicItems, extraParams)
+            }
+        }
+    }, [dynamicDepInfo])
+
+
     /** 各类型筛选框状态 结束  */
 
     /** 筛选框控件处理 开始 */
 
-    // 实际选择的过滤条件参数
+        // 实际选择的过滤条件参数
     const [actFilterParams, setActFilterParams] = useState({});
 
     // 实际列表查询参数=初始参数+过滤条件参数
@@ -133,24 +129,24 @@ const RcTableView = props => {
         })
         // 2. 如果被其他筛选框依赖，则需要更新当前的依赖信息
         if (beDepIds.has(item.filter.id)) {
-            const ids = depFilters.filter(e => e.filter.deps === item.filter.id).map(f => f.filter.id);
+            const ids = depFilters.filter(f => f.deps === item.filter.id).map(f => f.id);
             // 触发依赖更新
             setDepInfo({ids, value})
         }
     }, [beDepIds])
 
     // 这里debounce一下，避免频繁的请求后端数据
-    const handleFilterInput = useCallback(debounce((value, item) => {
+    const handleFilterInput = useCallback(debounce((value, filter) => {
         if (value && value.length !== 0) {
             setDynamicDepInfo(prevState => {
                 return {
-                    ...prevState, curId: item.filter.id, curValue: value
+                    ...prevState, curId: filter.id, curValue: value
                 }
             })
         } else {
             setDynamicItems(prevState => {
                 return {
-                    ...prevState, [item.filter.id]: []
+                    ...prevState, [filter.id]: []
                 }
             })
         }
@@ -194,7 +190,7 @@ const RcTableView = props => {
                         // dynamic比deps更具有优先级
                         if (filter.dynamic) {
                             optionsSrc = dynamicItems
-                            dynamicProps.onSearch = (value) => handleFilterInput(value, item)
+                            dynamicProps.onSearch = (value) => handleFilterInput(value, filter)
                         } else if (filter.deps) {
                             optionsSrc = depItems
                         }

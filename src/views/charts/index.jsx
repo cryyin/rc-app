@@ -90,7 +90,9 @@ const Visualization = (props) => {
     },[fixedParams])
 
     const c1 = chartData[1]
-    chartData[4].legend[1] =  c1.vOperateUnit
+    if(c1){
+        chartData[4].legend[1] =  c1.vOperateUnit
+    }
     return (
         <div className='chart-container'>
             <div className="container">

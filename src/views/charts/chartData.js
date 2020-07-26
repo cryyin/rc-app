@@ -1,10 +1,10 @@
 const ChartData = {
     '1': {
-        "vOperateUnit": "经营单位-588222",
-        "n3mArAvg": 66.16,
+        "vOperateUnit": "股份公司A",
+        "n3mArAvg": '--',
         "nCreditPeriod": null,
-        "vCustomerName": "客户-719119",
-        "n3mIncome": 106.03,
+        "vCustomerName": "客户A",
+        "n3mIncome": '--',
         "nCreditAmount": null
     },
     '2': {

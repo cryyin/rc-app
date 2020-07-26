@@ -119,6 +119,8 @@ export const getProcedureConfig = (procedureName, rawParams, isFilter = false) =
  * @returns {{muteFilters: [], dynamicFilters: [], beDepIds: Set<any>, depFilters: []}}
  */
 export const classifyFilterItem = (filterItems) => {
+    // 所有的筛选框
+    const filters = []
     // 仅需初始化一次的筛选框
     const muteFilters = []
     // 依赖其他筛选框值的筛选框
@@ -129,26 +131,27 @@ export const classifyFilterItem = (filterItems) => {
     const beDepIds = new Set()
     filterItems.forEach(item => {
         const e = item.filter
+        filters.push(e)
         if (e.deps) {
-            depFilters.push(item)
+            depFilters.push(e)
             beDepIds.add(e.deps);
             // 存在既有依赖又是动态的筛选框，如果想节省空间的话，可以考虑优化一下数据结构
             if (e.dynamic) {
-                dynamicFilters.push(item)
+                dynamicFilters.push(e)
             }
         } else if (e.dynamic) {
-            dynamicFilters.push(item)
+            dynamicFilters.push(e)
         } else {
-            muteFilters.push(item)
+            muteFilters.push(e)
         }
     })
     // 初始化动态筛选框的默认依赖值
     const initDynamicDepInfo = {}
     const beDepItemFilter = {}
-    filterItems.filter(i => beDepIds.has(i.filter.id)).map(i => i.filter).forEach(f => {
+    filters.filter(f => beDepIds.has(f.id)).forEach(f => {
         beDepItemFilter[f.id] = f
     })
-    depFilters.map(i => i.filter).filter(f => f.dynamic && beDepItemFilter[f.deps]).forEach(f => {
+    depFilters.filter(f => f.dynamic && beDepItemFilter[f.deps]).forEach(f => {
         initDynamicDepInfo[f.id] = beDepItemFilter[f.deps].defaultValue
     })
     return {muteFilters, depFilters, dynamicFilters, beDepIds, initDynamicDepInfo}
@@ -182,11 +185,12 @@ const parseTableConfig = (props) => {
     // 筛选框分类处理：默认、依赖、动态
     const {muteFilters, depFilters, dynamicFilters, beDepIds, initDynamicDepInfo} = classifyFilterItem(filterItems);
 
+    const initDepIds = depFilters.filter(f => !f.skipInit).map(f => f.id);
     /** ======生成筛选框配置 结束====== */
 
     return {
         columns, rowKey, filterItems, listSql, initListParams,
-        filterSql, initFilterParams, muteFilters, depFilters, dynamicFilters, beDepIds, initDynamicDepInfo
+        filterSql, initFilterParams, muteFilters, depFilters, dynamicFilters, beDepIds, initDynamicDepInfo, initDepIds
     }
 }
 
