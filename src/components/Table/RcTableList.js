@@ -14,8 +14,6 @@ const RcTableList = (props) => {
 
     const [list, setList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    // noinspection JSUnusedLocalSymbols
-    const [isError, setIsError] = useState(false);
 
 
     // 总页数
@@ -28,7 +26,6 @@ const RcTableList = (props) => {
      */
     useEffect(() => {
         const fetchData = async () => {
-            setIsError(false);
             setIsLoading(true);
             // 后端接收开始行数、结束行数作为参数
             const {size, current} = pageInfo;
@@ -55,7 +52,6 @@ const RcTableList = (props) => {
                 }
             } catch (error) {
                 console.log(error)
-                setIsError(true);
             }
             setIsLoading(false);
         };

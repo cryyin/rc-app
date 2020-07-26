@@ -30,7 +30,11 @@ const Visualization = (props) => {
     const [chartData, setChartData] = useState(
         {...DefaultChartData}
     );
+
+    // fixed: Can't perform a React state update on an unmounted component
+    // @see "https://stackoverflow.com/a/60907638"
     useEffect(()=>{
+        let _mounted = true; // note this flag denote mount status
         // 需要确保参数正确
         if (!fixedParams) return;
         const {IN_ID,IN_SEG_ORG_KEY, IN_CAL_AREA} = fixedParams
@@ -76,13 +80,14 @@ const Visualization = (props) => {
                         })
                         result = {data1, data2, axis: DefaultChartData[4].axis,legend: DefaultChartData[4].legend}
                     }
-                    setChartData(prevState => {
+                    _mounted && setChartData(prevState => {
                         return {...prevState, [i]: result}
                     })
                 })
             })
         }
-    },[])
+        return () => {_mounted = false};
+    },[fixedParams])
 
     const c1 = chartData[1]
     chartData[4].legend[1] =  c1.vOperateUnit
