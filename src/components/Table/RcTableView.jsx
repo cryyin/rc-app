@@ -28,7 +28,7 @@ const RcTableView = props => {
     const {
         rowKey, filterItems, listSql, initListParams, muteFilters, depFilters, dynamicFilters, beDepIds, initDynamicDepInfo, initDepIds, setFilterOptions
     } = useMemo(() => {
-        if (fixedParams && tableConfig) {
+        if (tableConfig) {
             return parseTableConfig(fixedParams, tableConfig);
         }
         return {}
