@@ -4,11 +4,10 @@
 import React from 'react';
 import RcTableView from "@/components/Table/RcTableView";
 import tableConfig from "./LawsuitConfig"
-import Icon from '@ant-design/icons';
-import {FileTextOutlined, FundOutlined} from "@ant-design/icons";
 import useRcPageNav from "@/utils/useRcPageNav";
 import ReportChart from '@/views/charts/index';
 import {getArColumns} from "@/views/t1/CommonColumns";
+import {CustomerDetailIcon, ReportIcon} from "@/views/t1/Icons";
 
 const Lawsuit = (props) => {
     const columns = [
@@ -29,7 +28,7 @@ const Lawsuit = (props) => {
                     dataIndex: 'vCustomerName',
                     key: 'vCustomerName',
                     render: (text, record)=> {
-                        return getPageIcon(text, <FileTextOutlined/>,
+                        return getPageIcon(text, CustomerDetailIcon,
                             `/customer?IN_ID=${record.vId}`);
                     }
                 },{
@@ -98,7 +97,7 @@ const Lawsuit = (props) => {
                 '涉诉公司对该客户应收账款情况',
                 (text, record)=> {
                     return text === 'Y' ?
-                        getModalIcon('', record, <Icon component={FundOutlined}/>,'report') : ''
+                        getModalIcon('', record,ReportIcon,'report') : ''
                 }
             )
         }

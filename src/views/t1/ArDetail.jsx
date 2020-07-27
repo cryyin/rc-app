@@ -5,15 +5,13 @@ import React from 'react';
 import RcTableView from "@/components/Table/RcTableView";
 import tableConfig from "./ArDetailConfig"
 import { Tag, Space} from 'antd'
-import {FileTextOutlined, FundOutlined} from "@ant-design/icons";
 import useRcPageNav from "@/utils/useRcPageNav";
-import Icon from '@ant-design/icons';
 // 目前引入自定义图标需要这样写，可能是craco的问题
-import {ReactComponent as LawsuitIcon} from '@/assert/icon/lawsuit.svg'
 import {getArColumns} from "@/views/t1/CommonColumns";
 import ReportChart from "@/views/charts";
+import {CustomerDetailIcon, LawsuitIcon, ReportIcon} from "@/views/t1/Icons";
 
-const ArDetail = () => {
+const ArDetail = (props) => {
     // noinspection DuplicatedCode
     const columns = [
             {
@@ -33,9 +31,9 @@ const ArDetail = () => {
                         dataIndex: 'vCustomerName',
                         key: 'vCustomerName',
                         render: (text, record)=> {
-                            const customIcon =  getPageIcon('', <FileTextOutlined/>,
+                            const customIcon =  getPageIcon('', CustomerDetailIcon,
                                 `/customer?IN_ID=${record.vId}`);
-                            const lawsuitIcon = getPageIcon('', <Icon component={LawsuitIcon}/>,
+                            const lawsuitIcon = getPageIcon('', LawsuitIcon,
                                 `/lawsuit?IN_ID=${record.vId}`);
                             return (
                                 <Space>
@@ -101,14 +99,14 @@ const ArDetail = () => {
                 '客户应收账款情况',
                 (text, record)=> {
                     return text === 'Y' ?
-                        getModalIcon('', record, <Icon component={FundOutlined}/>,'report') : ''
+                        getModalIcon('', record, ReportIcon,'report') : ''
                 }
             )
         }];
-    const {getPageIcon, getModalIcon, RcModal, curInParams} = useRcPageNav();
+    const {getPageIcon, getModalIcon, RcModal, curInParams, fixedParams} = useRcPageNav(props);
     return (
         <div>
-            <RcTableView columns={columns} tableConfig={tableConfig}/>
+            <RcTableView fixedParams={fixedParams} columns={columns} tableConfig={tableConfig}/>
             <RcModal id='report'>
                 <ReportChart fixedParams={curInParams} />
             </RcModal>

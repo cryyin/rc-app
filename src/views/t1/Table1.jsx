@@ -4,11 +4,8 @@
 import React from 'react';
 import RcTableView from "@/components/Table/RcTableView";
 import tableConfig from "./Table1Config"
-import {FileTextOutlined} from "@ant-design/icons";
 import useRcPageNav from "@/utils/useRcPageNav";
-import Icon from '@ant-design/icons';
-// 目前引入自定义图标需要这样写，可能是craco的问题
-import {ReactComponent as LawsuitIcon} from '@/assert/icon/lawsuit.svg'
+import {CustomerDetailIcon, LawsuitIcon} from "@/views/t1/Icons";
 
 const Table1 = () => {
     const columns = [
@@ -40,8 +37,7 @@ const Table1 = () => {
                     dataIndex: 'vCustomerName',
                     key: 'vCustomerName',
                     render: (text, record) => {
-                        return getPageIcon(text, <FileTextOutlined/>,
-                            `/customer?IN_ID=${record.vId}`);
+                        return getPageIcon(text, CustomerDetailIcon, `/customer?IN_ID=${record.vId}`);
                     }
                 }
             ]
@@ -98,8 +94,7 @@ const Table1 = () => {
                     width: 100,
                     key: 'vLiitglag',
                     render: (text, record) => {
-                        return getPageIcon(text, <Icon component={LawsuitIcon}/>,
-                            `/lawsuit?IN_ID=${record.vId}`);
+                        return getPageIcon(text, LawsuitIcon, `/lawsuit?IN_ID=${record.vId}`);
                     }
                 }, {
                     title: '总涉诉金额',

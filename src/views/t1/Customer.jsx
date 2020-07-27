@@ -5,6 +5,7 @@ import React from 'react';
 import RcTableView from "@/components/Table/RcTableView";
 import tableConfig from "./CustomerConfig"
 import useRcPageNav from "@/utils/useRcPageNav";
+import {AccountBookIcon} from "@/views/t1/Icons";
 
 const Customer = (props) => {
     const columns = [
@@ -74,7 +75,14 @@ const Customer = (props) => {
             title: '应收账款情况',
             dataIndex: 'vArFlag',
             width: 100,
-            key: 'vArFlag'
+            key: 'vArFlag',
+            render: (text, record)=> {
+                if (record.vArFlag === 'Y'){
+                    return getPageIcon('', AccountBookIcon,
+                        `/ar_detail?IN_ID=${record.vId}`);
+                }
+                return ''
+            }
         }, {
             title: '关联企业详情',
             width: 100,
@@ -83,7 +91,7 @@ const Customer = (props) => {
         }
     ];
     // 页面跳转、模块框相关hook
-    const {fixedParams} = useRcPageNav(props);
+    const {fixedParams, getPageIcon} = useRcPageNav(props);
 
     return (
         <div>
