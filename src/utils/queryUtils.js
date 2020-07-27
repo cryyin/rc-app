@@ -19,6 +19,17 @@ export const pageParams = [
 // 存储过程输出参数名称
 export const outParamName = 'OUT_DATASET'
 
+// 默认筛选框sql
+const defaultFilterSql = 'call PRD_RC.PKG_RC_DIGITAL_WARNING.SP_RC_SELECT(#{IN_MONTH,mode=IN,jdbcType=VARCHAR},#{IN_DIM_TYPE_CODE,mode=IN,jdbcType=VARCHAR},#{IN_EXPAND_1,mode=IN,jdbcType=VARCHAR},#{IN_EXPAND_2,mode=IN,jdbcType=VARCHAR},#{IN_EXPAND_3,mode=IN,jdbcType=VARCHAR},#{IN_USER_GROUP,mode=IN,jdbcType=VARCHAR},#{IN_DATA_SOURCE,mode=IN,jdbcType=VARCHAR},#{OUT_DATASET,mode=OUT,jdbcType=CURSOR,javaType=ResultSet,resultMap=map})'
+const defaultFilterParams = {
+    IN_MONTH: getLastYearMonth(),
+    IN_DIM_TYPE_CODE: "",
+    IN_EXPAND_1: "",
+    IN_EXPAND_2: "",
+    IN_EXPAND_3: "",
+    IN_USER_GROUP: "",
+    IN_DATA_SOURCE: "TEST"
+}
 /**
  * 转换为真正的参数数组
  *
@@ -100,7 +111,8 @@ export const getProcedureConfig = (procedureName, rawParams, isFilter = false) =
         params[p.name] = p.value
         if (p.filter) {
             // IN_DIM_TYPE_CODE默认为D00+id
-            p.filter.code = p.filter.code || 'D00' + p.filter.id
+            const codePrefix = p.filter.id < 10 ? 'D00' : 'D0';
+            p.filter.code = p.filter.code || codePrefix + p.filter.id
             filterItems.push(p);
         }
     })
@@ -163,7 +175,7 @@ export const classifyFilterItem = (filterItems) => {
  * 一次性返回RcTable用到的配置项
  * @param fixedParams
  * @param tableConfig
- * @returns {{filterSql: String, listSql: String, setFilterOptions: setFilterOptions, initDynamicDepInfo, depFilters: *[], muteFilters: *[], initFilterParams: {}, filterItems: [], beDepIds: Set<*>, initDepIds: *[], dynamicFilters: *[], rowKey: *, initListParams}}
+ * @return {{filterSql: ({params: {IN_EXPAND_3: string, IN_DATA_SOURCE: string, IN_DIM_TYPE_CODE: string, IN_EXPAND_1: string, IN_EXPAND_2: string, IN_MONTH: string, IN_USER_GROUP: string}, sql: string}|{params: {}, sql: String}|{filterItems: [], params: {}, sql: String}), listSql: String, setFilterOptions: setFilterOptions, initDynamicDepInfo, depFilters: *[], muteFilters: *[], initFilterParams: ({params: {IN_EXPAND_3: string, IN_DATA_SOURCE: string, IN_DIM_TYPE_CODE: string, IN_EXPAND_1: string, IN_EXPAND_2: string, IN_MONTH: string, IN_USER_GROUP: string}, sql: string}|{params: {}, sql: String}|{filterItems: [], params: {}, sql: String}), filterItems: [], beDepIds: Set<*>, initDepIds: *[], dynamicFilters: *[], rowKey: *, initListParams}}
  */
 const parseTableConfig = (fixedParams, tableConfig) => {
     console.log('开始解析')
@@ -178,7 +190,11 @@ const parseTableConfig = (fixedParams, tableConfig) => {
     /** ======生成表单配置  结束====== */
 
     /** ======生成筛选框配置 开始====== */
-    const filterConfig = getProcedureConfig(filterProcedureName, filterParams, true)
+    const filterConfig = (filterParams && filterProcedureName) ?
+        getProcedureConfig(filterProcedureName, filterParams, true) : {
+            sql: defaultFilterSql,
+            params: defaultFilterParams
+        }
 
     const {sql: filterSql, params: initFilterParams} = filterConfig
     const {filterItems, sql: listSql} = listConfig

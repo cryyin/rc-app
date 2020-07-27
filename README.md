@@ -16,7 +16,7 @@
 │   └─ index.html              # html模板
 └── src                        # 项目源码
 │   ├── api                    # 所有请求
-│   ├── assert
+│   ├── assert                 # 图标、字体等静态资源
 │   ├── components             # 全局公用组件
 │   ├── config                 # 全局配置
 │       └── routeMap.js        # 路由配置
@@ -72,7 +72,29 @@ npm build
 
 仅仅提供自定义的参数即可，部分固定参数如IN_MONTH、DATA_SOURCE会自动合并
 
-参数说明：
+### 公共参数：
+以下参数为目前默认的公共参数，自定义时需要省略掉
+```javascript
+// 当前查询年月
+export const lastYearMonth = [
+    {name: 'IN_MONTH', type: 'VARCHAR2', value: "计算得到的上一个年月"}
+]
+// 存储过程通用参数
+export const commonParams = [
+    {name: 'IN_USER_GROUP', type: 'VARCHAR2', value: ""},
+    {name: 'IN_DATA_SOURCE', type: 'VARCHAR2', value: DATA_SOURCE}
+]
+// 分页参数, 筛选框查询查询不需提供
+export const pageParams = [
+    {name: 'IN_ROWNB_BEGIN', type: 'NUMBER', value: 0},
+    {name: 'IN_ROWNB_END', type: 'NUMBER', value: 10}
+]
+// 存储过程输出参数名称
+export const outParamName = 'OUT_DATASET'
+```
+### 自定义参数：
+目前，如果不提供筛选框的相关参数，则会使用默认的筛选框存储过程配置
+
 - name: 存储过程对应的参数名
 - type: 存储过程对应的参数类型
 

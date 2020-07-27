@@ -33,6 +33,7 @@ const RcTableList = (props) => {
             const IN_ROWNB_END = size * current;
             const requestParam =  {...params, IN_ROWNB_BEGIN, IN_ROWNB_END}
             console.log('表格List请求参数')
+            console.log(sql)
             console.log(requestParam)
             try {
                 const result = await call(sql, requestParam);
