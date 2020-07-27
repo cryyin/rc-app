@@ -5,7 +5,9 @@ import React from 'react';
 import RcTableView from "@/components/Table/RcTableView";
 import tableConfig from "./CustomerConfig"
 import useRcPageNav from "@/utils/useRcPageNav";
-import {AccountBookIcon} from "@/views/t1/Icons";
+import {AccountBookIcon, CustomerCodeIcon} from "@/views/t1/Icons";
+import {Space} from "antd";
+import CustomerCode from "@/views/t1/CustomerCode";
 
 const Customer = (props) => {
     const columns = [
@@ -20,7 +22,16 @@ const Customer = (props) => {
             width: 160,
             fixed: 'left',
             dataIndex: 'vCustomerName',
-            key: 'vCustomerName'
+            key: 'vCustomerName',
+            render: (text, record)=> {
+                const Icon =  getModalIcon('', record,CustomerCodeIcon,'customerCode');
+                return (
+                    <Space>
+                        {text}
+                        {Icon}
+                    </Space>
+                )
+            }
         },
         {
             title: '所属行业',
@@ -91,11 +102,14 @@ const Customer = (props) => {
         }
     ];
     // 页面跳转、模块框相关hook
-    const {fixedParams, getPageIcon} = useRcPageNav(props);
+    const {fixedParams, getPageIcon, getModalIcon, RcModal, curInParams} = useRcPageNav(props);
 
     return (
         <div>
             <RcTableView fixedParams={fixedParams} columns={columns} tableConfig={tableConfig}/>
+            <RcModal id='customerCode'>
+                <CustomerCode fixedParams={curInParams} />
+            </RcModal>
         </div>
     );
 }

@@ -68,6 +68,13 @@ npm build
 
 # 开发
 
+## 路由配置
+目前项目仍是一个单页面应用(SPA)，对于不同的页面使用[React-Router](https://reactrouter.com/web/guides/quick-start)
+进行导航。具体的配置文件位于```src/config/routeMap.js```, 每新增一个页面均需要在这里配置路由。
+
+为减少单文件体积，后续考虑使用[react-loadable](https://www.npmjs.com/package/react-loadable) 这样的
+包动态加载页面组件。
+
 ## Rc通用表格配置
 
 仅仅提供自定义的参数即可，部分固定参数如IN_MONTH、DATA_SOURCE会自动合并

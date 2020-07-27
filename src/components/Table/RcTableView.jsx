@@ -143,77 +143,81 @@ const RcTableView = props => {
     return (
         <div>
             {/*查询区域*/}
-            <Form layout='inline'>
-                {
-                    // 循环生成筛选框
-                    filterItems.map(item => {
-                        const {filter} = item
+            {
+                filterItems.length > 0 ?
+                    <Form layout='inline'>
+                        {
+                            // 循环生成筛选框
+                            filterItems.map(item => {
+                                const {filter} = item
 
-                        /** 筛选框是input **/
-                        if (filter.type === 'input') {
-                            return (
-                                <Form.Item key={filter.code}>
-                                    <Input
-                                        onChange={(e) => changeFilter(e.target.value, item)}
-                                        allowClear
-                                        placeholder="请输入要查询的内容"
-                                    />
-                                </Form.Item>
-                            )
-                        }
+                                /** 筛选框是input **/
+                                if (filter.type === 'input') {
+                                    return (
+                                        <Form.Item key={filter.code}>
+                                            <Input
+                                                onChange={(e) => changeFilter(e.target.value, item)}
+                                                allowClear
+                                                placeholder="请输入要查询的内容"
+                                            />
+                                        </Form.Item>
+                                    )
+                                }
 
-                        /** select 下拉框 和 autoComplete */
-                        // 根据筛选框类型确定option字典来源
-                        let optionsSrc = muteItems
-                        const dynamicProps = {}
-                        // dynamic优先从dynamicItems中取数，比deps更具有优先级
-                        if (filter.dynamic) {
-                            optionsSrc = dynamicItems
-                            dynamicProps.onSearch = (value) => handleFilterInput(value, filter)
-                        } else if (filter.deps) {
-                            optionsSrc = depItems
-                        }
-                        const optionData = (optionsSrc && optionsSrc[filter.code] && optionsSrc[filter.code]) || []
-                        const options = optionData.map(d => <Option value={d.vKey} key={d.vKey}>{d.vValue}</Option>)
+                                /** select 下拉框 和 autoComplete */
+                                    // 根据筛选框类型确定option字典来源
+                                let optionsSrc = muteItems
+                                const dynamicProps = {}
+                                // dynamic优先从dynamicItems中取数，比deps更具有优先级
+                                if (filter.dynamic) {
+                                    optionsSrc = dynamicItems
+                                    dynamicProps.onSearch = (value) => handleFilterInput(value, filter)
+                                } else if (filter.deps) {
+                                    optionsSrc = depItems
+                                }
+                                const optionData = (optionsSrc && optionsSrc[filter.code] && optionsSrc[filter.code]) || []
+                                const options = optionData.map(d => <Option value={d.vKey}
+                                                                            key={d.vKey}>{d.vValue}</Option>)
 
-                        // autoComplete
-                        if (filter.type === 'autoComplete'){
-                            return (
-                                <Form.Item label={filter.label} key={filter.code}>
-                                    <AutoComplete
-                                        style={{ width: 120 }}
-                                        {...dynamicProps}
-                                        onChange={(value) => changeFilter(value, item)}
-                                        placeholder="请输入">
-                                        {options}
-                                    </AutoComplete>
-                                </Form.Item>
-                            )
+                                // autoComplete
+                                if (filter.type === 'autoComplete') {
+                                    return (
+                                        <Form.Item label={filter.label} key={filter.code}>
+                                            <AutoComplete
+                                                style={{width: 120}}
+                                                {...dynamicProps}
+                                                onChange={(value) => changeFilter(value, item)}
+                                                placeholder="请输入">
+                                                {options}
+                                            </AutoComplete>
+                                        </Form.Item>
+                                    )
+                                }
+                                // select下拉框
+                                return (
+                                    <Form.Item label={filter.label} key={filter.code}>
+                                        <Select
+                                            showSearch={filter.searchable || filter.dynamic}
+                                            {...dynamicProps}
+                                            defaultValue={filter.defaultValue}
+                                            allowClear
+                                            onChange={(value) => changeFilter(value, item)}
+                                            style={{width: '120px'}}
+                                            placeholder='请选择'
+                                        >
+                                            {options}
+                                        </Select>
+                                    </Form.Item>
+                                )
+                            })
                         }
-                        // select下拉框
-                        return (
-                            <Form.Item label={filter.label} key={filter.code}>
-                                <Select
-                                    showSearch={filter.searchable || filter.dynamic}
-                                    {...dynamicProps}
-                                    defaultValue={filter.defaultValue}
-                                    allowClear
-                                    onChange={(value) => changeFilter(value, item)}
-                                    style={{width: '120px'}}
-                                    placeholder='请选择'
-                                >
-                                    {options}
-                                </Select>
-                            </Form.Item>
-                        )
-                    })
-                }
-                <Form.Item>
-                    <Button type="primary" icon={<SearchOutlined/>} onClick={doSearch}>
-                        搜索
-                    </Button>
-                </Form.Item>
-            </Form>
+                        <Form.Item>
+                            <Button type="primary" icon={<SearchOutlined/>} onClick={doSearch}>
+                                搜索
+                            </Button>
+                        </Form.Item>
+                    </Form> : null
+            }
 
             {/*表格及分页区域*/}
             <RcTableList
