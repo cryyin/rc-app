@@ -11,16 +11,8 @@ export const listParams = [
     {name: 'IN_FLAG          ', type: 'VARCHAR2'}
 ];
 
-export const filterParams = [
-    {name:'IN_DIM_TYPE_CODE ',type:'VARCHAR2'},
-    {name:'IN_EXPAND_1      ',type:'VARCHAR2'},
-    {name:'IN_EXPAND_2      ',type:'VARCHAR2'},
-    {name:'IN_EXPAND_3      ',type:'VARCHAR2'}
-];
-
-const filterProcedureName = 'PKG_RC_DIGITAL_WARNING.SP_RC_SELECT'
 const listProcedureName = 'PKG_RC_DIGITAL_WARNING.SP_RC_LAWSUIT_SEARCH'
 
 export default {
-    listParams,filterParams,filterProcedureName,listProcedureName, rowKey: 'nOrderId'
+    listParams, listProcedureName
 }

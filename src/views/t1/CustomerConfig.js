@@ -9,16 +9,8 @@ export const listParams = [
     {name: 'IN_INDUSTRY_CATEGORY  ', type: 'VARCHAR2', filter: {id: 10, label: '所属行业', code:'D010'}}
     ];
 
-export const filterParams = [
-    {name:'IN_DIM_TYPE_CODE ',type:'VARCHAR2'},
-    {name:'IN_EXPAND_1      ',type:'VARCHAR2'},
-    {name:'IN_EXPAND_2      ',type:'VARCHAR2'},
-    {name:'IN_EXPAND_3      ',type:'VARCHAR2'}
-    ];
-
-const filterProcedureName = 'PKG_RC_DIGITAL_WARNING.SP_RC_SELECT'
 const listProcedureName = 'PKG_RC_DIGITAL_WARNING.SP_RC_CUSTOMER_DETAIL'
 
 export default {
-    listParams,filterParams,filterProcedureName,listProcedureName
+    listParams, listProcedureName
 }
