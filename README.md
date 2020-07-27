@@ -102,12 +102,18 @@ export const outParamName = 'OUT_DATASET'
   + id： 筛选框标识, 应该唯一。值大小代表顺序
   + code: code可根据id生成，如id为1的下拉框code为D001,作为IN_DIM_TYPE_CODE参数值传入存储过程
   + label: 筛选框控件label
+  + type: 筛选框类型，对应antd的Select组件，目前支持的type有
+    * select(默认)
+    * autoComplete
+    * input
   + defaultValue： 筛选框控件默认值
   + deps： 表示当前筛选框依赖其他筛选框的值,暂时只考虑支持一个依赖
-  + 以下是针对select下拉框的配置
+  + 是针对select下拉框的配置
     * skipInit: 是否跳过初始化，针对具有依赖关系，且数据量较大的下拉框。如果传入父值数据量仍旧很大，应该设置dynamic
     * dynamic: 如果值存在，即代表下拉框需动态生产，dynamic的值代表搜索值对应的存储过程参数
     * searchable：是否可输入
+  + 针对autoComplete的配置
+    * dynamic: 如果值存在，即代表autoComplete候选项需动态生产，dynamic的值代表搜索值对应的存储过程参数
  
 为获取存储过程自定义参数，一般可以打开plsql查看具体的存储过程，复制到notepad++后直接进行列操作可得到该配置信息
  

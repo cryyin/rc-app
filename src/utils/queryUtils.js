@@ -175,7 +175,7 @@ export const classifyFilterItem = (filterItems) => {
  * 一次性返回RcTable用到的配置项
  * @param fixedParams
  * @param tableConfig
- * @return {{filterSql: ({params: {IN_EXPAND_3: string, IN_DATA_SOURCE: string, IN_DIM_TYPE_CODE: string, IN_EXPAND_1: string, IN_EXPAND_2: string, IN_MONTH: string, IN_USER_GROUP: string}, sql: string}|{params: {}, sql: String}|{filterItems: [], params: {}, sql: String}), listSql: String, setFilterOptions: setFilterOptions, initDynamicDepInfo, depFilters: *[], muteFilters: *[], initFilterParams: ({params: {IN_EXPAND_3: string, IN_DATA_SOURCE: string, IN_DIM_TYPE_CODE: string, IN_EXPAND_1: string, IN_EXPAND_2: string, IN_MONTH: string, IN_USER_GROUP: string}, sql: string}|{params: {}, sql: String}|{filterItems: [], params: {}, sql: String}), filterItems: [], beDepIds: Set<*>, initDepIds: *[], dynamicFilters: *[], rowKey: *, initListParams}}
+ * @return {{filterSql: string, listSql: String, setFilterOptions: setFilterOptions, initDynamicDepInfo, depFilters: *[], muteFilters: *[], initFilterParams: {IN_EXPAND_3: string, IN_DATA_SOURCE: string, IN_DIM_TYPE_CODE: string, IN_EXPAND_1: string, IN_EXPAND_2: string, IN_MONTH: string, IN_USER_GROUP: string}, filterItems: [], beDepIds: Set<*>, initDepIds: *[], dynamicFilters: *[], rowKey: *, initListParams}}
  */
 const parseTableConfig = (fixedParams, tableConfig) => {
     console.log('开始解析')
@@ -206,12 +206,13 @@ const parseTableConfig = (fixedParams, tableConfig) => {
     /** ======生成筛选框配置 结束====== */
 
     /**
-     * 异步获取下拉框选项字典的便利方法
+     *
      * @param {Array} filters 筛选框列表
      * @param {Function} setter 筛选框setState钩子
      * @param {Object} extraParams 额外的查询查数
+     * @param {Function || undefined }cb
      */
-    const setFilterOptions = (filters, setter, extraParams = {}) => {
+    const setFilterOptions = (filters, setter, extraParams = {}, cb = undefined) => {
         // 传入不同的IN_DIM_TYPE_CODE获取options字典
         filters.forEach(f => {
             const requestParams = {...initFilterParams, ...extraParams, IN_DIM_TYPE_CODE: f.code}
@@ -223,6 +224,9 @@ const parseTableConfig = (fixedParams, tableConfig) => {
                 setter(prevState => {
                     return {...prevState, [result.IN_DIM_TYPE_CODE]: r.data.OUT_DATASET}
                 })
+                if (cb){
+                    cb(r.data);
+                }
             })
         })
     }

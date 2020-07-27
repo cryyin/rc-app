@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import PropTypes from 'prop-types';
-import {Button, Form, Select, Input} from "antd"
+import {Button, Form, Select, Input, AutoComplete} from "antd"
 import RcTableList from "@/components/Table/RcTableList";
 import {SearchOutlined} from "@ant-design/icons";
 import parseTableConfig from "@/utils/queryUtils";
@@ -162,8 +162,8 @@ const RcTableView = props => {
                             )
                         }
 
-                        /** 筛选框默认是Select下拉框 **/
-                            // 根据筛选框类型确定option字典来源
+                        /** select 下拉框 和 autoComplete */
+                        // 根据筛选框类型确定option字典来源
                         let optionsSrc = muteItems
                         const dynamicProps = {}
                         // dynamic优先从dynamicItems中取数，比deps更具有优先级
@@ -173,7 +173,24 @@ const RcTableView = props => {
                         } else if (filter.deps) {
                             optionsSrc = depItems
                         }
-                        const options = (optionsSrc && optionsSrc[filter.code] && optionsSrc[filter.code]) || []
+                        const optionData = (optionsSrc && optionsSrc[filter.code] && optionsSrc[filter.code]) || []
+                        const options = optionData.map(d => <Option value={d.vKey} key={d.vKey}>{d.vValue}</Option>)
+
+                        // autoComplete
+                        if (filter.type === 'autoComplete'){
+                            return (
+                                <Form.Item label={filter.label} key={filter.code}>
+                                    <AutoComplete
+                                        style={{ width: 120 }}
+                                        {...dynamicProps}
+                                        onChange={(value) => changeFilter(value, item)}
+                                        placeholder="请输入">
+                                        {options}
+                                    </AutoComplete>
+                                </Form.Item>
+                            )
+                        }
+                        // select下拉框
                         return (
                             <Form.Item label={filter.label} key={filter.code}>
                                 <Select
@@ -185,7 +202,7 @@ const RcTableView = props => {
                                     style={{width: '120px'}}
                                     placeholder='请选择'
                                 >
-                                    {options.map(d => <Option value={d.vKey} key={d.vKey}>{d.vValue}</Option>)}
+                                    {options}
                                 </Select>
                             </Form.Item>
                         )
