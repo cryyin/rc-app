@@ -9,7 +9,6 @@ import {FileTextOutlined, FundOutlined} from "@ant-design/icons";
 import useRcPageNav from "@/utils/useRcPageNav";
 import Icon from '@ant-design/icons';
 // 目前引入自定义图标需要这样写，可能是craco的问题
-// noinspection ES6UnusedImports
 import {ReactComponent as LawsuitIcon} from '@/assert/icon/lawsuit.svg'
 import {getArColumns} from "@/views/t1/CommonColumns";
 import ReportChart from "@/views/charts";
@@ -116,10 +115,6 @@ const ArDetail = () => {
         </div>
     );
 }
-
-// 表列
-
-
 export default ArDetail
 
 
