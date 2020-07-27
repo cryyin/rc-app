@@ -5,7 +5,7 @@ import React from 'react';
 import RcTableView from "@/components/Table/RcTableView";
 import tableConfig from "./CustomerConfig"
 import useRcPageNav from "@/utils/useRcPageNav";
-import {AccountBookIcon, CustomerCodeIcon} from "@/views/t1/Icons";
+import {AccountBookIcon, CustomerCodeIcon, CorpIcon} from "@/views/t1/Icons";
 import {Space} from "antd";
 import CustomerCode from "@/views/t1/CustomerCode";
 
@@ -98,7 +98,10 @@ const Customer = (props) => {
             title: '关联企业详情',
             width: 100,
             dataIndex: 'vRelatedFlag',
-            key: 'vRelatedFlag'
+            key: 'vRelatedFlag',
+            render: (text, record)=> {
+                return record.vArFlag === 'Y' ? getModalIcon('', record, CorpIcon,'relatedComp'): ''
+            }
         }
     ];
     // 页面跳转、模块框相关hook
@@ -107,15 +110,15 @@ const Customer = (props) => {
     return (
         <div>
             <RcTableView fixedParams={fixedParams} columns={columns} tableConfig={tableConfig}/>
-            <RcModal id='customerCode'>
+            <RcModal id='customerCode' title='客户编码'>
+                <CustomerCode fixedParams={curInParams} />
+            </RcModal>
+            <RcModal id='relatedComp' title='关联企业详情'>
                 <CustomerCode fixedParams={curInParams} />
             </RcModal>
         </div>
     );
 }
-
-// 表列
-
 
 export default Customer
 

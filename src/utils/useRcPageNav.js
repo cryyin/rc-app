@@ -49,6 +49,7 @@ const useRcPageNav = (props = {}) => {
                 onCancel={hideModal}
                 onOk={hideModal}
                 visible={visible[props.id]}
+                title={props.title}
             >
                 {props.children}
             </Modal>
