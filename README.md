@@ -102,7 +102,7 @@ export const outParamName = 'OUT_DATASET'
   + id： 筛选框标识, 应该唯一。值大小代表顺序
   + code: code可根据id生成，如id为1的下拉框code为D001,作为IN_DIM_TYPE_CODE参数值传入存储过程
   + label: 筛选框控件label
-  + type: 筛选框类型，对应antd的Select组件，目前支持的type有
+  + type: 筛选框类型，与antd组件对应，目前支持的type有
     * select(默认)
     * autoComplete
     * input
