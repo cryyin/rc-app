@@ -56,6 +56,8 @@ npm start
 
 项目暂时没添加mock数据功能，因此需要先启动后端相关服务,即Portal应用和ng代理。
 
+本机没有Portal应用的同学，可以修改一下接口配置,见[接口配置](#接口配置) 一节
+
 启动完成后会自动打开浏览器访问 [http://localhost:3000](http://localhost:3000)， 将会看到以下页面：
 ![](./guide.gif)
 
@@ -67,6 +69,15 @@ npm run build
 然后将build目录下的文件覆盖Portal-Web目录下的modules/rc即可
 
 # 开发
+
+## 接口配置
+
+如果本机没有Portal应用提供后端接口，可以替换```.env.development```文件配置如下：
+```shell script
+REACT_APP_BASE_API = 'http://172.30.25.8:8093/utrust'
+```
+
+注意，该接口目前使用的生产环境接口
 
 ## 路由配置
 目前项目仍是一个单页面应用(SPA)，对于不同的页面使用[React-Router](https://reactrouter.com/web/guides/quick-start)

@@ -46,7 +46,7 @@ const RcTableList = (props) => {
                     setList(dataList);
                     // 总行数
                     if (dataList.length > 0) {
-                        setTotal(dataList[0].nCnt)
+                        setTotal(dataList[0].nRow)
                     } else {
                         setTotal(0)
                     }
