@@ -61,7 +61,7 @@ const ArDetail = (props) => {
                             return (
                                 <Space>
                                     {text}
-                                    <Tag color={"green"}>有涉诉纠纷</Tag>
+                                    <Tag color="#f50">有涉诉纠纷</Tag>
                                 </Space>
                             )
                         }
