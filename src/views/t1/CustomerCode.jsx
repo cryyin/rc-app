@@ -1,5 +1,5 @@
 /**
- * 客户详情
+ * 客户编码
  */
 import React from 'react';
 import RcTableView from "@/components/Table/RcTableView";

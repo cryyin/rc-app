@@ -6,7 +6,6 @@ import RcTableView from "@/components/Table/RcTableView";
 import tableConfig from "./ArDetailConfig"
 import { Tag, Space} from 'antd'
 import useRcPageNav from "@/utils/useRcPageNav";
-// 目前引入自定义图标需要这样写，可能是craco的问题
 import {getArColumns} from "@/views/t1/CommonColumns";
 import ReportChart from "@/views/charts";
 import {CustomerDetailIcon, LawsuitIcon, ReportIcon} from "@/views/t1/Icons";

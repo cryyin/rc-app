@@ -5,7 +5,7 @@ import React from 'react';
 import RcTableView from "@/components/Table/RcTableView";
 import tableConfig from "./CustomerConfig"
 import useRcPageNav from "@/utils/useRcPageNav";
-import {AccountBookIcon, CustomerCodeIcon, CorpIcon} from "@/views/t1/Icons";
+import {ArIcon, CustomerCodeIcon, CorpIcon} from "@/views/t1/Icons";
 import {Space} from "antd";
 import CustomerCode from "@/views/t1/CustomerCode";
 
@@ -89,7 +89,7 @@ const Customer = (props) => {
             key: 'vArFlag',
             render: (text, record)=> {
                 if (record.vArFlag === 'Y'){
-                    return getPageIcon('', AccountBookIcon,
+                    return getPageIcon('', ArIcon,
                         `/ar_detail?IN_ID=${record.vId}`);
                 }
                 return ''
