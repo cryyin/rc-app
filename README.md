@@ -62,7 +62,7 @@ npm start
 # 部署
 ```shell script
 # 打包构建
-npm build
+npm run build
 ```
 然后将build目录下的文件覆盖Portal-Web目录下的modules/rc即可
 
@@ -127,7 +127,7 @@ export const outParamName = 'OUT_DATASET'
 ## 使用svg图标
 项目使用[@svgr/webpack](https://github.com/gregberge/svgr/tree/master/packages/webpack) 处理svg图标
 
-图标来源可以从[阿里巴巴矢量图标库](https://www.iconfont.cn/) 搜索并下载，找不到满意不妨自己画一个。
+图标来源可以让UI提供，或者从[阿里巴巴矢量图标库](https://www.iconfont.cn/) 搜索并下载，找不到满意不妨自己画一个。
 将图标放入项目目录，即可像使用React组件一样使用图标。
 
 有一点需要注意的是:
