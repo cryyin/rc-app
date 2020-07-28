@@ -112,6 +112,14 @@ const RcTableView = props => {
         }
     }, [beDepIds, depFilters])
 
+
+    const handleAcSelect = useCallback((option, item, key='key') => {
+        // 1. 保存当前筛选框的值
+        setActFilterParams(prevState => {
+            return {...prevState, [item.name]: option[key]}
+        })
+    }, [])
+
     // 这里debounce一下，避免频繁的请求后端数据
     const handleFilterInput = useCallback(debounce((value, filter) => {
         if (value && value.length !== 0) {
@@ -176,14 +184,16 @@ const RcTableView = props => {
                                     optionsSrc = depItems
                                 }
                                 const optionData = (optionsSrc && optionsSrc[filter.code] && optionsSrc[filter.code]) || []
-                                const options = optionData.map(d => <Option value={d.vKey}
-                                                                            key={d.vKey}>{d.vValue}</Option>)
 
                                 // autoComplete
                                 if (filter.type === 'autoComplete') {
+                                    // AutoComplete这里value与Select不同，用的是d.vValue
+                                    const options = optionData.map(d => <Option value={d.vValue}
+                                                                                key={d.vKey}>{d.vValue}</Option>)
                                     return (
                                         <Form.Item label={filter.label} key={filter.code}>
                                             <AutoComplete
+                                                onSelect={(value, option)=>{handleAcSelect(option, item)}}
                                                 style={{width: 120}}
                                                 {...dynamicProps}
                                                 onChange={(value) => changeFilter(value, item)}
@@ -193,6 +203,10 @@ const RcTableView = props => {
                                         </Form.Item>
                                     )
                                 }
+
+                                const options = optionData.map(d => <Option value={d.vKey}
+                                                                            key={d.vKey}>{d.vValue}</Option>)
+
                                 // select下拉框
                                 return (
                                     <Form.Item label={filter.label} key={filter.code}>
