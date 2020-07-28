@@ -78,6 +78,52 @@ REACT_APP_BASE_API = 'http://172.30.25.8:8093/utrust'
 
 注意，该接口目前使用的生产环境接口
 
+## 样式修改
+项目使用[less](http://lesscss.cn/) 处理样式。
+就目前而言，修改样式主要包括两部分，一部分就是Antd组件的样式，另一部分就是自定义页面的样式
+
+### 定制antd主题
+在根目录下```craco.config.js```文件配置即可
+```
+    plugins: [
+        {
+            plugin: CracoLessPlugin,
+            options: {
+                lessLoaderOptions: {
+                    // 可以在这里更改antd主题
+                    // @see "https://ant.design/docs/react/use-with-create-react-app-cn"
+                    lessOptions: {
+                        modifyVars: {'@primary-color': '#1890ff'},
+                        javascriptEnabled: true,
+                    },
+```
+
+参考：
++ 官网[在 create-react-app 中使用](https://ant.design/docs/react/use-with-create-react-app-cn#自定义主题) ,
++ 官网[定制主题](https://ant.design/docs/react/customize-theme-cn) 
+
+### 自定义样式
+全局样式配置文件位于```src\style\index.less```, 自定义页面样式可直接新增一个less文件，然后在页面引入即可。
+具体做法可参考可视化报告页面
+
+页面
+```javascript
+// src\views\charts\index.jsx
+import './index.less'
+```
+
+样式
+```less
+// src\views\charts\index.less
+.chart-container{
+  min-height: 399px;
+  width: 100%;
+  height: 100%;
+  color: #333333;
+  background: #F7F7F7;
+  ...
+}
+```
 ## 路由配置
 目前项目仍是一个单页面应用(SPA)，对于不同的页面使用[React-Router](https://reactrouter.com/web/guides/quick-start)
 进行导航。具体的配置文件位于```src/config/routeMap.js```, 每新增一个页面均需要在这里配置路由。
