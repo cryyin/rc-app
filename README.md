@@ -133,7 +133,9 @@ import './index.less'
 
 ## Rc通用表格配置
 
-仅仅提供自定义的参数即可，部分固定参数如IN_MONTH、DATA_SOURCE会自动合并
+仅仅提供自定义的参数即可，部分固定参数如IN_MONTH、DATA_SOURCE会自动合并。如果不提供筛选框的相关参数，
+则会使用默认的筛选框存储过程配置。就目前而言，筛选框调用的存储过程都是一样的。
+
 
 ### 公共参数：
 以下参数为目前默认的公共参数，自定义时需要省略掉
@@ -147,7 +149,7 @@ export const commonParams = [
     {name: 'IN_USER_GROUP', type: 'VARCHAR2', value: ""},
     {name: 'IN_DATA_SOURCE', type: 'VARCHAR2', value: DATA_SOURCE}
 ]
-// 分页参数, 筛选框查询查询不需提供
+// 分页参数, 列表查询专用，筛选框查询不需提供
 export const pageParams = [
     {name: 'IN_ROWNB_BEGIN', type: 'NUMBER', value: 0},
     {name: 'IN_ROWNB_END', type: 'NUMBER', value: 10}
@@ -155,13 +157,11 @@ export const pageParams = [
 // 存储过程输出参数名称
 export const outParamName = 'OUT_DATASET'
 ```
-### 自定义参数：
-目前，如果不提供筛选框的相关参数，则会使用默认的筛选框存储过程配置
+### 自定参数：
 
 - name: 存储过程对应的参数名
 - type: 存储过程对应的参数类型
-
-- filter: filter对应存在，即表明该项作为筛选框条件，用户可在前端页面配置。以下参数一般与对应的Antd组件参数关联：
+- filter: 列表查询参数专用。filter对应存在，即表明该项作为筛选框条件，用户可在前端输入值。以下filter参数一般与对应的Antd组件参数关联：
   + id： 筛选框标识, 应该唯一。值大小代表顺序
   + code: code可根据id生成，如id为1的下拉框code为D001,作为IN_DIM_TYPE_CODE参数值传入存储过程
   + label: 筛选框控件label
@@ -171,7 +171,7 @@ export const outParamName = 'OUT_DATASET'
     * input
   + defaultValue： 筛选框控件默认值
   + deps： 表示当前筛选框依赖其他筛选框的值,暂时只考虑支持一个依赖
-  + 是针对select下拉框的配置
+  + 针对select下拉框的配置
     * skipInit: 是否跳过初始化，针对具有依赖关系，且数据量较大的下拉框。如果传入父值数据量仍旧很大，应该设置dynamic
     * dynamic: 如果值存在，即代表下拉框需动态生产，dynamic的值代表搜索值对应的存储过程参数
     * searchable：是否可输入
