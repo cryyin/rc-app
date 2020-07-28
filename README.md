@@ -19,14 +19,17 @@
 │   ├── assert                 # 图标、字体等静态资源
 │   ├── components             # 全局公用组件
 │   ├── config                 # 全局配置
-│       └── routeMap.js        # 路由配置
+│   │   └── routeMap.js        # 路由配置
 │   ├── core                   # 项目启动代码
 │   ├── env                    # 运行环境相关
-│       └── polyfill.js        # 适应Portal-Web项目的的代码
+│   │   └── polyfill.js        # 适应Portal-Web项目的的代码
 │   ├── store                  # 全局 store管理
 │   ├── style                  # 全局样式
 │   ├── utils                  # 全局公用方法
 │   ├── views                  # views 所有页面
+│   │   ├── charts             # 图表页面如可视化报告
+│   │   ├── error              # 错误页面
+│   │   └── t1                 # 主表单一相关页面
 │   ├──App.js                  # 入口页面
 │   └──index.js                # 源码入口
 ├── .env.development           # 开发环境变量配置
