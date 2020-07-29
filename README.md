@@ -14,7 +14,7 @@
 ├─ public                      # 静态资源
 │   ├─ favicon.ico             # favicon图标
 │   └─ index.html              # html模板
-└── src                        # 项目源码
+├── src                        # 项目源码
 │   ├── api                    # 所有请求
 │   ├── assert                 # 图标、字体等静态资源
 │   ├── components             # 全局公用组件
@@ -214,7 +214,13 @@ module.exports = {
 ```
 
 # 参考
-如果能够了解以下内容，会对该项目有更好的理解
+项目使用了大量es6的语法，没有基础的同学可以先了解一下：
++ [ECMAScript 6 入门](https://es6.ruanyifeng.com/) (1~4,9,16,20章节)
+
+React基础知识也是必要的(尤其是Hook相关章节)：
++ 官网[起步](https://react.docschina.org/docs/getting-started.html)
+
+进一步，如果能够了解以下内容，会对该项目有更好的理解
 
 + [es6系列](https://github.com/mqyqingfeng/Blog#es6-系列目录)
 + [Tasks, microtasks, queues and schedules](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/)
