@@ -90,7 +90,7 @@ const Customer = (props) => {
             render: (text, record)=> {
                 if (record.vArFlag === 'Y'){
                     return getPageIcon('', ArIcon,
-                        `/ar_detail?IN_ID=${record.vId}`);
+                        `/ar_detail?IN_ID=${record.vId}`,record.vCustomerName);
                 }
                 return ''
             }

@@ -6,7 +6,7 @@ import {select} from "@/api";
 
 export const setWindowOpenNewTabFun = () => {
     // 如果父window已经存在相应的函数，直接赋值
-    if (window.parent.openNewTab){
+    if (window.parent.openNewTab) {
         // noinspection JSConstantReassignment
         window.openNewTab = window.parent.openNewTab
         return;
@@ -34,28 +34,38 @@ const doSetOpenTabFun = () => {
     const parent = window.parent
     if (parent.nthTabs) {
         const proxyFun = parent.nthTabs
-        const openNewTab = (url) => {
+        /**
+         * 打开页面内标签
+         * @param {String} url 目标url
+         * @param {String} tabNameAdorn 如果存在会加在标签后面
+         * @param {String} newTabName 新标签名称，如果存在则直接设置为新标签名称
+         */
+        const openNewTab = (url, tabNameAdorn='', newTabName=undefined) => {
             if (!url) return;
             let menuUrl = url;
-            let query = ''
             // 存在查询参数
             const idx = url.indexOf('?');
+            let query = ''
             if (idx !== -1) {
                 menuUrl = url.substring(0, idx);
                 query = url.substring(idx, url.length);
             }
-
-            // nthTabs需要menuId这个参数，所以需要从找到相应的菜单配置
-            const menu = window.menus.filter(m => m.url && m.url.endsWith(menuUrl))[0];
-            if (menu) {
-                const {menuId, name, url} = menu
-                // noinspection JSUnresolvedFunction
-                proxyFun.addTab({
-                    id: menuId,
-                    title: name,
-                    content: getContent(url + query),
-                }).setActTab('#' + menuId);
+            const randomId = new Date().getTime();
+            if (!newTabName) {
+                // nthTabs需要name这个参数，所以需要从找到相应的菜单配置
+                // 这里使用endsWith好处就是数据库menuName和代码的urlName没那么耦合
+                const menu = window.menus.filter(m => m.url && m.url.endsWith(menuUrl))[0];
+                if (menu) {
+                    newTabName = menu.name + '-' + tabNameAdorn;
+                    menuUrl = menu.url;
+                }
             }
+            // noinspection JSUnresolvedFunction
+            proxyFun.addTab({
+                id: randomId,
+                title: newTabName,
+                content: getContent(menuUrl + query),
+            }).setActTab('#' + randomId);
         }
         // noinspection JSConstantReassignment
         window.openNewTab = window.parent.openNewTab = openNewTab;

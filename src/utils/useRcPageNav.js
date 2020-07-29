@@ -71,17 +71,19 @@ const useRcPageNav = (props = {}) => {
      * 返回一个图标，点击会打开一个新的tab。注意modalId应该唯一
      * @param {string} text 文本
      * @param {component} icon Icon
-     * @param {string} url 跳转url
+     * @param {String} url 目标url
+     * @param {String} tabNameAdorn 如果存在会加在标签名称后面
+     * @param {String | undefined} newTabName 新标签名称，如果存在则直接设置为新标签名称
      * @return {component} 视图组件
      */
-    const getPageIcon = useCallback((text, icon, url) => {
+    const getPageIcon = useCallback((text, icon, url, tabNameAdorn='', newTabName=undefined) => {
         return (
             <span>
                 {text}
                 <Button
                     style={{border: 'none'}}
                     onClick={() => {
-                        openNewTab(url)
+                        openNewTab(url, tabNameAdorn, newTabName)
                     }}
                     size='small'
                     icon={icon}

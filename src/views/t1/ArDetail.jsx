@@ -30,10 +30,11 @@ const ArDetail = (props) => {
                         dataIndex: 'vCustomerName',
                         key: 'vCustomerName',
                         render: (text, record)=> {
+                            const tabNameAdorn = record.vCustomerName;
                             const customIcon =  getPageIcon('', CustomerDetailIcon,
-                                `/customer?IN_ID=${record.vId}`);
+                                `/customer?IN_ID=${record.vId}`, tabNameAdorn);
                             const lawsuitIcon = getPageIcon('', LawsuitIcon,
-                                `/lawsuit?IN_ID=${record.vId}`);
+                                `/lawsuit?IN_ID=${record.vId}`, tabNameAdorn);
                             return (
                                 <Space>
                                     {text}

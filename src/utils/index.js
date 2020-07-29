@@ -15,13 +15,15 @@ export const innerOpenNewTab = (url) => {
 }
 
 /**
- * 打开一个新的标签页
- * @param {string} url
+ * 打开页面内标签
+ * @param {String} url 目标url
+ * @param {String} tabNameAdorn 如果存在会加在标签后面
+ * @param {String} newTabName 新标签名称，如果存在则直接设置为新标签名称
  */
-export const openNewTab = (url)=>{
+export const openNewTab = (url, tabNameAdorn='', newTabName=undefined)=>{
     // 如果需要适应Portal
     if (window.openNewTab){
-        return window.openNewTab(url);
+        return window.openNewTab(url, tabNameAdorn, newTabName);
     }
     console.log('没找到window.openNewTab')
     return innerOpenNewTab(url);
