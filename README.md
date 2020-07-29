@@ -79,7 +79,7 @@ npm run build
 REACT_APP_BASE_API = 'http://172.30.25.8:8093/utrust'
 ```
 
-注意，该接口目前使用的生产环境接口
+注意，以上配置使用的是生产环境接口
 
 ## 样式修改
 项目使用[less](http://lesscss.cn/) 处理样式。
