@@ -82,9 +82,9 @@ const RcTableList = (props) => {
     }, [])
 
     return (
-        <div className='rc-table-container'>
+        <div className='list-wrapper'>
             {/*表格区域*/}
-            <div className='rc-table'>
+            <div className='list-container'>
                 <Table
                     scroll={{x: 1300}}
                     rowKey={props.rowKey || 'nOrderId'}
@@ -95,7 +95,7 @@ const RcTableList = (props) => {
                 />
             </div>
             {/*分页区域*/}
-            <div className='rc-table-pagination'>
+            <div className='pagination-container'>
                 <Pagination
                     total={total}
                     pageSizeOptions={["10", "20", "40"]}

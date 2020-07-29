@@ -9,7 +9,7 @@ import {HashRouter, Switch, Route, Redirect} from "react-router-dom";
 function App() {
     return (
         <ConfigProvider locale={zhCN}>
-            <div className="App">
+            <div className="app-container">
                 <HashRouter>
                     <Switch>
                         <Route exact path='/'>
