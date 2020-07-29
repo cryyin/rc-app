@@ -140,9 +140,9 @@ const RcTableView = props => {
     // 执行搜索
     const doSearch = useCallback(() => {
         setActListParams(prevState => {
-            // 为保证一定触发异步获取数据，使用一个随机数来更新参数
-            const _RANDOM_VERSION_NO = new Date().getTime();
-            return {...prevState, ...actFilterParams, _RANDOM_VERSION_NO}
+            // 为保证一定触发异步获取数据，使用一个时间戳来更新参数，该参数也表明搜索触发时间
+            const _TIMESTAMP_FLAG = Date.now();
+            return {...prevState, ...actFilterParams, _TIMESTAMP_FLAG}
         })
     }, [actFilterParams])
 
