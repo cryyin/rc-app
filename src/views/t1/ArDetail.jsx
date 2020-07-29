@@ -33,7 +33,7 @@ const ArDetail = (props) => {
                             const tabNameAdorn = record.vCustomerName;
                             const customIcon =  getPageIcon('', CustomerDetailIcon,
                                 `/customer?IN_ID=${record.vId}`, tabNameAdorn);
-                            const lawsuitIcon = getPageIcon('', LawsuitIcon,
+                            const lawsuitIcon = record.vLigitFlag === 'N' ? '' : getPageIcon('', LawsuitIcon,
                                 `/lawsuit?IN_ID=${record.vId}`, tabNameAdorn);
                             return (
                                 <Space>
