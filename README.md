@@ -220,6 +220,21 @@ module.exports = {
 React基础知识也是必要的(尤其是Hook相关章节)：
 + 官网[起步](https://react.docschina.org/docs/getting-started.html)
 
+现代的构建工具链也可以了解一下：
++ 包管理器
+  如[npm](https://www.npmjs.com/) 或[yarn](https://yarnpkg.com/) 
+  用以管理项目用到的依赖，具体见```package.json```文件
+
++ 打包器
+  如[webpack](https://webpack.js.org/) 它能让你编写模块化代码，
+  并将它们组合在一起成为小的 package，以优化加载时间
+  
++ 编译器
+  如[Babel](https://babeljs.io/) 。它能让你编写的新版本 JavaScript 代码，在旧版浏览器中依然能够工作
+
+项目使用的是[create-react-app](https://github.com/facebookincubator/create-react-app) 
+本质上就是对上面构建工具的封装配置，便于我们使用
+
 进一步，如果能够了解以下内容，会对该项目有更好的理解
 
 + [es6系列](https://github.com/mqyqingfeng/Blog#es6-系列目录)
