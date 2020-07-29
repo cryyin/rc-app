@@ -50,22 +50,27 @@ const doSetOpenTabFun = () => {
                 menuUrl = url.substring(0, idx);
                 query = url.substring(idx, url.length);
             }
-            const randomId = new Date().getTime();
+            let tabMenuId = Date.now();
             if (!newTabName) {
                 // nthTabs需要name这个参数，所以需要从找到相应的菜单配置
                 // 这里使用endsWith好处就是数据库menuName和代码的urlName没那么耦合
                 const menu = window.menus.filter(m => m.url && m.url.endsWith(menuUrl))[0];
                 if (menu) {
-                    newTabName = menu.name + '-' + tabNameAdorn;
+                    const {menuId, name} = menu
+                    tabMenuId = menuId;
+                    newTabName = name + tabNameAdorn;
                     menuUrl = menu.url;
+                    // 先关闭再打开
+                    // noinspection JSUnresolvedFunction
+                    proxyFun.delTab('#' + tabMenuId);
                 }
             }
             // noinspection JSUnresolvedFunction
             proxyFun.addTab({
-                id: randomId,
+                id: tabMenuId,
                 title: newTabName,
                 content: getContent(menuUrl + query),
-            }).setActTab('#' + randomId);
+            }).setActTab('#' + tabMenuId);
         }
         // noinspection JSConstantReassignment
         window.openNewTab = window.parent.openNewTab = openNewTab;

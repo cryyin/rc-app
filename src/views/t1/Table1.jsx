@@ -37,7 +37,7 @@ const Table1 = () => {
                     dataIndex: 'vCustomerName',
                     key: 'vCustomerName',
                     render: (text, record) => {
-                        return getPageIcon(text, CustomerDetailIcon, `/customer?IN_ID=${record.vId}`,record.vCustomerName);
+                        return getPageIcon(text, CustomerDetailIcon, `/customer?IN_ID=${record.vId}`);
                     }
                 }
             ]
@@ -94,7 +94,7 @@ const Table1 = () => {
                     width: 100,
                     key: 'vLiitglag',
                     render: (text, record) => {
-                        return getPageIcon(text, LawsuitIcon, `/lawsuit?IN_ID=${record.vId}`,record.vCustomerName);
+                        return getPageIcon(text, LawsuitIcon, `/lawsuit?IN_ID=${record.vId}`);
                     }
                 }, {
                     title: '总涉诉金额',

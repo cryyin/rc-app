@@ -29,7 +29,7 @@ const Lawsuit = (props) => {
                     key: 'vCustomerName',
                     render: (text, record)=> {
                         return getPageIcon(text, CustomerDetailIcon,
-                            `/customer?IN_ID=${record.vId}`,record.vCustomerName);
+                            `/customer?IN_ID=${record.vId}`);
                     }
                 },{
                     title: '二级公司',

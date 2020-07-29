@@ -142,7 +142,8 @@ const RcTableView = props => {
         setActListParams(prevState => {
             // 为保证一定触发异步获取数据，使用一个时间戳来更新参数，该参数也表明搜索触发时间
             const _TIMESTAMP_FLAG = Date.now();
-            return {...prevState, ...actFilterParams, _TIMESTAMP_FLAG}
+            // 清空IN_ID参数，如果有需要的话，可清空传入的fixedParams
+            return {...prevState, ...actFilterParams, _TIMESTAMP_FLAG, IN_ID: ''}
         })
     }, [actFilterParams])
 
