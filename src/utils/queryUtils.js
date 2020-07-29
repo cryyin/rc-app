@@ -52,7 +52,7 @@ export const getProcedureInParams = (rawParams, isFilter = false) => {
         if (type === 'NUMBER') {
             value = 0;
         }
-        value = e.defaultValue || value
+        value = e.defaultValue || (e.filter && e.filter.defaultValue) || value
         return {...e, name, type, value};
     });
     // 插入通用的IN_MONTH, 默认是VARCHAR2
