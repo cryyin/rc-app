@@ -97,7 +97,7 @@ const Visualization = (props) => {
         <div className='chart-container'>
             <div className="container">
                 <span className="page-title">{`客户${c1.vCustomerName}关于外运公司${c1.vOperateUnit}的可视化报告`}</span>
-                <Row >
+                <Row gutter={16}>
                     <Col span={6}>
                         <div className="d_block db01">
                             <span className="txt">近3个月累计收入(万元)</span>
@@ -125,7 +125,7 @@ const Visualization = (props) => {
                         </div>
                     </Col>
                 </Row>
-                <Row>
+                <Row gutter={16}>
                     <Col span={12}>
                         <div className="conbox m_t15">
                             <div className="conbox_top">
@@ -160,6 +160,7 @@ const Visualization = (props) => {
                                 option={getBarOptions(chartData[4])}
                             />
                         </div>
+
                     </Col>
                 </Row>
             </div>
