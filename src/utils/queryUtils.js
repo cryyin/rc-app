@@ -1,5 +1,5 @@
 // 数据库schema名称
-import {getLastYearMonth} from "@/utils/dateUtils";
+import {getYearMonth} from "@/utils/dateUtils";
 import {getDataSource, getUserLoginId} from "@/store";
 import {call} from "@/api";
 
@@ -22,7 +22,7 @@ export const outParamName = 'OUT_DATASET'
 // 默认筛选框sql
 const defaultFilterSql = 'call PRD_RC.PKG_RC_DIGITAL_WARNING.SP_RC_SELECT(#{IN_MONTH,mode=IN,jdbcType=VARCHAR},#{IN_DIM_TYPE_CODE,mode=IN,jdbcType=VARCHAR},#{IN_EXPAND_1,mode=IN,jdbcType=VARCHAR},#{IN_EXPAND_2,mode=IN,jdbcType=VARCHAR},#{IN_EXPAND_3,mode=IN,jdbcType=VARCHAR},#{IN_USER_GROUP,mode=IN,jdbcType=VARCHAR},#{IN_DATA_SOURCE,mode=IN,jdbcType=VARCHAR},#{OUT_DATASET,mode=OUT,jdbcType=CURSOR,javaType=ResultSet,resultMap=map})'
 const defaultFilterParams = {
-    IN_MONTH: getLastYearMonth(),
+    IN_MONTH: getYearMonth(),
     IN_DIM_TYPE_CODE: "",
     IN_EXPAND_1: "",
     IN_EXPAND_2: "",
@@ -61,7 +61,7 @@ export const getProcedureInParams = (rawParams, isFilter = false) => {
     });
     // 插入通用的IN_MONTH, 默认是VARCHAR2
     if (customParams[0].name !== 'IN_MONTH') {
-        const lastYearMonth = getLastYearMonth();
+        const lastYearMonth = getYearMonth();
         customParams.unshift({name: 'IN_MONTH', type: 'VARCHAR2', value: lastYearMonth})
     }
     if (isFilter) {
