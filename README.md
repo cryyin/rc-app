@@ -213,6 +213,31 @@ module.exports = {
 }
 ```
 
+## 代码提交
+代码提交可以清楚地让其他同学知道你做了什么，对于后期的debug和代码review都很有帮助，
+所以希望大家能遵循一下代码提交规范
+
+通用的message格式一般是：
+```javascript
+<type>(<scope>): <subject>
+// 注意冒号 : 后有空格
+// 如 feat(RcTableView): 增加了自动补全筛选框
+// 我个人喜欢在前面增加一个标识符，如增(+),删(-),改(*), 即
+// + feat(RcTableView): 增加了自动补全筛选框
+```
+type: commit 的类型主要有
+- feat: 新特性
+- fix: 修改问题
+- refactor: 代码重构
+- docs: 文档修改
+- style: 代码格式修改, 注意不是 css 修改
+- test: 测试用例修改
+- chore: 其他修改, 比如构建流程, 依赖管理.
+
+更详细的内容，见：
+- [优雅的提交你的 Git Commit Message](https://juejin.im/post/5afc5242f265da0b7f44bee4)
+- [Commit message 和 Change log 编写指南](https://www.ruanyifeng.com/blog/2016/01/commit_message_change_log.html)
+
 # 参考
 项目使用了大量es6的语法，没有基础的同学可以先了解一下：
 + [ECMAScript 6 入门](https://es6.ruanyifeng.com/) (1~4,9,16,20章节)
