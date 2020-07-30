@@ -27,8 +27,8 @@ const defaultFilterParams = {
     IN_EXPAND_1: "",
     IN_EXPAND_2: "",
     IN_EXPAND_3: "",
-    IN_USER_GROUP: "",
-    IN_DATA_SOURCE: "TEST"
+    IN_USER_GROUP: getUserLoginId(),
+    IN_DATA_SOURCE: getDataSource()
 }
 /**
  * 转换为真正的参数数组
