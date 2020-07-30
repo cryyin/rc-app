@@ -52,6 +52,10 @@ export const getProcedureInParams = (rawParams, isFilter = false) => {
         if (type === 'NUMBER') {
             value = 0;
         }
+        // IN_SEARCH_TYPE默认为1
+        if (name === 'IN_SEARCH_TYPE'){
+            value = '1';
+        }
         value = e.defaultValue || (e.filter && e.filter.defaultValue) || value
         return {...e, name, type, value};
     });
