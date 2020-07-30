@@ -89,7 +89,7 @@ const Visualization = (props) => {
         return () => {_mounted = false};
     },[fixedParams])
 
-    const c1 = chartData[1]
+    const c1 = chartData[1] || {}
     if(c1){
         chartData[4].legend[1] =  c1.vOperateUnit
     }
