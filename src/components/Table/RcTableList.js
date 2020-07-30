@@ -92,6 +92,7 @@ const RcTableList = (props) => {
                     pagination={false}
                     columns={props.columns}
                     dataSource={list}
+                    bordered
                 />
             </div>
             {/*分页区域*/}

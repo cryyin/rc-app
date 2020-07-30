@@ -35,6 +35,7 @@ const Table1 = () => {
                     title: '客户名称',
                     width: 140,
                     dataIndex: 'vCustomerName',
+                    fixed: 'left',
                     key: 'vCustomerName',
                     render: (text, record) => {
                         return getPageIcon(text, CustomerDetailIcon, `/customer?IN_ID=${record.vId}`);
@@ -105,7 +106,7 @@ const Table1 = () => {
                 {
                     title: '最近涉诉时间',
                     dataIndex: 'vRiskTimeRecent',
-                    width: 100,
+                    width: 160,
                     key: 'vRiskTimeRecent'
                 }, {
                     title: '涉诉案件数',

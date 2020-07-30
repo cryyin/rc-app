@@ -211,19 +211,19 @@ const RcTableView = props => {
 
                                     // select下拉框
                                     return (
-                                        <Form.Item label={filter.label} key={filter.code}>
-                                            <Select
-                                                showSearch={filter.searchable || filter.dynamic}
-                                                {...dynamicProps}
-                                                defaultValue={filter.defaultValue}
-                                                allowClear
-                                                onChange={(value) => changeFilter(value, item)}
-                                                style={{width: '120px'}}
-                                                placeholder='请选择'
-                                            >
-                                                {options}
-                                            </Select>
-                                        </Form.Item>
+                                            <Form.Item label={filter.label} key={filter.code}>
+                                                <Select
+                                                    showSearch={filter.searchable || filter.dynamic}
+                                                    {...dynamicProps}
+                                                    defaultValue={filter.defaultValue}
+                                                    allowClear
+                                                    onChange={(value) => changeFilter(value, item)}
+                                                    style={{width: '120px'}}
+                                                    placeholder='请选择'
+                                                >
+                                                    {options}
+                                                </Select>
+                                            </Form.Item>
                                     )
                                 })
                             }
@@ -235,7 +235,6 @@ const RcTableView = props => {
                         </Form> : null
                 }
             </div>
-
             {/*表格及分页区域*/}
             <RcTableList
                 sql={listSql}

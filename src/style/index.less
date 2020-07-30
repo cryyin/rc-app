@@ -16,6 +16,7 @@ html {
 // 根div
 #root {
   height: 100%;
+  padding: 15px;
 }
 // 整体页面
 .app-container {
@@ -29,7 +30,18 @@ html {
     .list-wrapper{
       // 表格
       .list-container{
-
+        .ant-table-thead tr th{
+          // background-color:rgba(0,134,244,1);
+          // color: #333333;
+          font-weight: bold;
+        }
+       
+        .ant-table-thead > tr > th, .ant-table-tbody > tr > td, .ant-table tfoot > tr > th, .ant-table tfoot > tr > td {
+          position: relative;
+          padding: 5px 5px;
+          overflow-wrap: break-word;
+          line-height: 28px;
+        }
       }
       // 分页
       .pagination-container{
