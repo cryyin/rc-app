@@ -6,7 +6,6 @@ const bootstrap = () => {
     let token = window.parent.token || window.toekn || sessionStorage.getItem(TokenKey)
     if (token){
         setToken(token)
-        // 获取菜单配置
     }else {
         // 注意这里只是为了方便开发，实际上不应该进入这里
         if (process.env.NODE_ENV === 'development'){

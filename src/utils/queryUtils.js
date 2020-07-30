@@ -1,6 +1,6 @@
 // 数据库schema名称
 import {getLastYearMonth} from "@/utils/dateUtils";
-import {DATA_SOURCE} from "@/store";
+import {getDataSource, getUserLoginId} from "@/store";
 import {call} from "@/api";
 
 export const schemaName = 'PRD_RC';
@@ -8,8 +8,8 @@ export const schemaName = 'PRD_RC';
 export const URL = '/rc/call'
 // 存储过程通用参数
 export const commonParams = [
-    {name: 'IN_USER_GROUP', type: 'VARCHAR2', value: ""},
-    {name: 'IN_DATA_SOURCE', type: 'VARCHAR2', value: DATA_SOURCE}
+    {name: 'IN_USER_GROUP', type: 'VARCHAR2', value: getUserLoginId()},
+    {name: 'IN_DATA_SOURCE', type: 'VARCHAR2', value: getDataSource()}
 ]
 // 分页参数
 export const pageParams = [
