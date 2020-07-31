@@ -5,7 +5,7 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
-    Microsoft YaHei, Arial, sans-serif;
+  Microsoft YaHei, Arial, sans-serif;
 }
 
 html {
@@ -18,14 +18,16 @@ html {
   height: 100%;
   padding: 15px;
 }
+
 // 整体页面
 .app-container {
   // 表格
-  .rc-table{
+  .rc-table {
     // 筛选框
-    .filter-container{
+    .filter-container {
       padding-bottom: 10px;
-      .ant-form-horizontal .ant-form-item-label{
+
+      .ant-form-horizontal .ant-form-item-label {
         width: 95px;
       }
 
@@ -34,29 +36,31 @@ html {
         background: #fbfbfb;
         border: 1px solid #d9d9d9;
         border-radius: 2px;
+
+        .ant-form-item {
+          display: flex;
+        }
+
+        .ant-form-item-control-wrapper {
+          flex: 1;
+        }
       }
 
-      .rc-form .ant-form-item {
-        display: flex;
-      }
-
-      .rc-form .ant-form-item-control-wrapper {
-        flex: 1;
-      }
       .ant-form {
         max-width: none;
       }
     }
+
     // 表格及分页
-    .list-wrapper{
+    .list-wrapper {
       // 表格
-      .list-container{
-        .ant-table-thead tr th{
+      .list-container {
+        .ant-table-thead tr th {
           // background-color:rgba(0,134,244,1);
           // color: #333333;
           font-weight: bold;
         }
-       
+
         .ant-table-thead > tr > th, .ant-table-tbody > tr > td, .ant-table tfoot > tr > th, .ant-table tfoot > tr > td {
           position: relative;
           padding: 5px 5px;
@@ -64,13 +68,15 @@ html {
           line-height: 28px;
         }
       }
+
       // 分页
-      .pagination-container{
+      .pagination-container {
 
       }
     }
   }
 }
+
 // 修改antd样式
 
 // 表格行高
