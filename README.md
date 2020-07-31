@@ -240,7 +240,7 @@ type: commit 的类型主要有
 
 # 参考
 项目使用了大量es6的语法，没有基础的同学可以先了解一下：
-+ [ECMAScript 6 入门](https://es6.ruanyifeng.com/) (1~4,9,16,20章节)
++ [ECMAScript 6 入门](https://es6.ruanyifeng.com/) (1~4,9,10,16,20章节)
 
 React基础知识也是必要的(尤其是Hook相关章节)：
 + 官网[起步](https://react.docschina.org/docs/getting-started.html)
