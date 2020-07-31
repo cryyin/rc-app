@@ -82,12 +82,13 @@ const Visualization = (props) => {
                             }
                         })
                         result = {data1, data2, axis: DefaultChartData[4].axis, legend: DefaultChartData[4].legend}
+                        // 最后一个promise关闭loading
+                        _mounted && setLoading(false)
                     }
                     if (_mounted) {
                         setChartData(prevState => {
                             return {...prevState, [i]: result}
                         });
-                        setLoading(false)
                     }
                 })
             })
