@@ -233,7 +233,7 @@ const RcTableView = props => {
             <div className='filter-container'>
                 {
                     renderedFilterItems.length > 0 ?
-                        <Form className='ant-advanced-search-form'>
+                        <Form className='rc-form'>
                             <Row gutter={24}>
                                 {renderedFilterItems}
                                 <Col span={spanNum}>
