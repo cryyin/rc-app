@@ -194,7 +194,7 @@ const RcTableView = props => {
                                 onSelect={(value, option) => {
                                     handleAcSelect(option, item)
                                 }}
-                                style={{width: 120}}
+                                // style={{width:'120px'}}
                                 {...dynamicProps}
                                 onChange={(value) => changeFilter(value, item)}
                                 placeholder="请输入">
@@ -218,7 +218,7 @@ const RcTableView = props => {
                             defaultValue={filter.defaultValue}
                             allowClear
                             onChange={(value) => changeFilter(value, item)}
-                            style={{width: '120px'}}
+                           // style={{width: '120px'}}
                             placeholder='请选择'
                         >
                             {options}
