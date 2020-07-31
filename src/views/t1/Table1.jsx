@@ -6,6 +6,7 @@ import RcTableView from "@/components/Table/RcTableView";
 import tableConfig from "./Table1Config"
 import useRcPageNav from "@/utils/useRcPageNav";
 import {CustomerDetailIcon, LawsuitIcon} from "@/views/t1/Icons";
+import {customerNameWidth, orgNameWidth} from './CommonColumns'
 
 const Table1 = () => {
     const columns = [
@@ -27,13 +28,13 @@ const Table1 = () => {
                     key: 'vCalArea'
                 }, {
                     title: '外运公司',
-                    width: 140,
+                    width: orgNameWidth,
                     fixed: 'left',
                     dataIndex: 'vOperateUnit',
                     key: 'vOperateUnit'
                 }, {
                     title: '客户名称',
-                    width: 140,
+                    width: customerNameWidth,
                     dataIndex: 'vCustomerName',
                     fixed: 'left',
                     key: 'vCustomerName',

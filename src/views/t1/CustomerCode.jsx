@@ -16,7 +16,7 @@ const CustomerCode = (props) => {
             key: 'nOrderId'
         }, {
             title: '客户公司名称',
-            width: 160,
+            width: 200,
             fixed: 'left',
             dataIndex: 'vCustomerName',
             key: 'vCustomerName'

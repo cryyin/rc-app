@@ -6,7 +6,7 @@ import RcTableView from "@/components/Table/RcTableView";
 import tableConfig from "./LawsuitConfig"
 import useRcPageNav from "@/utils/useRcPageNav";
 import ReportChart from '@/views/charts/index';
-import {getArColumns} from "@/views/t1/CommonColumns";
+import {getArColumns, customerNameWidth, orgNameWidth} from "@/views/t1/CommonColumns";
 import {CustomerDetailIcon, ReportIcon} from "@/views/t1/Icons";
 
 const Lawsuit = (props) => {
@@ -23,7 +23,7 @@ const Lawsuit = (props) => {
                     key: 'nOrderId'
                 }, {
                     title: '客户名称',
-                    width: 160,
+                    width: customerNameWidth,
                     fixed: 'left',
                     dataIndex: 'vCustomerName',
                     key: 'vCustomerName',
@@ -39,7 +39,7 @@ const Lawsuit = (props) => {
                     key: 'vCalArea'
                 }, {
                     title: '外运公司',
-                    width: 140,
+                    width: orgNameWidth,
                     fixed: 'left',
                     dataIndex: 'vOperateUnit',
                     key: 'vOperateUnit'

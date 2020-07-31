@@ -6,7 +6,7 @@ import RcTableView from "@/components/Table/RcTableView";
 import tableConfig from "./ArDetailConfig"
 import { Tag, Space} from 'antd'
 import useRcPageNav from "@/utils/useRcPageNav";
-import {getArColumns} from "@/views/t1/CommonColumns";
+import {getArColumns, orgNameWidth, customerNameWidth} from "@/views/t1/CommonColumns";
 import ReportChart from "@/views/charts";
 import {CustomerDetailIcon, LawsuitIcon, ReportIcon} from "@/views/t1/Icons";
 
@@ -25,7 +25,7 @@ const ArDetail = (props) => {
                         key: 'nOrderId'
                     }, {
                         title: '客户名称',
-                        width: 200,
+                        width: customerNameWidth,
                         fixed: 'left',
                         dataIndex: 'vCustomerName',
                         key: 'vCustomerName',
@@ -50,7 +50,7 @@ const ArDetail = (props) => {
                         key: 'vCalArea'
                     }, {
                         title: '外运公司',
-                        width: 250,
+                        width: orgNameWidth,
                         fixed: 'left',
                         dataIndex: 'vOperateUnit',
                         key: 'vOperateUnit',

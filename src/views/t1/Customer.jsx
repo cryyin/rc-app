@@ -8,6 +8,7 @@ import useRcPageNav from "@/utils/useRcPageNav";
 import {ArIcon, CustomerCodeIcon, CorpIcon} from "@/views/t1/Icons";
 import {Space} from "antd";
 import CustomerCode from "@/views/t1/CustomerCode";
+import {customerNameWidth} from './CommonColumns'
 
 const Customer = (props) => {
     const columns = [
@@ -19,7 +20,7 @@ const Customer = (props) => {
             key: 'nOrderId'
         }, {
             title: '客户名称',
-            width: 160,
+            width: customerNameWidth,
             fixed: 'left',
             dataIndex: 'vCustomerName',
             key: 'vCustomerName',
