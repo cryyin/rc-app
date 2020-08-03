@@ -183,7 +183,7 @@ export const classifyFilterItem = (filterItems) => {
  * 一次性返回RcTable用到的配置项
  * @param fixedParams
  * @param tableConfig
- * @return {{filterSql: string, listSql: String, setFilterOptions: setFilterOptions, initDynamicDepInfo, depFilters: *[], muteFilters: *[], initFilterParams: {}, filterItems: [], showSearch: *, beDepIds: Set<*>, initDepIds: *[], dynamicFilters: *[], rowKey: *, initListParams}}
+ * @return {{filterSql: string, initFilterParams: {}, filterItems: [], showSearch: *, listSql: String, rowKey: *, initListParams}}
  */
 const parseTableConfig = (fixedParams, tableConfig) => {
     console.log('开始解析')
@@ -212,11 +212,19 @@ const parseTableConfig = (fixedParams, tableConfig) => {
     const {sql: filterSql, params: initFilterParams} = filterConfig
     const {filterItems, sql: listSql} = listConfig
 
+    /** ======生成筛选框配置 结束====== */
+
+
+    return {
+        rowKey, showSearch, filterItems, listSql, initListParams, filterSql, initFilterParams
+    }
+}
+
+export const parseFilterConfig = (filterSql, initFilterParams, filterItems) =>{
     // 筛选框分类处理：默认、依赖、动态
     const {muteFilters, depFilters, dynamicFilters, beDepIds, initDynamicDepInfo} = classifyFilterItem(filterItems);
 
     const initDepIds = depFilters.filter(f => !f.skipInit).map(f => f.id);
-    /** ======生成筛选框配置 结束====== */
 
     /**
      *
@@ -243,10 +251,9 @@ const parseTableConfig = (fixedParams, tableConfig) => {
             })
         })
     }
-    return {
-        rowKey, showSearch, filterItems, listSql, initListParams, filterSql, initFilterParams,
-        muteFilters, depFilters, dynamicFilters, beDepIds, initDynamicDepInfo, initDepIds, setFilterOptions
-    }
+
+    return { muteFilters, depFilters, dynamicFilters, beDepIds, initDynamicDepInfo, initDepIds, setFilterOptions}
 }
+
 
 export default parseTableConfig;
