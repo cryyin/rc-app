@@ -135,10 +135,14 @@ import './index.less'
 
 ## Rc通用表格配置
 
-仅仅提供自定义的参数即可，部分固定参数如IN_MONTH、DATA_SOURCE会自动合并。如果不提供筛选框的相关参数，
-则会使用默认的筛选框存储过程配置。就目前而言，筛选框调用的存储过程都是一样的。
+仅仅提供自定义的列表查询参数即可，部分固定参数如IN_MONTH、DATA_SOURCE会自动合并。
 
+不提供筛选框的相关参数情况下，将会使用默认的筛选框存储过程配置。就目前而言，筛选框调用的存储过程都是一样的。
+### 表格参数
 
+- rowKey: 每一行的key, 默认为```nOrderId```
+- showSearch: 是否显示搜索按钮, 默认为```undefined```，即如果有筛选框则显示，没有则不显示
+- showAll: 不分页一次性查出所有记录(实际上把IN_ROW_END设置为100000)
 ### 公共参数：
 以下参数为目前默认的公共参数，自定义时需要省略掉
 ```javascript
@@ -163,13 +167,16 @@ export const outParamName = 'OUT_DATASET'
 
 - name: 存储过程对应的参数名
 - type: 存储过程对应的参数类型
+- defaultValue： 参数默认值, 一般而言, 该项应该与filter的defaultValue互斥存在
 - filter: 列表查询参数专用。filter对应存在，即表明该项作为筛选框条件，用户可在前端输入值。以下filter参数一般与对应的Antd组件参数关联：
-  + id： 筛选框标识, 应该唯一。值大小代表顺序
+  + id： 筛选框标识, 应该唯一。值大小代表顺序, 请参考《接口文档》设置
   + code: code可根据id生成，如id为1的下拉框code为D001,作为IN_DIM_TYPE_CODE参数值传入存储过程
   + label: 筛选框控件label
+  + searchOnChange: 控件值改变时执行搜索动作，默认为```false```
   + type: 筛选框类型，与antd组件对应，目前支持的type有
     * select(默认)
     * autoComplete
+    * radio
     * input
   + defaultValue： 筛选框控件默认值
   + deps： 表示当前筛选框依赖其他筛选框的值,暂时只考虑支持一个依赖
@@ -179,9 +186,28 @@ export const outParamName = 'OUT_DATASET'
     * showSearch：单选模式下可搜索
   + 针对autoComplete的配置
     * dynamic: 如果值存在，即代表autoComplete候选项需动态生产，dynamic的值代表搜索值对应的存储过程参数
- 
+  + 针对radio的配置
+    * options: radio的选项形如```[{value: 'xxKey',label:'xxValue'}...]``` 
 为获取存储过程自定义参数，一般可以打开plsql查看具体的存储过程，复制到notepad++后直接进行列操作可得到该配置信息
  
+## 适应Portal-Web
+本项目作为一个单页面应用嵌入Portal-Web应用的iframe，因此一些功能函数和全局变量需要父窗口提供。
+
+因为每个iframe页面的window对象不能共享，因此需要将项目用到的全局变量或函数挂载到父窗口window对象中。
+在rc-app中则通过```window.parent```的方式调用。注意这些变量需要使用rc前缀，避免污染其他全局变量。
+
+适应代码主要包括项目内部代码和外部代码
+
+### 内部polyfill
+在```src\env\polyfill.js```文件中对父窗口函数如打开新标签页进行改造，使得这些父窗口函数
+可以平滑地应用到本项目中。
+
+### 外部polyfill
+在Portal-Web应用的```index.html```文件中引入了```rcPolyfill.js```文件，
+用以设置项目用到的一些全局变量，如```rcDataSource```和```rcUserLoginId```。使用这些变量时，
+优先从```window.parent```对象中搜索
+
+
 ## 使用svg图标
 项目使用[@svgr/webpack](https://github.com/gregberge/svgr/tree/master/packages/webpack) 处理svg图标
 

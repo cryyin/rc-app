@@ -53,7 +53,7 @@ export const getProcedureInParams = (rawParams, isFilter = false) => {
             value = 0;
         }
         // IN_SEARCH_TYPE默认为1
-        if (name === 'IN_SEARCH_TYPE'){
+        if (name === 'IN_SEARCH_TYPE') {
             value = '1';
         }
         value = e.defaultValue || (e.filter && e.filter.defaultValue) || value
@@ -138,6 +138,8 @@ export const getProcedureConfig = (procedureName, rawParams, isFilter = false) =
 export const classifyFilterItem = (filterItems) => {
     // 所有的筛选框
     const filters = []
+    // 无需异步获取数据并初始化的筛选框
+    const immutableFilters = []
     // 仅需初始化一次的筛选框
     const muteFilters = []
     // 依赖其他筛选框值的筛选框
@@ -158,6 +160,8 @@ export const classifyFilterItem = (filterItems) => {
             }
         } else if (e.dynamic) {
             dynamicFilters.push(e)
+        } else if (e.options) {
+            immutableFilters.push(e)
         } else {
             muteFilters.push(e)
         }
@@ -171,7 +175,7 @@ export const classifyFilterItem = (filterItems) => {
     depFilters.filter(f => f.dynamic && beDepItemFilter[f.deps]).forEach(f => {
         initDynamicDepInfo[f.id] = beDepItemFilter[f.deps].defaultValue
     })
-    return {muteFilters, depFilters, dynamicFilters, beDepIds, initDynamicDepInfo}
+    return {immutableFilters, muteFilters, depFilters, dynamicFilters, beDepIds, initDynamicDepInfo}
 }
 
 
@@ -179,18 +183,23 @@ export const classifyFilterItem = (filterItems) => {
  * 一次性返回RcTable用到的配置项
  * @param fixedParams
  * @param tableConfig
- * @return {{filterSql: string, listSql: String, setFilterOptions: setFilterOptions, initDynamicDepInfo, depFilters: *[], muteFilters: *[], initFilterParams: {IN_EXPAND_3: string, IN_DATA_SOURCE: string, IN_DIM_TYPE_CODE: string, IN_EXPAND_1: string, IN_EXPAND_2: string, IN_MONTH: string, IN_USER_GROUP: string}, filterItems: [], beDepIds: Set<*>, initDepIds: *[], dynamicFilters: *[], rowKey: *, initListParams}}
+ * @return {{filterSql: string, listSql: String, setFilterOptions: setFilterOptions, initDynamicDepInfo, depFilters: *[], muteFilters: *[], initFilterParams: {}, filterItems: [], showSearch: *, beDepIds: Set<*>, initDepIds: *[], dynamicFilters: *[], rowKey: *, initListParams}}
  */
 const parseTableConfig = (fixedParams, tableConfig) => {
     console.log('开始解析')
     // 读取表单存储过程信息
-    const {listParams, listProcedureName, filterParams, filterProcedureName, rowKey} = tableConfig
+    const {listParams, listProcedureName, filterParams, filterProcedureName,
+        rowKey, showSearch, showAll} = tableConfig
 
     /** =======生成表单配置 开始======= */
     const listConfig = getProcedureConfig(listProcedureName, listParams, false);
     // 表单查询初始参数=存储过程默认参数 + 父组件传递的固定参数
 
     const initListParams = {...listConfig.params, ...fixedParams}
+    // 一次性显示所有记录，即不分页。取100000条应该可以了
+    if (showAll === true){
+        initListParams.IN_ROWNB_END = 100000
+    }
     /** ======生成表单配置  结束====== */
 
     /** ======生成筛选框配置 开始====== */
@@ -228,15 +237,14 @@ const parseTableConfig = (fixedParams, tableConfig) => {
                 setter(prevState => {
                     return {...prevState, [result.IN_DIM_TYPE_CODE]: r.data.OUT_DATASET}
                 })
-                if (cb){
+                if (cb) {
                     cb(r.data);
                 }
             })
         })
     }
-
     return {
-        rowKey, filterItems, listSql, initListParams, filterSql, initFilterParams,
+        rowKey, showSearch, filterItems, listSql, initListParams, filterSql, initFilterParams,
         muteFilters, depFilters, dynamicFilters, beDepIds, initDynamicDepInfo, initDepIds, setFilterOptions
     }
 }

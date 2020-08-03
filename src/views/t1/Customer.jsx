@@ -8,6 +8,7 @@ import useRcPageNav from "@/utils/useRcPageNav";
 import {ArIcon, CustomerCodeIcon, CorpIcon} from "@/views/t1/Icons";
 import {Space} from "antd";
 import CustomerCode from "@/views/t1/CustomerCode";
+import RelatedComp from "@/views/t1/RelatedComp";
 import {customerNameWidth} from './CommonColumns'
 
 const Customer = (props) => {
@@ -101,7 +102,7 @@ const Customer = (props) => {
             dataIndex: 'vRelatedFlag',
             key: 'vRelatedFlag',
             render: (text, record)=> {
-                return record.vArFlag === 'Y' ? getModalIcon('', record, CorpIcon,'relatedComp'): ''
+                return record.vRelatedFlag === 'Y' ? getModalIcon('', record, CorpIcon,'relatedComp'): ''
             }
         }
     ];
@@ -115,7 +116,7 @@ const Customer = (props) => {
                 <CustomerCode fixedParams={curInParams} />
             </RcModal>
             <RcModal id='relatedComp' title='关联企业详情'>
-                <CustomerCode fixedParams={curInParams} />
+                <RelatedComp fixedParams={curInParams} />
             </RcModal>
         </div>
     );

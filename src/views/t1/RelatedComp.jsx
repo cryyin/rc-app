@@ -3,9 +3,9 @@
  */
 import React from 'react';
 import RcTableView from "@/components/Table/RcTableView";
-import tableConfig from "./CustomerCodeConfig"
+import tableConfig from "./RelatedCompConfig"
 import useRcPageNav from "@/utils/useRcPageNav";
-
+console.log(tableConfig)
 const RelatedComp = (props) => {
     const columns = [
         {
@@ -15,49 +15,59 @@ const RelatedComp = (props) => {
             fixed: 'left',
             key: 'nOrderId'
         }, {
-            title: '关联企业名称',
-            width: 160,
+            title: '当前节点（展示名称）',
+            width: 200,
             fixed: 'left',
-            dataIndex: 'vRelationName',
-            key: 'vRelationName'
+            dataIndex: 'vNodeSname',
+            key: 'vNodeSname'
         },
         {
-            title: '所属行业',
-            dataIndex: 'vIndustryCategory',
-            width: 100,
-            key: 'vIndustryCategory'
+            title: '公司标识',
+            dataIndex: 'vCompFlag',
+            width: 120,
+            fixed: 'left',
+            key: 'vCompFlag'
         }, {
-            title: '注册资本',
+            title: '父节点对当前节点的持股比例',
+            width: 130,
+            fixed: 'left',
+            dataIndex: 'vPctNodeToP',
+            key: 'vPctNodeToP'
+        },
+        {
+            title: '父节点对当前节点的认缴出资金额（万元）',
+            dataIndex: 'vAmtNodeToP',
+            width: 130,
+            fixed: 'left',
+            key: 'vAmtNodeToP'
+        }, {
+            title: '目标公司对当前节点的持股比例',
+            width: 130,
+            fixed: 'left',
+            dataIndex: 'vPctSh',
+            key: 'vPctSh'
+        }, {
+            title: '目标公司对当前节点的直接持股比例',
+            dataIndex: 'vPctNodeToEnd',
+            width: 130,
+            fixed: 'left',
+            key: 'vPctNodeToEnd'
+        },
+        {
+            title: '行业',
+            dataIndex: 'vIndustryCategoryMdm',
             width: 160,
-            dataIndex: 'vRegisteredCapital',
-            key: 'vRegisteredCapital'
-        },
-        {
-            title: '最大股东',
-            dataIndex: 'vCeoName',
-            width: 100,
-            key: 'vCeoName'
+            key: 'vIndustryCategoryMdm'
         }, {
+            title: '经营状态',
+            width: 160,
+            dataIndex: 'vManagementForms',
+            key: 'vManagementForms'},
+        {
             title: '法人代表',
             width: 160,
             dataIndex: 'vPrincipalName',
             key: 'vPrincipalName'
-        }, {
-            title: '经营状态',
-            dataIndex: 'vManagementForms',
-            width: 100,
-            key: 'vManagementForms'
-        },
-        {
-            title: '联系方式',
-            dataIndex: 'vMobile',
-            width: 100,
-            key: 'vRiskTimeRecent'
-        }, {
-            title: '地址',
-            width: 180,
-            dataIndex: 'vAddress',
-            key: 'vAddress'
         }
     ];
     // 页面跳转、模块框相关hook
