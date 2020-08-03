@@ -176,7 +176,7 @@ export const outParamName = 'OUT_DATASET'
   + 针对select下拉框的配置
     * skipInit: 是否跳过初始化，针对具有依赖关系，且数据量较大的下拉框。如果传入父值数据量仍旧很大，应该设置dynamic
     * dynamic: 如果值存在，即代表下拉框需动态生产，dynamic的值代表搜索值对应的存储过程参数
-    * searchable：是否可输入
+    * showSearch：单选模式下可搜索
   + 针对autoComplete的配置
     * dynamic: 如果值存在，即代表autoComplete候选项需动态生产，dynamic的值代表搜索值对应的存储过程参数
  

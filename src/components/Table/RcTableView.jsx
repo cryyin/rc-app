@@ -213,7 +213,7 @@ const RcTableView = props => {
                 <Col span={spanNum} key={filter.code}>
                     <Form.Item label={filter.label} key={filter.code}>
                         <Select
-                            showSearch={filter.searchable || filter.dynamic}
+                            showSearch={filter.showSearch || filter.dynamic}
                             {...dynamicProps}
                             defaultValue={filter.defaultValue}
                             allowClear
