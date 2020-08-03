@@ -186,7 +186,7 @@ export const classifyFilterItem = (filterItems) => {
  * @return {{filterSql: string, initFilterParams: {}, filterItems: [], showSearch: *, listSql: String, rowKey: *, initListParams}}
  */
 const parseTableConfig = (fixedParams, tableConfig) => {
-    console.log('开始解析')
+    console.log('parseTableConfig')
     // 读取表单存储过程信息
     const {listParams, listProcedureName, filterParams, filterProcedureName,
         rowKey, showSearch, showAll} = tableConfig
@@ -221,6 +221,7 @@ const parseTableConfig = (fixedParams, tableConfig) => {
 }
 
 export const parseFilterConfig = (filterSql, initFilterParams, filterItems) =>{
+    console.log('parseFilterConfig')
     // 筛选框分类处理：默认、依赖、动态
     const {muteFilters, depFilters, dynamicFilters, beDepIds, initDynamicDepInfo} = classifyFilterItem(filterItems);
 

@@ -7,6 +7,7 @@ import {parseFilterConfig} from "@/utils/queryUtils";
 const {Option} = Select;
 
 const RcTableFilter = props => {
+    console.log('RcTableFilter')
     const {filterSql, initFilterParams, filterItems, setActListParams, showSearch} = props
 
     const { muteFilters, depFilters, dynamicFilters, beDepIds, initDynamicDepInfo, initDepIds, setFilterOptions} = useMemo(()=>{
@@ -239,4 +240,4 @@ const RcTableFilter = props => {
     return null
 }
 
-export default RcTableFilter
+export default React.memo(RcTableFilter)

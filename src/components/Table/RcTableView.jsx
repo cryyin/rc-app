@@ -61,6 +61,6 @@ RcTableView.protoTypes = {
     fixedParams: PropTypes.object
 }
 
-export default RcTableView
+export default React.memo(RcTableView)
 
 
