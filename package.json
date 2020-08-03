@@ -27,8 +27,7 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-    "test": "craco test",
-    "svgr": "npx @svgr/cli -d ./src/assert/icon ./src/assert/icon"
+    "test": "craco test"
   },
   "eslintConfig": {
     "extends": "react-app"
