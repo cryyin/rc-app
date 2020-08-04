@@ -87,7 +87,7 @@ const RcTableList = (props) => {
             {/*表格区域*/}
             <div className='list-container'>
                 <Table
-                    scroll={{x: 1300}}
+                    scroll={{x: 1800}}
                     rowKey={props.rowKey || 'nOrderId'}
                     loading={isLoading}
                     pagination={false}

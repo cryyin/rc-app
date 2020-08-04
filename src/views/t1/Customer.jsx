@@ -43,7 +43,7 @@ const Customer = (props) => {
             {
                 title: '所属行业',
                 dataIndex: 'vIndustryCategory',
-                width: 100,
+                width: 180,
                 key: 'vIndustryCategory'
             }, {
                 title: '注册资本',
@@ -58,7 +58,7 @@ const Customer = (props) => {
                 key: 'vRiskLvl'
             }, {
                 title: '最大股东',
-                width: 160,
+                width: 180,
                 dataIndex: 'vCeoName',
                 key: 'vCeoName'
             }, {
@@ -80,7 +80,7 @@ const Customer = (props) => {
                 key: 'vRiskTimeRecent'
             }, {
                 title: '地址',
-                width: 180,
+                width: 350,
                 dataIndex: 'vAddress',
                 key: 'vAddress'
             }, {

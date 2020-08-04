@@ -91,4 +91,4 @@ export const getArColumns = (title, render) => {
 
 // 客户名称width
 export const customerNameWidth = 270
-export const orgNameWidth = 240
+export const orgNameWidth = 270
