@@ -10,11 +10,11 @@ const RcTableFilter = props => {
     console.log('RcTableFilter')
     const {filterSql, initFilterParams, filterItems, setActListParams, showSearch} = props
 
-    const { muteFilters, depFilters, dynamicFilters, beDepIds, initDynamicDepInfo, initDepIds, setFilterOptions} = useMemo(()=>{
+    const {muteFilters, depFilters, dynamicFilters, beDepIds, initDynamicDepInfo, initDepIds, setFilterOptions} = useMemo(() => {
         return parseFilterConfig(filterSql, initFilterParams, filterItems)
-    },[filterSql, initFilterParams, filterItems])
+    }, [filterSql, initFilterParams, filterItems])
 
-     // 静态filter，处理起来最简单
+    // 静态filter，处理起来最简单
     const [muteItems, setMuteItems] = useState({})
     useEffect(() => {
         setFilterOptions(muteFilters, setMuteItems)
@@ -133,7 +133,7 @@ const RcTableFilter = props => {
         // 根据筛选框的控件类型分别处理
         switch (filter.type) {
             case "input":
-                vNode =(
+                vNode = (
                     <Input
                         onChange={(e) => changeFilter(e.target.value, item)}
                         allowClear
@@ -215,9 +215,8 @@ const RcTableFilter = props => {
         }
         return []
     })
-    const showFilterForm = renderedFilterItems.length > 0
     // 增加搜索按钮
-    if (showFilterForm && showSearch !== false) {
+    if (renderedFilterItems.length > 0 && showSearch !== false) {
         renderedFilterItems.push(
             <Col span={spanNum} key='searchBtn'>
                 <Form.Item>
@@ -228,16 +227,14 @@ const RcTableFilter = props => {
             </Col>
         )
     }
-    if(showFilterForm){
-        return (
-            <Form className='rc-form'>
-                <Row gutter={24}>
-                    {renderedFilterItems}
-                </Row>
-            </Form>
-        )
-    }
-    return null
+
+    return (
+        <Form className='rc-form'>
+            <Row gutter={24}>
+                {renderedFilterItems}
+            </Row>
+        </Form>
+    )
 }
 
 export default React.memo(RcTableFilter)
