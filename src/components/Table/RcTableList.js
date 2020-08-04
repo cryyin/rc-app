@@ -83,7 +83,7 @@ const RcTableList = (props) => {
     }, [])
 
     return (
-        <div className='list-wrapper'>
+        <div className='list-pagination-wrapper'>
             {/*表格区域*/}
             <div className='list-container'>
                 <Table

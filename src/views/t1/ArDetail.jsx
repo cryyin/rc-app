@@ -1,7 +1,7 @@
 /**
  * 应收账款
  */
-import React from 'react';
+import React, {useMemo} from 'react';
 import RcTableView from "@/components/Table/RcTableView";
 import tableConfig from "./ArDetailConfig"
 import { Tag, Space} from 'antd'
@@ -11,8 +11,10 @@ import ReportChart from "@/views/charts";
 import {CustomerDetailIcon, LawsuitIcon, ReportIcon} from "@/views/t1/Icons";
 
 const ArDetail = (props) => {
-    // noinspection DuplicatedCode
-    const columns = [
+    const {getPageIcon, getModalIcon, RcModal, curInParams, fixedParams} = useRcPageNav(props);
+    // 使用useMemo减少渲染次数，优化性能
+    const columns = useMemo(()=>{
+        return [
             {
                 title: '客户基本信息',
                 fixed: 'left',
@@ -94,15 +96,15 @@ const ArDetail = (props) => {
                     }
                 ]
             },{
-            ...getArColumns(
-                '客户应收账款情况',
-                (text, record)=> {
-                    return text === 'Y' ?
-                        getModalIcon('', record, ReportIcon,'report') : ''
-                }
-            )
-        }];
-    const {getPageIcon, getModalIcon, RcModal, curInParams, fixedParams} = useRcPageNav(props);
+                ...getArColumns(
+                    '客户应收账款情况',
+                    (text, record)=> {
+                        return text === 'Y' ?
+                            getModalIcon('', record, ReportIcon,'report') : ''
+                    }
+                )
+            }];
+    },[getPageIcon, getModalIcon]);
     return (
         <div>
             <RcTableView fixedParams={fixedParams} columns={columns} tableConfig={tableConfig}/>
