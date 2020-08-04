@@ -45,7 +45,7 @@ export const getArColumns = (title, render) => {
             }, {
                 title: '应收46-60天(万元)',
                 width: 100,
-                dataIndex: 'nA3',
+                dataIndex: 'nAr3',
                 key: 'nAr3'
             }, {
                 title: '应收61-90天(万元)',
