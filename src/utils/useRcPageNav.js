@@ -45,7 +45,7 @@ const useRcPageNav = (props = {}) => {
     const RcModal = (props) => {
         return (
             <Modal
-                width='88%'
+                width='92%'
                 onCancel={hideModal}
                 onOk={hideModal}
                 visible={visible[props.id]}
